@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>脳疲労タイプ診断｜ぼたん</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+</head>
+<body style="margin:0;padding:0;">
+<div id="root"></div>
+<script type="text/babel">
+
+const PHOTO = "data:image/jpeg;base64,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";
+
+const questions = [
+  { id: "Q1", type: "A", title: "🧠① 頑張りすぎ脳タイプかも？", items: [
+    "休んでても罪悪感がある",
+    "もっと頑張れる気がする",
+    "完璧にやりたい",
+    "サボると不安",
+    "やること終わらない感覚",
+    "人に頼るの苦手",
+  ]},
+  { id: "Q2", type: "B", title: "💗② 気づかい脳タイプかも？", items: [
+    "空気読みすぎる",
+    "人優先になりがち",
+    "NOが苦手",
+    "気疲れが多い",
+    "帰るとぐったりする",
+    "嫌われたくない",
+  ]},
+  { id: "Q3", type: "C", title: "📱③ 情報パンパン脳タイプかも？", items: [
+    "美容情報を見すぎる",
+    "SNSで焦ることがある",
+    "アイテムが増えがち",
+    "正解を探し続けている",
+    "ついつい比較してしまう",
+    "保存だけ増えている",
+  ]},
+  { id: "Q4", type: "D", title: "😶④ 我慢ぐせ脳タイプかも？", items: [
+    "疲れてても頑張ってしまう",
+    "弱音を言うのが苦手",
+    "無理して動いてしまう",
+    "まだいけると思いがち",
+    "自分を後回しにする",
+    "限界に気づきにくい",
+  ]},
+  { id: "Q5", type: "E", title: "🌪⑤ 不安先読み脳タイプかも？", items: [
+    "未来のことを考えすぎる",
+    "心配性",
+    "最悪の場合を想定してしまう",
+    "常に考え事がある",
+    "ミスが怖い",
+    "緊張しやすい",
+  ]},
+  { id: "Q6", type: "F", title: "⚡⑥ 常にON脳タイプかも？", items: [
+    "じっとするのが苦手",
+    "何かしていないと不安",
+    "スマホをずっと見てしまう",
+    "頭が止まらない",
+    "マルチタスクが多い",
+    "寝る直前まで動いている",
+  ]},
+];
+
+const results = {
+  A: { emoji: "🧠", title: "頑張りすぎ脳タイプ", color: "#b07acc", bg: "#f8f0ff",
+    tag: "常にアクセル全開。交感神経がONになりやすい状態です",
+    brain: "👉 常にアクセル全開\n交感神経ONになりやすい",
+    skin: ["肝斑", "食いしばり", "くすみ", "回復低下"],
+    advice: ["「70点でOK」を練習する", "まず寝ることを優先", "やらない日を意識して作る"],
+    msg: "「頑張らないと価値ない」になってない？🌿\n\n頑張ることに慣れすぎて、休むことへの罪悪感が肌に出てきている状態です。\n\n肌が回復するのは、脳がオフになっているとき。今夜だけでいいので、スマホを置いて早く横になってみて🌸" },
+  B: { emoji: "💗", title: "気づかい脳タイプ", color: "#e07aaa", bg: "#fff0f8",
+    tag: "常に周囲を監視。エネルギー消耗型の疲れです",
+    brain: "👉 常に周囲を監視\nエネルギー消耗型",
+    skin: ["血流低下", "むくみ", "赤み", "自律神経乱れ"],
+    advice: ["1人の時間を意識的に作る", "深呼吸を習慣に", "「自分優先」を少しずつ練習"],
+    msg: "優しすぎる人、脳ずっと働いてます🌿\n\n人の気持ちを読みながら動くのは、とてもエネルギーを使います。\n\nあなたが先に満たされることで、周りへの優しさも自然と増えていきます。まず自分に優しくしてあげて🌸" },
+  C: { emoji: "📱", title: "情報パンパン脳タイプ", color: "#7090c0", bg: "#f0f4ff",
+    tag: "情報過多で疲弊。選択疲れが起きている状態です",
+    brain: "👉 情報過多で疲弊\n選択疲れ",
+    skin: ["やりすぎ美容", "肌荒れ", "肝斑悪化", "ストレス炎症"],
+    advice: ["アイテムを思い切って減らす", "「今ある物」を使い切る", "情報断食の日を作る"],
+    msg: "情報多いほど、脳は疲れます🌿\n\n美容情報を見るたびに「私これやってない」「あれも必要かも」と脳が反応し続けています。\n\n今夜は美容アカウントを見ない。それだけで脳がすこし軽くなります🌸" },
+  D: { emoji: "😶", title: "我慢ぐせ脳タイプ", color: "#70b890", bg: "#f0fff5",
+    tag: "SOSを無視する型。慢性疲労化しやすい状態です",
+    brain: "👉 SOS無視型\n慢性疲労化しやすい",
+    skin: ["お疲れ肌", "くすみ", "バリア低下", "ニキビ"],
+    advice: ["「疲れた」を声に出して認める", "休む予定を先に入れる", "頑張る前に回復を優先"],
+    msg: "限界まで頑張る前に、休んでいい🌿\n\n「まだいける」と思っている間に、肌はすでに限界のサインを出していることがあります。\n\n今日感じている「なんとなくしんどい」は本物のSOS。無視しないで🌸" },
+  E: { emoji: "🌪", title: "不安先読み脳タイプ", color: "#c08040", bg: "#fff8f0",
+    tag: "常時警戒モード。安心スイッチが入りにくい状態です",
+    brain: "👉 常時警戒モード\n安心スイッチ入りにくい",
+    skin: ["食いしばり", "血流低下", "肌荒れ", "睡眠質低下"],
+    advice: ["「今」に意識を戻す練習をする", "呼吸を深くする", "考えない時間を意識的に作る"],
+    msg: "脳が未来に行きっぱなし🌿\n\n心配することで「備えている感覚」になれるけど、脳はずっと疲弊しています。\n\nまず5秒だけ、今この瞬間の呼吸に意識を向けてみて。それだけで脳が少し「今」に戻ってきます🌸" },
+  F: { emoji: "⚡", title: "常にON脳タイプ", color: "#c05060", bg: "#fff0f2",
+    tag: "OFFできない。回復モードに入れない状態です",
+    brain: "👉 OFFできない\n回復モード入れない",
+    skin: ["回復不足", "くすみ", "老化加速", "自律神経乱れ"],
+    advice: ["夜のスマホを少しずつ減らす", "ボーッとする時間を作る", "「何もしない」を練習する"],
+    msg: "脳がずっと働いてると、肌も休めません🌙\n\n寝る直前までスマホを見ていると、脳は「まだ仕事中」と判断します。\n\n寝る30分前だけ、スマホを伏せてみて。それだけで睡眠の質が変わって、肌の回復が始まります🌸" },
+};
+
+const animStyles = `
+  @keyframes drift {
+    0% { transform: translateY(-20px) translateX(0px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(110vh) translateX(20px) rotate(720deg); opacity: 0; }
+  }
+  @keyframes twinkle {
+    0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1) rotate(180deg); opacity: 0.8; }
+  }
+`;
+
+const Leaves = () => (
+  <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+    <style>{animStyles}</style>
+    {[...Array(10)].map((_, i) => (
+      <div key={"l"+i} style={{
+        position: "absolute", top: "-20px",
+        left: `${3 + ((i * 10.1) % 90)}%`,
+        fontSize: `${12 + (i % 8)}px`,
+        animation: `drift ${6 + (i % 5)}s ${(i * 0.7) % 5}s linear infinite`,
+      }}>{i % 3 === 0 ? "🌿" : i % 3 === 1 ? "✨" : "🍃"}</div>
+    ))}
+    {[...Array(8)].map((_, i) => (
+      <div key={"t"+i} style={{
+        position: "absolute",
+        left: `${(i * 13 + 5) % 90}%`,
+        top: `${(i * 19 + 8) % 85}%`,
+        fontSize: `${10 + (i % 6)}px`,
+        animation: `twinkle ${2.5 + (i % 3)}s ${(i * 0.6) % 3}s ease-in-out infinite`,
+      }}>{i % 2 === 0 ? "🌙" : "⭐"}</div>
+    ))}
+  </div>
+);
+
+const ShareButton = ({ title, text }) => {
+  const share = () => {
+    if (navigator.share) {
+      navigator.share({ title, text, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("URLをコピーしました！");
+    }
+  };
+  return (
+    <button onClick={share} style={{ display: "block", width: "100%", padding: "14px", background: "linear-gradient(135deg,#70b890,#4a9070)", color: "#fff", border: "none", borderRadius: 99, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 12, fontFamily: "sans-serif" }}>
+      📤 結果をシェアする
+    </button>
+  );
+};
+
+function App() {
+  const [screen, setScreen] = React.useState("start");
+  const [qi, setQi] = React.useState(0);
+  const [checked, setChecked] = React.useState({});
+  const [allChecked, setAllChecked] = React.useState({});
+  const [winner, setWinner] = React.useState(null);
+
+  const startQuiz = () => {
+    setQi(0);
+    setChecked({});
+    setAllChecked({});
+    setWinner(null);
+    setScreen("question");
+  };
+
+  const toggleCheck = (idx) => {
+    setChecked(prev => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
+  const nextQuestion = () => {
+    const newAll = { ...allChecked, [qi]: checked };
+    setAllChecked(newAll);
+    if (qi + 1 >= questions.length) {
+      const counts = {};
+      questions.forEach((q, i) => {
+        const c = newAll[i] ? Object.values(newAll[i]).filter(Boolean).length : 0;
+        counts[q.type] = (counts[q.type] || 0) + c;
+      });
+      const w = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+      setWinner(w);
+      setScreen("result");
+    } else {
+      setAllChecked(newAll);
+      setChecked(allChecked[qi + 1] || {});
+      setQi(qi + 1);
+    }
+  };
+
+  const goBack = () => {
+    if (qi === 0) { setScreen("start"); return; }
+    setChecked(allChecked[qi - 1] || {});
+    setQi(qi - 1);
+  };
+
+  const q = questions[qi];
+  const r = winner ? results[winner] : null;
+
+  const chips = [
+    ["🧠 頑張りすぎ脳", "#e8d0f8", "#4a2070"],
+    ["💗 気づかい脳", "#f8d0e8", "#702050"],
+    ["📱 情報パンパン脳", "#d8e0f8", "#203060"],
+    ["😶 我慢ぐせ脳", "#d0f0e0", "#205040"],
+    ["🌪 不安先読み脳", "#fde8d0", "#704020"],
+    ["⚡ 常にON脳", "#f8d0d0", "#602020"],
+  ];
+
+  return (
+    <div style={{ background: "linear-gradient(160deg,#f5fff8,#f0f8ff,#fff5fb)", minHeight: "100vh", padding: "16px", fontFamily: "sans-serif", position: "relative" }}>
+      <Leaves />
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 480, margin: "0 auto" }}>
+
+        {/* ヘッダー */}
+        <div style={{ textAlign: "center", marginBottom: 12 }}>
+          <div style={{ display: "inline-block", background: "linear-gradient(90deg,#70b890,#4a9070)", color: "#fff", borderRadius: 99, padding: "6px 18px", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>肌が休めない原因がわかる 🌿</div>
+          <div style={{ fontSize: 12, color: "#406050", marginBottom: 4 }}>15年美容ナースが教える</div>
+          <h1 style={{ fontSize: 22, color: "#2a4030", lineHeight: 1.4, margin: "8px 0" }}>あなたの<br />「脳疲労タイプ」診断</h1>
+          <p style={{ fontSize: 13, color: "#608060", lineHeight: 1.6, margin: "8px 0" }}>〜あなたの"肌が休めない原因"は？〜</p>
+        </div>
+
+        {/* プロフィール */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", borderRadius: 12, padding: "10px 16px", border: "1px solid #c0e0c0", marginBottom: 16 }}>
+          <img src={PHOTO} alt="ぼたん" style={{ width: 50, height: 50, borderRadius: "50%", objectFit: "cover", border: "2px solid #90c890" }} />
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#2a4030" }}>ぼたん</div>
+            <div style={{ fontSize: 11, color: "#608060" }}>15年美容ナース｜魂のめぐり専門家</div>
+          </div>
+        </div>
+
+        {/* カード */}
+        <div style={{ background: "rgba(255,255,255,.9)", borderRadius: 16, padding: 24, marginBottom: 16, border: "1px solid #c0e0c0" }}>
+
+          {/* スタート */}
+          {screen === "start" && (
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 44, marginBottom: 12 }}>🧠</div>
+              <p style={{ fontSize: 16, color: "#2a4030", lineHeight: 1.8, fontWeight: 700 }}>肌って、何を塗るかだけじゃなく<br />「脳が安心できてるか」も大事。</p>
+              <p style={{ fontSize: 13, color: "#608060", margin: "8px 0 20px", lineHeight: 1.7 }}>あなたの"肌が休めない原因"を<br />脳疲労タイプで見つけましょう🌿</p>
+              <p style={{ fontSize: 12, color: "#608060", marginBottom: 20 }}>全6問｜所要時間 約1分</p>
+              <button onClick={startQuiz} style={{ display: "block", width: "100%", padding: 16, background: "linear-gradient(135deg,#70b890,#4a9070)", color: "#fff", border: "none", borderRadius: 99, fontSize: 18, fontWeight: 700, cursor: "pointer", marginBottom: 16 }}>
+                診断スタート！ →
+              </button>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
+                {chips.map(([label, bg, color]) => (
+                  <span key={label} style={{ background: bg, color, borderRadius: 99, padding: "4px 10px", fontSize: 11, fontWeight: 700 }}>{label}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 質問 */}
+          {screen === "question" && (
+            <div>
+              <div style={{ height: 6, background: "#d0f0d0", borderRadius: 99, marginBottom: 16, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${(qi / questions.length) * 100}%`, background: "linear-gradient(90deg,#70b890,#4a9070)", borderRadius: 99, transition: "width .3s" }} />
+              </div>
+              <div style={{ textAlign: "center", fontSize: 13, color: "#608060", marginBottom: 8 }}>{qi + 1} / {questions.length}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#2a4030", textAlign: "center", marginBottom: 6, lineHeight: 1.6 }}>{q.title}</div>
+              <div style={{ fontSize: 12, color: "#608060", textAlign: "center", marginBottom: 16 }}>✅ 当てはまるものをチェックしてね</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                {q.items.map((item, i) => (
+                  <div key={i} onClick={() => toggleCheck(i)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 12, border: checked[i] ? "2px solid #70b890" : "2px solid #c0e8c0", background: checked[i] ? "#e0f8e8" : "#f8fff8", cursor: "pointer" }}>
+                    <div style={{ width: 22, height: 22, borderRadius: 6, border: "2px solid #70b890", background: checked[i] ? "#70b890" : "white", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "white", fontSize: 14, fontWeight: 700 }}>{checked[i] ? "✓" : ""}</div>
+                    <span style={{ fontSize: 14, color: "#2a4030" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={nextQuestion} style={{ display: "block", width: "100%", padding: 14, background: "linear-gradient(135deg,#70b890,#4a9070)", color: "#fff", border: "none", borderRadius: 99, fontSize: 16, fontWeight: 700, cursor: "pointer", marginBottom: 12 }}>
+                次へ →
+              </button>
+              <button onClick={goBack} style={{ background: "none", border: "none", color: "#608060", fontSize: 13, cursor: "pointer", textDecoration: "underline", display: "block" }}>← 前の質問に戻る</button>
+            </div>
+          )}
+
+          {/* 結果 */}
+          {screen === "result" && r && (
+            <div style={{ background: r.bg, borderRadius: 16, padding: 20 }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ display: "inline-block", background: "linear-gradient(135deg,#70b890,#4a9070)", color: "#fff", borderRadius: 99, padding: "5px 20px", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>診断結果</div>
+                <div style={{ fontSize: 52, margin: "8px 0" }}>{r.emoji}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: r.color, marginBottom: 6 }}>{r.title}</div>
+                <div style={{ fontSize: 13, color: "#4a6050", marginBottom: 12, lineHeight: 1.6 }}>{r.tag}</div>
+              </div>
+              <div style={{ height: 1, background: "rgba(100,160,100,.2)", margin: "12px 0" }} />
+
+              {/* 脳の状態 */}
+              <div style={{ borderRadius: 12, padding: 14, marginBottom: 12, border: `2px solid ${r.color}`, background: r.color + "15" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: r.color, marginBottom: 6 }}>🧠 今の脳の状態</div>
+                <div style={{ fontSize: 13, lineHeight: 1.7, color: "#2a4030", whiteSpace: "pre-wrap" }}>{r.brain}</div>
+              </div>
+
+              {/* 肌への影響 */}
+              <div style={{ fontSize: 12, fontWeight: 700, color: r.color, marginBottom: 8 }}>🌿 肌への影響</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+                {r.skin.map((s, i) => (
+                  <span key={i} style={{ background: r.color + "20", color: r.color, borderRadius: 99, padding: "4px 12px", fontSize: 13, fontWeight: 700, border: `1px solid ${r.color}` }}>{s}</span>
+                ))}
+              </div>
+
+              {/* アドバイス */}
+              <div style={{ borderRadius: 12, padding: 14, marginBottom: 12, border: `2px solid ${r.color}`, background: "#fff8" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: r.color, marginBottom: 8 }}>🌿 ぼたん流アドバイス</div>
+                {r.advice.map((a, i) => <div key={i} style={{ fontSize: 14, color: "#2a4030", marginBottom: 8 }}>✔ {a}</div>)}
+              </div>
+
+              {/* ぼたんより */}
+              <div style={{ borderRadius: 12, border: `2px solid ${r.color}`, overflow: "hidden", marginTop: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "rgba(255,255,255,.8)" }}>
+                  <img src={PHOTO} alt="ぼたん" style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid #90c890" }} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#2a4030" }}>ぼたんより</div>
+                    <div style={{ fontSize: 10, color: "#608060" }}>15年美容ナース｜魂のめぐり専門家</div>
+                  </div>
+                </div>
+                <div style={{ padding: "12px 14px", background: r.color + "18" }}>
+                  <div style={{ fontSize: 13, lineHeight: 1.8, color: "#2a4030", whiteSpace: "pre-wrap" }}>{r.msg}</div>
+                </div>
+              </div>
+
+              {/* 締めのメッセージ */}
+              <div style={{ background: "linear-gradient(135deg,#f0fff5,#f5f0ff)", borderRadius: 12, padding: 16, margin: "16px 0", border: "1px solid #c0e0c0", textAlign: "center" }}>
+                <p style={{ fontSize: 14, color: "#2a4030", lineHeight: 1.8, fontWeight: 500 }}>
+                  「頑張る美容」より<br />
+                  <span style={{ color: "#70b890", fontWeight: 700, fontSize: 16 }}>「整う美容」</span>を大切に🌿
+                </p>
+              </div>
+
+              <a href="https://x.gd/NZs7N" target="_blank" rel="noopener noreferrer" style={{ display: "block", textAlign: "center", background: "#06C755", color: "#fff", borderRadius: 99, padding: 15, fontSize: 16, fontWeight: 700, textDecoration: "none", margin: "16px 0" }}>💚 タップして公式LINEへ</a>
+              <ShareButton title={`私は「${r.title}」でした！`} text={`脳疲労タイプ診断で「${r.title}」と診断されました！${r.tag}`} />
+              <button onClick={startQuiz} style={{ display: "block", width: "100%", textAlign: "center", background: "none", border: "2px solid #90c890", borderRadius: 99, padding: 10, fontSize: 13, color: "#608060", cursor: "pointer", marginTop: 12 }}>もう一度診断する 🌿</button>
+            </div>
+          )}
+        </div>
+
+        <div style={{ textAlign: "center", fontSize: 13, color: "#608060", lineHeight: 1.8, padding: "0 8px" }}>
+          <span style={{ color: "#70b890", fontWeight: 700 }}>Point </span>
+          肌は「何を塗るか」だけじゃなく、<span style={{ color: "#70b890" }}>「脳が安心できてるか」</span>も大事🌿
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById("root"));
+</script>
+</body>
+</html>
