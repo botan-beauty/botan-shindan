@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなた専用 肌と心の取扱説明書｜ぼたん</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; background: linear-gradient(160deg,#fff8f5,#fff0f8,#fff5f0); min-height: 100vh; }
+.wrap { max-width: 540px; margin: 0 auto; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg,#c05070,#e07aaa); padding: 22px 18px 14px; text-align: center; }
+.header h1 { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 10px; }
+.header .sub { font-size: 10px; color: rgba(255,255,255,.7); letter-spacing: 2px; margin-bottom: 5px; }
+.steps { display: flex; justify-content: center; gap: 3px; }
+.step-dot { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,.3); color: rgba(255,255,255,.6); font-size: 9px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.step-dot.active { background: #fff; color: #c05070; }
+.step-line { width: 10px; height: 1.5px; background: rgba(255,255,255,.2); align-self: center; }
+.step-line.active { background: #fff; }
+.content { padding: 14px 12px; }
+.card { background: rgba(255,255,255,.93); border-radius: 16px; padding: 18px 14px; margin-bottom: 12px; border: 1.5px solid #f0c8d8; box-shadow: 0 3px 14px rgba(220,100,140,.06); animation: fadeUp .35s ease; }
+.card-special { background: linear-gradient(135deg,#fff0f8,#f5f0ff); border: 2px solid #e0b0d0; }
+.card-green { background: #f5fff8; border: 1.5px solid #c0e8d0; }
+.card-letter { background: linear-gradient(135deg,#fff8f5,#fff0f8); border: 2px solid #f0b0c8; }
+.card-word { background: linear-gradient(135deg,#fff0f8,#fff8f5); border: 2px solid #f0b8c8; text-align: center; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
+.btn-next { display: block; width: 100%; padding: 15px; background: linear-gradient(135deg,#e07aaa,#c03060); color: #fff; border: none; border-radius: 99px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 12px; animation: pulse 2s infinite; }
+.btn-back { display: block; width: 100%; padding: 12px; background: rgba(200,100,120,.1); color: #c05070; border: none; border-radius: 99px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+.btn-row { display: flex; gap: 7px; }
+.type-btn { display: block; width: 100%; padding: 12px 14px; margin-bottom: 7px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: left; transition: all .2s; background: rgba(255,255,255,.9); color: #5a2030; border: 1.5px solid #f0c0d0; }
+.type-btn.selected { background: linear-gradient(135deg,#e07aaa,#c05070); color: #fff; border: 2px solid #e07aaa; }
+.type-btn.hidden-type { background: rgba(248,245,255,.9); border: 1.5px dashed #d0b0e0; }
+.type-btn.disabled { opacity: 0.45; cursor: not-allowed; }
+.type-tag { font-size: 11px; color: #b07080; margin-top: 1px; }
+.type-btn.selected .type-tag { color: rgba(255,255,255,.75); }
+.hidden-badge { font-size: 10px; background: #e0c8f8; color: #7050a0; border-radius: 99px; padding: 1px 6px; margin-left: 6px; }
+.section-title { font-size: 13px; font-weight: 800; margin-bottom: 7px; border-left: 3px solid #c05070; padding-left: 8px; color: #c05070; }
+.section-title.green { border-color: #70a080; color: #70a080; }
+.section-title.purple { border-color: #8060c0; color: #8060c0; }
+.section-title.brown { border-color: #a06040; color: #a06040; }
+.section-title.teal { border-color: #508060; color: #508060; }
+.item { font-size: 13px; color: #5a2030; padding: 3px 0; border-bottom: 1px solid #f5e0e8; }
+.item-green { font-size: 13px; color: #304030; padding: 4px 0; border-bottom: 1px solid #e0f0e8; }
+.item-purple { font-size: 13px; color: #3a2060; padding: 4px 0; border-bottom: 1px solid #ece0f8; }
+.item-brown { font-size: 13px; color: #5a2030; padding: 4px 0; border-bottom: 1px solid #f0e0d0; }
+.sub-label { font-size: 12px; font-weight: 700; color: #e07aaa; margin: 10px 0 5px; }
+.sub-label:first-child { margin-top: 0; }
+.confirm-tag { background: #fff; border: 1.5px solid #f0c0d0; border-radius: 11px; padding: 9px 13px; margin-bottom: 7px; display: flex; align-items: center; gap: 9px; }
+.confirm-tag-name { font-size: 13px; font-weight: 700; color: #c05070; }
+.confirm-tag-sub { font-size: 11px; color: #b07080; }
+.badge { background: #fff; border: 1.5px solid #f0c0d0; border-radius: 99px; padding: 3px 10px; font-size: 11px; color: #c05070; font-weight: 700; display: inline-block; margin: 2px 3px; }
+.type-name-box { background: #fff; border-radius: 13px; padding: 13px 14px; border: 2px solid #f0b0c8; text-align: center; }
+.type-name-box .label { font-size: 10px; color: #b07080; margin-bottom: 3px; }
+.type-name-box .name { font-size: 15px; font-weight: 900; color: #c05070; line-height: 1.5; }
+.type-name-box .catch { font-size: 13px; color: #7a3050; margin-top: 7px; line-height: 1.7; }
+.loop-box { background: #f5f0ff; border: 1.5px solid #d0c0e8; border-radius: 9px; padding: 7px 14px; font-size: 13px; color: #5040a0; font-weight: 600; text-align: center; width: 80%; margin: 0 auto; }
+.loop-arrow { font-size: 15px; color: #b0a0d0; text-align: center; }
+.loop-note { font-size: 12px; color: #8060a0; background: #f0ecff; border-radius: 8px; padding: 5px 12px; text-align: center; margin-top: 6px; }
+.priority-row { display: flex; gap: 9px; padding: 7px 0; border-bottom: 1px solid #f0d8e0; }
+.priority-num { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg,#e07aaa,#c05070); color: #fff; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.priority-text { font-size: 13px; color: #5a2030; line-height: 1.6; }
+.detail-box { font-size: 13px; line-height: 1.8; margin-bottom: 8px; }
+.detail-note { font-size: 12px; font-style: italic; background: #fff0f8; border-radius: 8px; padding: 8px 12px; color: #c05070; }
+.detail-note-green { font-size: 12px; background: #f0fff5; border-radius: 8px; padding: 8px 12px; color: #508060; }
+.detail-note-purple { font-size: 12px; background: #f5f0ff; border-radius: 8px; padding: 8px 12px; color: #8060c0; }
+.week-row { display: flex; gap: 9px; padding: 7px 0; border-bottom: 1px solid #f0d8e0; }
+.week-label { font-size: 11px; font-weight: 700; color: #e07aaa; min-width: 42px; }
+.week-text { font-size: 13px; color: #5a2030; }
+.letter-body { font-size: 13px; color: #5a2030; line-height: 2; }
+.letter-sign { font-size: 11px; color: #b07080; margin-top: 10px; text-align: right; }
+.next-row { display: flex; gap: 11px; padding: 9px 0; border-bottom: 1px solid #f0d0d8; }
+.next-icon { font-size: 20px; }
+.next-title { font-size: 13px; font-weight: 700; color: #c05070; }
+.next-desc { font-size: 11px; color: #906070; }
+.line-btn { display: block; text-align: center; background: linear-gradient(135deg,#e07aaa,#c03060); color: #fff; border-radius: 99px; padding: 15px; font-size: 16px; font-weight: 900; text-decoration: none; margin-top: 13px; animation: pulse 2s infinite; }
+.hidden-info { font-size: 11px; color: #8060a0; background: #f5f0ff; border-radius: 8px; padding: 5px 10px; margin-bottom: 10px; }
+.select-count { font-size: 12px; color: #c05070; text-align: center; margin-top: 4px; }
+.cover-title { font-size: 10px; color: #b07080; letter-spacing: 2px; margin-bottom: 5px; text-align: center; }
+.cover-h1 { font-size: 17px; font-weight: 900; color: #c05070; margin-bottom: 10px; text-align: center; }
+.self-words { font-size: 15px; color: #5a2030; line-height: 2; font-style: italic; }
+.petal { position: fixed; pointer-events: none; opacity: .25; animation: petal linear infinite; }
+@keyframes petal { 0%{transform:translateY(-10px) rotate(0deg);opacity:0} 10%{opacity:.4} 90%{opacity:.1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden">
+  <div style="position:absolute;top:-20px;left:10%;font-size:10px;animation:petal 8s 0s linear infinite">🌸</div>
+  <div style="position:absolute;top:-20px;left:28%;font-size:13px;animation:petal 10s 1.2s linear infinite">🌸</div>
+  <div style="position:absolute;top:-20px;left:46%;font-size:16px;animation:petal 12s 2.4s linear infinite">🌸</div>
+  <div style="position:absolute;top:-20px;left:64%;font-size:19px;animation:petal 14s 3.6s linear infinite">🌸</div>
+  <div style="position:absolute;top:-20px;left:82%;font-size:22px;animation:petal 16s 4.8s linear infinite">🌸</div>
+</div>
+<div class="wrap" style="position:relative;z-index:1">
+  <div class="header">
+    <div class="sub">BOTAN BEAUTY DIAGNOSIS</div>
+    <h1>あなた専用 肌と心の取扱説明書</h1>
+    <div class="steps" id="steps"></div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+var SHIMI_DATA = {
+  kanpan:{name:"肝斑タイプ",emoji:"🩷",tag:"頑張るほど悪化することも",personality:["真面目で頑張り屋さん","美容情報を調べすぎる","ちゃんとやらなきゃと思いやすい","自分に厳しい","完璧主義"],thinking:["頑張るほど良くなるはず","もっとやらなきゃ","サボると悪化しそう","完璧にできないなら意味がない"],skin:["頬にぼんやり広がる色むら","摩擦で悪化しやすい","ストレスで濃くなりやすい","美白を重ねると荒れる","くすみやすい"],loop:["美白ケアを頑張る","刺激になって悪化","さらに頑張る","もっと悪化する","自信をなくす"],loop_note:"頑張る → 悪化 → もっと頑張る → さらに悪化",priority:["クレンジングを低刺激に変える","美白より刺激を減らす","まず睡眠を優先する","引き算美容を意識する"],morning:["日焼け止めをこすらず塗る","洗顔は泡で転がすだけ","保湿は1アイテムで十分","「今日も70点でOK」と言い聞かせる","深呼吸を3回する"],night:["ぬるめのお湯でやさしく洗顔","トラネキサム酸入り美容液を1滴","保湿してすぐ寝る","スマホを置く","23時までにベッドへ"],lifestyle:["ストレスを溜めない工夫をする","食いしばりに気づいたら緩める","週1は美容をサボる日を作る","たんぱく質を毎食少しずつ","睡眠を最優先"],plan:["最低限ケアに慣れる","23時就寝を週3回","美白アイテムを1つやめる","できた日を振り返る"],after:["朝の顔色が明るくなる","赤みが落ち着く","くすみがやわらぐ","自分を責める時間が減る","美容が「頑張るもの」ではなくなる"],detail:"肝斑は「炎症」と「摩擦」が大敵です。美白成分を重ねるほど刺激になることも。引き算美容が一番の美白です🌸",self_words:["頑張る力があるあなたに必要なのは「安心して休むこと」","完璧じゃなくていい","私はちゃんと前に進んでる","引き算できた私、最高"],signal:"「刺激を減らして🥺」",skin_detail:"美白を頑張るほど刺激になって悪化することも。引き算美容が最強の美白です。",concerns:["肝斑","くすみ","摩擦による色素沈着","赤み","炎症"],ingredients:["トラネキサム酸","ビタミンC誘導体","ナイアシンアミド","低刺激保湿成分","SPF50日焼け止め"],cares:["こすらない洗顔","低刺激クレンジング","保湿重視","美白アイテムを減らす"],spot_msg:"「美白を頑張るほど悪化することも。引き算美容が一番の美白💜」"},
+  uv:{name:"紫外線シミタイプ",emoji:"☀️",tag:"焼けた後48時間が勝負",personality:["アクティブで行動力がある","まあいっか精神","日焼け止めを忘れがち","リカバリーが得意","外が好き"],thinking:["焼けてもすぐ戻る","日焼け止めは面倒","シミはしょうがない","リカバリーすればいい"],skin:["小さな茶色い点が増えた","夏後にシミが濃くなる","紫外線歴が長い","そばかすっぽいシミ","色ムラがある"],loop:["日焼け止めをさぼる","メラニンが蓄積","シミが増える","気になって触る","炎症で悪化"],loop_note:"さぼる → 蓄積 → 増える → 触る → 悪化",priority:["日焼け止めを毎朝塗る","焼けた後48時間本気ケア","抗炎症ケアを先にする","リカバリーケアを覚える"],morning:["日焼け止めSPF50を首まで塗る","ビタミンC美容液を1プッシュ","帽子・日傘を持つ","水分補給する","「今日も日焼け止め完璧！」"],night:["抗炎症成分でクールダウン","ビタミンC誘導体でケア","保湿をしっかり","早めに寝る","スマホを置く"],lifestyle:["外出前は必ず日焼け止め","焼けた日は早めに冷やす","飲む日焼け止めも活用","たんぱく質を意識する","睡眠をしっかりとる"],plan:["日焼け止めを毎日習慣化","ビタミンC美容液を導入","帽子・日傘を毎日持つ","リカバリーケアを確立"],after:["新しいシミができにくくなる","既存のシミが薄くなる","肌のトーンが均一になる","日焼け対策が習慣になる","自信が戻ってくる"],detail:"シミは焼けた瞬間より、その後48時間で差が出ます。リカバリーケアを知っているだけで結果が大きく変わります☀️",self_words:["完璧な日焼け対策より焼けた後のリカバリーを知っている方が強い","できた日も、できなかった日も正解","私はちゃんと前に進んでる","今日できたことだけで十分"],signal:"「焼けた後は早めにケアして☀️」",skin_detail:"紫外線でメラニンが蓄積されているタイプ。焼けた後48時間のリカバリーケアが大切です。",concerns:["紫外線シミ","そばかす","色ムラ","肌のくすみ","炎症後色素沈着"],ingredients:["ビタミンC誘導体","トランサミン","ナイアシンアミド","抗炎症成分","SPF50日焼け止め"],cares:["毎日の日焼け止め","抗炎症ケア","ビタミンC美容液","飲む日焼け止め"],spot_msg:"「リカバリーケアを知っている人が、一番シミに強い☀️」"},
+  ensho:{name:"炎症ぐすみタイプ",emoji:"🌸",tag:"顔は桃みたいに優しく",personality:["肌への意識が高い","細かいことが気になる","触る癖がある","やりすぎ美容しがち","完璧を求めやすい"],thinking:["もっとケアしないと","気になったら触ってしまう","摩擦くらい大丈夫","もっと良い製品があるはず"],skin:["なんとなく顔色が暗い","ニキビ跡が残りやすい","肌が赤くなりやすい","毛穴が目立つ","くすみが取れない"],loop:["気になって触る","摩擦で炎症","色素沈着","くすみが増える","また気になる"],loop_note:"触る → 炎症 → 色素沈着 → くすむ → また触る",priority:["顔を触る回数を減らす","シカ系で鎮静する","洗顔は泡転がしだけ","スキンケアを3ステップ以内に"],morning:["洗顔は泡で転がすだけ","シカ系保湿を薄くのせる","日焼け止めをやさしく塗る","鏡を見ても触らない","「触らない私、最高！」"],night:["クレンジングはミルク系で溶かすだけ","鎮静美容液を1滴","保湿して触らない","スマホを置く","早めに寝る"],lifestyle:["鏡を見ても触らない練習をする","枕カバーをこまめに変える","頑張るケアは週2以下にする","たんぱく質を意識する","湯船で体を温める"],plan:["触る回数を意識して数える","クレンジングを低刺激に変える","シカ系アイテムを導入","スキンケアを3ステップ以下に"],after:["炎症が落ち着く","肌が明るくなる","ニキビ跡が薄くなる","毛穴が目立たなくなる","くすみが取れる"],detail:"くすみは摩擦の積み重ねのことが多いです。顔は桃みたいに優しく扱う。触らないだけで肌は変わります🌸",self_words:["触らないだけで肌は変わる","今日できたことだけで十分","完璧じゃなくていい","私はちゃんと前に進んでる"],signal:"「まず触るのをやめて🌸」",skin_detail:"摩擦・触りすぎによる炎症とくすみが起こりやすいタイプ。触らないことが一番のケアです。",concerns:["炎症性色素沈着","くすみ","毛穴の開き","ニキビ跡","赤み"],ingredients:["シカ成分","ナイアシンアミド","セラミド","抗炎症成分","低刺激保湿"],cares:["触る回数を減らす","低刺激クレンジング","泡転がし洗顔","鎮静ケア"],spot_msg:"「触らないだけで、肌は変わることがあります💜」"},
+  otsukare:{name:"お疲れ肌タイプ",emoji:"🌙",tag:"まず休んでいい",personality:["責任感が強い","誰かのために頑張れる","自分を後回しにしがち","忍耐力がある","休むことに罪悪感を感じやすい"],thinking:["自分のことは後でいい","スキンケアしなきゃだけど疲れた","完璧にできない自分はダメ","もっと頑張れば変われるはず"],skin:["肌がどんよりしている","化粧ノリが悪い","疲れが顔に出やすい","回復が遅い","乾燥しやすい"],loop:["疲れてケアできない","肌が回復しない","くすむ・荒れる","気になって憂鬱","さらに疲れる"],loop_note:"疲れる → ケアできない → 肌が荒れる → 自分を責める → さらに疲れる",priority:["23時までに寝る日を週3回作る","スキンケアは3ステップ以内にする","完璧をやめる","「できた日」を数える"],morning:["コップ1杯の水","深呼吸3回","オールインワン","日焼け止め","「今日も70点でOK」と声をかける"],night:["拭き取りクレンジング","オールインワン","スマホを置く","湯船 or 足湯","23時までにベッドへ"],lifestyle:["たんぱく質を毎食少しずつ","甘いものは罪悪感なく楽しむ","カフェインは夕方まで","湯船で体を温める","睡眠を最優先"],plan:["最低限ケアに慣れる","23時就寝を週3回","不安になったら深呼吸","できた日を振り返る"],after:["朝の顔色が明るくなる","乾燥しにくくなる","くすみがやわらぐ","自分を責める時間が減る","美容が「頑張るもの」ではなくなる"],detail:"肌は回復時間で変わります。やる気より先に、まず休息が必要なこともあります。寝れた私、最高👍",self_words:["今日できたことだけで十分","頑張れない日は休む日","完璧じゃなくていい","私はちゃんと前に進んでる"],signal:"「まず休ませて🥺」",skin_detail:"睡眠不足やストレスで血流やホルモンバランスが乱れ、肌の回復力が低下している状態。",concerns:["くすみ","クマ","乾燥","ハリ不足","肌荒れ"],ingredients:["ナイアシンアミド","セラミド","ヒアルロン酸","GABA","マグネシウム"],cares:["オールインワンでOK","拭き取りクレンジング","睡眠最優先","完璧をやめる"],spot_msg:"「寝れた私、最高💜」"},
+  adm:{name:"ADMタイプ",emoji:"🌫",tag:"化粧品だけで抱え込まなくていい",personality:["諦めずに調べ続けてきた","正確な情報を求めている","冷静に判断できる","真剣に肌と向き合っている","粘り強い"],thinking:["何かやり方が違うのかも","化粧品では無理なの？","どうすれば変わるんだろう","もっと良い方法があるはず"],skin:["グレーっぽい色味のシミ","化粧品で変化しにくい","頬骨あたりに出る","肝斑と言われたことがある","深い層にあるシミ"],loop:["化粧品を試す","変化しない","別の製品を試す","お金がかかる","疲れてやめる"],loop_note:"試す → 変化しない → また試す → お金がかかる → 疲れてやめる",priority:["正しいタイプを知ること","美容医療を視野に入れる","紫外線対策を継続する","低刺激ケアにする"],morning:["日焼け止めを必ず塗る","刺激の少ないケアにする","摩擦を避ける","水分補給する","深呼吸を3回する"],night:["低刺激クレンジング","保湿のみシンプルに","専門家への相談を検討する","スマホを置く","早めに寝る"],lifestyle:["化粧品だけで抱え込まない","美容医療の情報を集める","紫外線対策を毎日続ける","たんぱく質を意識する","睡眠をしっかりとる"],plan:["UV対策を徹底する","低刺激ケアに切り替える","美容医療の情報を調べる","専門家に相談する"],after:["正しいアプローチが見つかる","UV対策でシミが増えなくなる","肌が落ち着く","変化の手応えが出てくる","選択肢が広がる"],detail:"ADMは皮膚の深い層にあるため化粧品では届きにくいタイプです。正しい診断が最初の一歩です🌫",self_words:["変わらないのは諦めるサインじゃない","方法が違っただけ","私はちゃんと前に進んでる","正しい選択が一番の近道"],signal:"「化粧品だけで頑張らなくていい🌫」",skin_detail:"皮膚の深い層にあるシミのため、化粧品では届きにくいタイプ。正しい診断と専門家への相談が大切です。",concerns:["ADM（後天性真皮メラノサイトーシス）","グレーっぽいシミ","肝斑との混同","深い層のシミ","化粧品での変化なし"],ingredients:["SPF50日焼け止め","低刺激保湿","抗炎症成分","ビタミンC誘導体","セラミド"],cares:["紫外線対策徹底","低刺激ケア","美容医療を検討","専門家に相談"],spot_msg:"「化粧品だけで全部頑張らなくていい。正しい選択が一番の近道💜」"},
+  turnover:{name:"ターンオーバー低下タイプ",emoji:"🌪",tag:"優しくしすぎ問題",personality:["丁寧さがある","優しいケアを継続できる","変化に敏感","繊細","刺激を避けてきた"],thinking:["刺激はとにかくNG","優しければ優しいほど良い","角質ケアは怖い","攻めるのは怖い"],skin:["肌がゴワついている","透明感が出にくい","化粧ノリが悪い","くすみが取れない","毛穴が詰まりやすい"],loop:["優しくしすぎる","角質が溜まる","くすむ・ゴワつく","もっと優しくする","代謝が落ちる"],loop_note:"優しくしすぎる → 角質が溜まる → くすむ → もっと優しくする → 代謝が落ちる",priority:["週1の軽い角質ケア","温めて血流改善","落とす日はしっかり落とす","ぬるめのお湯で洗顔"],morning:["ぬるめのお湯で洗顔","保湿をしっかり","日焼け止めを塗る","白湯を飲む","深呼吸を3回する"],night:["週1はピーリングか酵素洗顔","血行促進のマッサージ","ナイトクリームで保湿","湯船に浸かる","早めに寝る"],lifestyle:["湯船に浸かる","週1は角質ケアの日を作る","温かい飲み物を飲む","たんぱく質を意識する","適度な運動をする"],plan:["酵素洗顔を週1で導入","湯船習慣を始める","ピーリングを試す","血行促進マッサージを習慣化"],after:["代謝が上がる","肌のくすみが取れる","透明感が出る","化粧ノリが良くなる","毛穴が目立たなくなる"],detail:"優しくしすぎ問題、結構あります。落とす美容と代謝を上げる美容のバランスが大切です🌪",self_words:["優しくすることと落とすことは両立できる","今日できたことだけで十分","完璧じゃなくていい","私はちゃんと前に進んでる"],signal:"「代謝を上げて🌪」",skin_detail:"優しくしすぎて角質が溜まり、代謝が落ちているタイプ。落とす美容を少し取り入れることが大切です。",concerns:["ターンオーバーの乱れ","くすみ","ゴワつき","毛穴の詰まり","化粧ノリの悪さ"],ingredients:["AHA（フルーツ酸）","酵素","ナイアシンアミド","保湿成分","血行促進成分"],cares:["週1の角質ケア","温めて血流改善","ぬるめのお湯で洗顔","落とす日は落とす"],spot_msg:"「優しくすることと、落とすことは両立できます💜」"},
+  blood:{name:"血管系くすみタイプ",emoji:"🔴",tag:"肌は血色でも変わる",personality:["身体の変化に気づける","温活への興味がある","丁寧に自分と向き合える","冷え性","むくみやすい"],thinking:["くすみは化粧品で何とかなる","体の冷えは関係ない","マッサージは面倒","外からのケアが全て"],skin:["顔色が悪く見える","疲れると特にくすむ","クマが出やすい","赤黒いくすみ","むくみやすい"],loop:["体が冷える","血流が悪くなる","くすみが出る","化粧品で頑張る","変わらない"],loop_note:"冷える → 血流悪化 → くすむ → 化粧品で頑張る → 変わらない",priority:["湯船に浸かる","首肩をほぐす","睡眠を最優先にする","白湯を飲む"],morning:["白湯を飲む","首肩を軽くほぐす","日焼け止めを塗る","深呼吸を3回する","「今日も温活！」"],night:["湯船に浸かる（38〜40度）","首肩マッサージ","深呼吸しながら寝る","スマホを置く","23時までにベッドへ"],lifestyle:["冷たい飲み物を減らす","適度な運動をする","ストレスケアを意識する","たんぱく質を意識する","睡眠をしっかりとる"],plan:["湯船習慣を始める","白湯を毎朝飲む","首肩ほぐしを毎日する","運動を週3回取り入れる"],after:["血行が良くなる","顔色が明るくなる","クマが改善する","疲れた顔が変わる","むくみが取れる"],detail:"くすみの原因が血流のことがあります。温活が最強のくすみケアです。外側より内側から変えましょう🔴",self_words:["まず今夜湯船に浸かってみて","今日できたことだけで十分","完璧じゃなくていい","私はちゃんと前に進んでる"],signal:"「まず温めて🔴」",skin_detail:"血行不良や冷えによるくすみが起こりやすいタイプ。内側から温めることが最強のくすみケアです。",concerns:["血行不良くすみ","クマ","むくみ","顔色の悪さ","赤黒いくすみ"],ingredients:["ビタミンE","ナイアシンアミド","血行促進成分","保湿成分","抗酸化成分"],cares:["湯船に浸かる","首肩ほぐし","白湯を飲む","適度な運動"],spot_msg:"「温活が最強のくすみケアです🔴 外側より内側から変えましょう」"},
+  roujin:{name:"老人性色素斑タイプ",emoji:"🟤",tag:"全部を化粧品で頑張らなくていい",personality:["長年肌と向き合ってきた","諦めずにケアを続けてきた","決断力がある","正しい情報を求めている","粘り強い"],thinking:["全部化粧品で何とかしなきゃ","年齢だから仕方ない","高いものを買えばいい","もっと良い方法があるはず"],skin:["境界がはっきりしたシミ","年齢とともに増えてきた","触るとザラつく","紫外線歴が長い","色が濃い"],loop:["化粧品でスポットケア","変化が少ない","別の商品を試す","お金がかかる","疲れてやめる"],loop_note:"試す → 変化しない → また試す → お金がかかる → 疲れてやめる",priority:["UV対策を毎日継続する","美容医療を早めに相談する","摩擦を減らす","低刺激ケアにする"],morning:["日焼け止めを首まで塗る","スポット用美容液を使う","刺激を与えない","水分補給する","深呼吸を3回する"],night:["低刺激クレンジング","保湿をしっかり","再発予防を意識する","スマホを置く","早めに寝る"],lifestyle:["UV対策を1年中続ける","美容医療の情報を集める","再発予防を意識する","たんぱく質を意識する","睡眠をしっかりとる"],plan:["UV対策を毎日徹底","スポットケアを導入","美容医療を調べる","専門家に相談する"],after:["UV対策でシミが増えなくなる","既存のシミが改善する","肌が落ち着く","選択肢が広がる","自信が戻ってくる"],detail:"レーザー反応がよいタイプです。化粧品だけで全部頑張らなくていい。正しい選択が一番の近道です🌿",self_words:["方法を変えることは諦めることじゃない","正しい選択が一番の近道","今日できたことだけで十分","私はちゃんと前に進んでる"],signal:"「化粧品だけで頑張らなくていい🟤」",skin_detail:"紫外線蓄積による定着型シミ。化粧品より美容医療との組み合わせが効果的なタイプです。",concerns:["老人性色素斑","紫外線性シミ","色素の定着","触るとザラつく","年齢とともに増える"],ingredients:["ハイドロキノン","ビタミンC誘導体","レチノール（少量）","SPF50日焼け止め","低刺激保湿"],cares:["UV対策徹底","美容医療を検討","摩擦を減らす","専門家に相談"],spot_msg:"「全部を化粧品で頑張らなくていい。正しい選択が一番の近道💜」"},
+  nouhi:{name:"脳疲労タイプ",emoji:"🧠",tag:"脳疲れが肌に出る隠れタイプ",hidden:true,personality:["考えすぎてしまう","頭がいつもフル回転","リラックスが苦手","完璧主義","情報処理が多い"],thinking:["休んでいたら遅れる","考えることをやめられない","脳が疲れているとは思えない","もっと考えれば答えが出るはず"],skin:["くすみが取れない","肌の調子が不安定","睡眠の質が低い","食いしばり","血流が悪い"],loop:["考えすぎる","自律神経が乱れる","血流が悪くなる","肌に栄養が届かない","くすむ・荒れる"],loop_note:"考えすぎる → 自律神経乱れ → 血流悪化 → 肌に栄養届かず → くすむ",priority:["寝る1時間前スマホオフ","深呼吸を1日3回","考えない時間を作る","情報を減らす"],morning:["白湯を飲む","深呼吸を3回する","スキンケアはシンプルに","情報を入れない時間を作る","「今日も70点でOK」"],night:["スマホを1時間前にオフ","ぬるめのお風呂でリラックス","何も考えない時間を作る","深呼吸をする","23時までにベッドへ"],lifestyle:["瞑想・深呼吸を習慣にする","情報を入れすぎない","散歩をする","たんぱく質を意識する","睡眠を最優先"],plan:["就寝1時間前スマホオフ","深呼吸を毎日3回","散歩を週3回","瞑想を5分試す"],after:["睡眠の質が上がる","朝の顔色が良くなる","肌の回復力が戻る","脳がすっきりする","くすみがやわらぐ"],detail:"脳が疲れると自律神経・ホルモンバランスが乱れ、血流が悪くなります。脳を休ませることが美肌の近道です🧠",self_words:["がんばりすぎるあなたへ。脳が休まると肌も心もふわっと軽くなるよ","今日できたことだけで十分","完璧じゃなくていい","私はちゃんと前に進んでる"],signal:"「脳を休ませて🧠」",skin_detail:"脳の疲れが自律神経・ホルモンバランスを乱し、血流低下や肌荒れを引き起こしているタイプ。",concerns:["くすみ","肌荒れ","睡眠の質低下","食いしばり","血流低下"],ingredients:["ナイアシンアミド","マグネシウム","GABA","ビタミンB群","セラミド"],cares:["スマホオフタイム","深呼吸","ぬるめのお風呂","情報断食"],spot_msg:"「脳が休まると、お肌も心もふわっと軽くなるよ🧠」"},
+  touka:{name:"糖化タイプ",emoji:"✨",tag:"甘いもので肌が焦げやすい隠れタイプ",hidden:true,personality:["甘いものが大好き","食後に眠くなりやすい","疲れやすい","太りやすい体質","食べることが好き"],thinking:["食べることが唯一の楽しみ","少しくらい大丈夫","食事制限は無理","甘いものをやめたくない"],skin:["黄ぐすみしやすい","ハリや弾力の低下","シミが茶色く濃い","肌がゴワつく","老け見えしやすい"],loop:["甘いものを食べる","血糖値が上がる","AGEsが増える","コラーゲンが硬くなる","黄ぐすみ・たるみ"],loop_note:"甘いもの → 血糖値上昇 → AGEs増加 → コラーゲン硬化 → 黄ぐすみ・たるみ",priority:["野菜・たんぱく質を先に食べる","白いものを玄米に変える","食後に軽く動く","甘いものは時間・量を決めて"],morning:["白湯を飲む","たんぱく質を朝食に取る","ビタミンC美容液を塗る","日焼け止めを塗る","「今日も焦げない習慣！」"],night:["甘いものは夕食前まで","抗糖化成分のスキンケア","早めに寝る","スマホを置く","深呼吸をする"],lifestyle:["野菜を先に食べる","糖質は控えめに","適度な運動をする","抗糖化ケアを取り入れる","睡眠をしっかりとる"],plan:["野菜・たんぱく質を食事の最初に","白米を玄米に変える","食後に5分歩く","甘いものを時間・量を決めて"],after:["黄ぐすみが改善する","肌のくすみが取れる","ハリが戻る","老け見えが改善する","体の調子が良くなる"],detail:"糖化は「老化の隠れ加速装置」です。食生活の見直しと抗糖化ケアで未来の美肌を守りましょう✨",self_words:["毎日の食事は未来の肌をつくる","できることからコツコツでOK","今日できたことだけで十分","私はちゃんと前に進んでる"],signal:"「焦げない習慣を始めよう✨」",skin_detail:"糖とたんぱく質が結びついてAGEsができると、コラーゲンが硬くなり黄ぐすみ・シミ・たるみの原因に。",concerns:["黄ぐすみ","たるみ","シミの濃化","ハリ・弾力低下","肌のゴワつき"],ingredients:["ビタミンC誘導体","α-リポ酸","ナイアシンアミド","アスタキサンチン","セラミド"],cares:["野菜ファースト食事","抗糖化ケア","食後に動く","低GI食品を選ぶ"],spot_msg:"「毎日の食事は、お肌の未来をつくる大切な選択✨」"}
+};
+
+var ZUBORA_DATA = {
+  ganbari:{name:"頑張りすぎ疲労タイプ",emoji:"💪",tag:"完璧主義・反動でやめがち",features:["完璧主義で反動でやめがち","0か100か思考","頑張ることが当たり前","休むと罪悪感がある"],keyword:"「どっちの私もOK美容」",desc:"できた日も、できなかった日も、どちらも正解。完璧じゃなくていい。",tips:["3ステップ以内に絞る","70点でOKと決める","頑張らない日を予定に入れる","できた日だけ数える"],msg:"「続かなくて当然です。まず3日続けばOK💗」",strength:"一度始めると丁寧にできる継続力がある",personality:["完璧主義","反動でやめがち","0か100か思考"],thinking:["完璧にできないなら意味がない","サボったら全部台無し"]},
+  shoene:{name:"省エネタイプ",emoji:"⚡",tag:"ラクなら続く・最短が好き",features:["効率重視で最短が好き","ラクなら続く","合理的","手間がかかると続かない"],keyword:"「1アイテム完結美容」",desc:"ラクで続けられる方法が一番。時短アイテムを賢く使えば続きます。",tips:["1アイテムで完結させる","時短アイテムを活用","朝は最速で終わらせる","自動化できる部分を増やす"],msg:"「ラクが続く。続くが勝ち⚡」",strength:"シンプルで続けやすいケアを見つける力がある",personality:["効率重視","最短が好き","合理的"],thinking:["手間がかかるなら続かない","効果がすぐ出ないと意味ない"]},
+  jikohinei:{name:"自己否定タイプ",emoji:"🌱",tag:"続かない自分を責めてしまう",features:["続かない自分にがっかりする","完璧を目指してハードルを上げる","できないと全部ダメに感じる","真面目で向上心がある"],keyword:"「どっちの私もOK美容」",desc:"続かないのはあなたのせいじゃありません。方法が合っていなかっただけ。できた日も、できなかった日も、どちらも正解。",tips:["「できた日を数える」方式に変える","ハードルを下げる","1つだけでOKにする","やれたことを記録する"],msg:"「続かなくて当然です💗」",strength:"真面目さと向上心。正しい方法さえ見つかれば続けられる",personality:["続かない自分を責めやすい","真面目","向上心がある"],thinking:["また続かなかった","私ってダメだな","どうせ変わらない"]},
+  energy:{name:"エネルギー切れタイプ",emoji:"🌙",tag:"とにかく疲れてる・寝落ち多め",features:["疲れやすく寝落ち多め","責任感が強い","誰かのために頑張れる","スキンケアする気力がない"],keyword:"「まず寝る美容」",desc:"まず寝ることが最優先。エネルギーが戻ってから美容を始めれば大丈夫。",tips:["拭き取りを枕元に置く","洗顔しなくてもOKな日を作る","オールインワン1つだけ","とにかく寝る"],msg:"「まず寝て。それが一番のスキンケアです🌙」",strength:"休めた時の集中力と回復力がある",personality:["疲れやすい","寝落ち多め","責任感が強い"],thinking:["疲れてて何もできない","スキンケアする気力がない"]}
+};
+
+var NOUHI_DATA = {
+  ganbari:{name:"頑張りすぎ脳タイプ",emoji:"🧠",tag:"常に戦闘モード",features:["常に戦闘モードで休むと罪悪感","「もっとやらなきゃ」が止まらない","完璧主義","自分に厳しい"],skin_signs:["肝斑・くすみ","赤み・炎症","乾燥","食いしばり","ニキビ"],actions:["頑張らない日をつくる","70点でOKと決める","休むことに許可を出す","睡眠を最優先にする"],msg:"「頑張る力と同じくらい、休む力もあなたの美しさを育てるよ🌿」",loop_note:"頑張る → 疲れる → 肌が乱れる → もっと頑張る",detail:"常にアクセル全開の脳。休む練習をすることが最高のスキンケアです🧠",personality:["常に戦闘モード","休むと罪悪感","完璧主義"],thinking:["休んでいたら遅れる","頑張ることが当たり前","休むのは甘え"]},
+  joho:{name:"情報パンパン脳タイプ",emoji:"📱",tag:"情報処理オーバー",features:["情報処理オーバーで比較しやすい","SNSを見続ける","正解を探し続ける","スキンケアアイテムが増えがち"],skin_signs:["敏感肌・肌荒れ","赤み・ヒリつき","バリア低下","やりすぎ美容の弊害","肝斑悪化"],actions:["情報断食の日をつくる","今あるものを使い切る","スキンケアをシンプルに","SNSを見る時間を決める"],msg:"「脳も肌も詰め込みすぎると疲れます。情報を減らすことも美容です📱」",loop_note:"情報を集める → 混乱する → 試しすぎる → 肌が荒れる",detail:"脳も肌も詰め込みすぎると疲れます。情報を減らすことも美容です📱",personality:["情報処理オーバー","比較しやすい","SNS見続ける"],thinking:["もっと良い方法があるはず","まだ足りない","情報を知らないと不安"]},
+  kidukai:{name:"気づかい脳タイプ",emoji:"💗",tag:"自律神経消耗型",features:["自律神経消耗型で人を優先してしまう","NOが苦手","気疲れしやすい","嫌われたくない"],skin_signs:["血流くすみ","むくみ","クマ","顔色の悪さ","フェイスラインもたつき"],actions:["1人時間をつくる","深呼吸する","小さくNOを言う練習","首肩をゆるめる"],msg:"「周りを見る力を少し自分にも向けて。自分を大切にすることが肌を大切にすることです💗」",loop_note:"気を使う → 疲弊する → 血流が悪くなる → くすむ",detail:"周りを見る力を少し自分にも向けて。自分を大切にすることが肌を大切にすることです💗",personality:["自律神経消耗型","人を優先してしまう","NOが苦手"],thinking:["自分より相手を優先すべき","断ったら嫌われる","我慢するのが大人"]},
+  gaman:{name:"我慢ぐせ脳タイプ",emoji:"😶",tag:"SOS無視モード",features:["SOS無視モードで疲れても動いてしまう","限界に気づきにくい","自分を後回しにする","弱音を吐けない"],skin_signs:["お疲れ顔","乾燥","肌荒れ・ニキビ","くすみ","回復が遅い"],actions:["「疲れた」と認める","休む予定を先に入れる","助けを求める","睡眠を最優先にする"],msg:"「限界まで頑張る前に、休んでいい😶」",loop_note:"我慢する → 限界を超える → ドカっと疲れる → 肌が荒れる",detail:"SOSを無視し続けると肌も限界を超えます。疲れたと言えることが第一歩です😶",personality:["SOS無視モード","疲れても動いてしまう","限界に気づきにくい"],thinking:["これくらい我慢しなきゃ","休むのは迷惑","まだいける"]},
+  fuan:{name:"不安先読み脳タイプ",emoji:"🌪",tag:"常時警戒モード",features:["常時警戒モードで心配性","最悪のケースを想定しがち","安心するまで考え続ける","夜に考えすぎる"],skin_signs:["食いしばり","血流低下","くすみ","赤み","睡眠の質低下"],actions:["深呼吸する","「今ここ」に意識を戻す","湯船につかる","夜の検索をやめる"],msg:"「未来より、まず今の自分を安心させて🌿」",loop_note:"不安になる → 考えすぎる → 眠れない → 肌が回復しない",detail:"未来より今の自分を安心させて。脳が安心できると肌も回復します🌪",personality:["常時警戒モード","心配性","最悪のケースを想定しがち"],thinking:["備えていないと危ない","失敗してはいけない","安心するまで考えなきゃ"]},
+  on:{name:"常にON脳タイプ",emoji:"⚡",tag:"OFF切り替え苦手",features:["OFF切り替えが苦手でじっとしていられない","マルチタスクが多い","夜まで動いている","スマホを見続けてしまう"],skin_signs:["回復不足","くすみ","クマ","乾燥・肌荒れ","老化加速"],actions:["夜のスマホ時間を減らす","ボーッとする時間をつくる","何もしない練習をする","散歩する"],msg:"「脳に余白ができると肌も整いやすくなります。何もしない時間が最強のスキンケアです⚡」",loop_note:"スマホを見続ける → 脳が休まらない → 睡眠の質が下がる → 肌が回復しない",detail:"脳に余白ができると肌も整いやすくなります。何もしない時間が最強のスキンケアです⚡",personality:["OFF切り替え苦手","じっとしているのが苦手","マルチタスク多い"],thinking:["何かしていないと落ち着かない","止まると遅れる","生産的でいるべき"]}
+};
+
+function getTypeName(shimis, zubora, nouhi) {
+  var key = shimis[0]+'_'+zubora+'_'+nouhi;
+  var names = {
+    'otsukare_jikohinei_fuan':'頑張りたいのに、先にエネルギー切れしてしまう繊細ながんばり屋さんタイプ',
+    'otsukare_energy_fuan':'疲れているのに休めない、心配しすぎる優しい人タイプ',
+    'kanpan_ganbari_ganbari':'完璧主義が肌にも心にも出てしまう、美意識高いがんばりすぎさんタイプ',
+    'ensho_jikohinei_kidukai':'繊細で優しいのに自分を責めすぎてしまう、気づかいさんタイプ',
+    'blood_energy_on':'常に動き続けて体も脳も冷えている、止まれないがんばり屋さんタイプ',
+    'otsukare_ganbari_gaman':'自分を後回しにして頑張り続ける、限界気づかずさんタイプ',
+    'kanpan_jikohinei_fuan':'頑張るほど悪化して自分を責めてしまう、繊細美容家さんタイプ',
+  };
+  if(names[key]) return names[key];
+  var s=SHIMI_DATA[shimis[0]], z=ZUBORA_DATA[zubora], n=NOUHI_DATA[nouhi];
+  return s.personality[0]+'で'+z.personality[0]+'、'+n.personality[0]+'なタイプ';
+}
+
+function getCatch(shimis, zubora, nouhi) {
+  var key = shimis[0]+'_'+zubora+'_'+nouhi;
+  var catches = {
+    'otsukare_jikohinei_fuan':'あなたは頑張れない人じゃなくて、頑張りすぎて疲れている人😊',
+    'kanpan_ganbari_ganbari':'美白を頑張るほど悪化していた。その真面目さを「休む」方向に使おう🌸',
+    'ensho_jikohinei_kidukai':'人への優しさを少しだけ自分にも向けて。肌はそれを待っています💗',
+    'otsukare_energy_fuan':'疲れているのは弱さじゃない。身体はちゃんとSOSを出しています🌿',
+  };
+  return catches[key] || '肌も心も、安心できるとちゃんと回復してくれます🌿';
+}
+
+var state = { step:0, shimis:[], zubora:null, nouhi:null };
+var STEPS = ['シミ','ズボラ','脳疲労','確認','結果'];
+
+function updateSteps() {
+  var html = '';
+  for(var i=0;i<STEPS.length;i++){
+    html += '<div class="step-dot'+(i<=state.step?' active':'')+'">'+( i+1)+'</div>';
+    if(i<STEPS.length-1) html += '<div class="step-line'+(i<state.step?' active':'')+'"></div>';
+  }
+  document.getElementById('steps').innerHTML = html;
+}
+
+function render() {
+  updateSteps();
+  var c = document.getElementById('content');
+  var html = '';
+
+  if(state.step===0) {
+    html = '<div class="card">';
+    html += '<div style="font-size:16px;font-weight:800;color:#c05070;margin-bottom:3px">🩷 シミ・くすみのタイプは？</div>';
+    html += '<div style="font-size:12px;color:#906070;margin-bottom:5px">当てはまるタイプを選んでください（最大2つ）</div>';
+    html += '<div class="hidden-info">🧠 ✨ 下の2つは隠れタイプです</div>';
+    Object.keys(SHIMI_DATA).forEach(function(id){
+      var t = SHIMI_DATA[id];
+      var sel = state.shimis.indexOf(id)>=0;
+      var dis = state.shimis.length>=2 && !sel;
+      var cls = 'type-btn'+(sel?' selected':'')+(t.hidden&&!sel?' hidden-type':'')+(dis?' disabled':'');
+      html += '<button class="'+cls+'" onclick="toggleShimi(\''+id+'\')">';
+      html += '<span style="margin-right:8px;font-size:18px">'+t.emoji+'</span>'+t.name;
+      if(t.hidden&&!sel) html += '<span class="hidden-badge">隠れ</span>';
+      html += '<div class="type-tag">'+t.tag+'</div></button>';
+    });
+    if(state.shimis.length>0) html += '<div class="select-count">選択中：'+state.shimis.length+'/2</div>';
+    html += '</div>';
+    if(state.shimis.length>0) html += '<button class="btn-next" onclick="nextStep()">次へ →</button>';
+  }
+
+  else if(state.step===1) {
+    html = '<div class="card">';
+    html += '<div style="font-size:16px;font-weight:800;color:#c05070;margin-bottom:3px">🌿 ズボラ美容タイプは？</div>';
+    html += '<div style="font-size:12px;color:#906070;margin-bottom:12px">診断結果を選んでください</div>';
+    Object.keys(ZUBORA_DATA).forEach(function(id){
+      var t = ZUBORA_DATA[id];
+      var sel = state.zubora===id;
+      html += '<button class="type-btn'+(sel?' selected':'')+'" onclick="setZubora(\''+id+'\')">';
+      html += '<span style="margin-right:8px;font-size:18px">'+t.emoji+'</span>'+t.name;
+      html += '<div class="type-tag">'+t.tag+'</div></button>';
+    });
+    html += '</div>';
+    html += '<div class="btn-row">';
+    html += '<button class="btn-back" style="flex:1" onclick="prevStep()">← 戻る</button>';
+    if(state.zubora) html += '<button class="btn-next" style="flex:2;margin-top:0" onclick="nextStep()">次へ →</button>';
+    html += '</div>';
+  }
+
+  else if(state.step===2) {
+    html = '<div class="card">';
+    html += '<div style="font-size:16px;font-weight:800;color:#c05070;margin-bottom:3px">🧠 脳疲労タイプは？</div>';
+    html += '<div style="font-size:12px;color:#906070;margin-bottom:12px">診断結果を選んでください</div>';
+    Object.keys(NOUHI_DATA).forEach(function(id){
+      var t = NOUHI_DATA[id];
+      var sel = state.nouhi===id;
+      html += '<button class="type-btn'+(sel?' selected':'')+'" onclick="setNouhi(\''+id+'\')">';
+      html += '<span style="margin-right:8px;font-size:18px">'+t.emoji+'</span>'+t.name;
+      html += '<div class="type-tag">'+t.tag+'</div></button>';
+    });
+    html += '</div>';
+    html += '<div class="btn-row">';
+    html += '<button class="btn-back" style="flex:1" onclick="prevStep()">← 戻る</button>';
+    if(state.nouhi) html += '<button class="btn-next" style="flex:2;margin-top:0" onclick="nextStep()">確認する →</button>';
+    html += '</div>';
+  }
+
+  else if(state.step===3) {
+    var sDs = state.shimis.map(function(id){return SHIMI_DATA[id];});
+    var zD = ZUBORA_DATA[state.zubora];
+    var nD = NOUHI_DATA[state.nouhi];
+    html = '<div class="card card-special" style="text-align:center">';
+    html += '<div style="font-size:13px;color:#b07080;margin-bottom:10px">この組み合わせで作ります</div>';
+    sDs.concat([zD,nD]).forEach(function(t){
+      html += '<div class="confirm-tag"><span style="font-size:20px">'+t.emoji+'</span><div><div class="confirm-tag-name">'+t.name+'</div><div class="confirm-tag-sub">'+t.tag+'</div></div></div>';
+    });
+    html += '</div>';
+    html += '<button class="btn-next" onclick="nextStep()">✨ アドバイスシートを見る</button>';
+    html += '<button class="btn-back" onclick="prevStep()">← 戻る</button>';
+  }
+
+  else if(state.step===4) {
+    var sDs = state.shimis.map(function(id){return SHIMI_DATA[id];});
+    var zD = ZUBORA_DATA[state.zubora];
+    var nD = NOUHI_DATA[state.nouhi];
+    var typeName = getTypeName(state.shimis, state.zubora, state.nouhi);
+    var catchCopy = getCatch(state.shimis, state.zubora, state.nouhi);
+    var s0 = sDs[0];
+
+    var allPersonality = [];
+    sDs.forEach(function(s){s.personality.forEach(function(p){if(allPersonality.indexOf(p)<0)allPersonality.push(p);});});
+    zD.personality.slice(0,2).forEach(function(p){if(allPersonality.indexOf(p)<0)allPersonality.push(p);});
+    nD.personality.slice(0,2).forEach(function(p){if(allPersonality.indexOf(p)<0)allPersonality.push(p);});
+
+    var allThinking = [];
+    sDs.forEach(function(s){s.thinking.forEach(function(t){if(allThinking.indexOf(t)<0)allThinking.push(t);});});
+    zD.thinking.slice(0,1).forEach(function(t){if(allThinking.indexOf(t)<0)allThinking.push(t);});
+    nD.thinking.slice(0,1).forEach(function(t){if(allThinking.indexOf(t)<0)allThinking.push(t);});
+
+    var allSkin = [];
+    sDs.forEach(function(s){s.skin.forEach(function(sk){if(allSkin.indexOf(sk)<0)allSkin.push(sk);});});
+
+    // 1&2: 表紙+総合タイプ
+    html += '<div class="card card-special" style="text-align:center">';
+    html += '<div class="cover-title">あなた専用</div>';
+    html += '<div class="cover-h1">肌と心の取扱説明書</div>';
+    html += '<div style="margin-bottom:12px">';
+    sDs.concat([zD,nD]).forEach(function(t){html += '<span class="badge">'+t.emoji+' '+t.name+'</span>';});
+    html += '</div>';
+    html += '<div class="type-name-box"><div class="label">あなたの総合タイプ</div>';
+    html += '<div class="name">「'+typeName+'」</div>';
+    html += '<div class="catch">'+catchCopy+'</div></div></div>';
+
+    // 3: 特徴
+    html += '<div class="card"><div class="section-title">あなたの特徴</div>';
+    html += '<div class="sub-label">🌿 性格傾向</div>';
+    allPersonality.slice(0,6).forEach(function(p){html += '<div class="item">・'+p+'</div>';});
+    html += '<div class="sub-label">🧠 思考のクセ</div>';
+    allThinking.slice(0,4).forEach(function(t){html += '<div class="item">・'+t+'</div>';});
+    html += '<div class="sub-label">🩷 肌の特徴</div>';
+    allSkin.slice(0,5).forEach(function(s){html += '<div class="item">・'+s+'</div>';});
+    html += '</div>';
+
+    // 4: 負のループ
+    html += '<div class="card"><div class="section-title purple">起こりやすい負のループ</div>';
+    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:3px">';
+    s0.loop.forEach(function(l,i){
+      html += '<div class="loop-box">'+l+'</div>';
+      if(i<s0.loop.length-1) html += '<div class="loop-arrow">↓</div>';
+    });
+    html += '<div class="loop-note">'+nD.loop_note+'</div></div></div>';
+
+    // 5: 最優先
+    html += '<div class="card"><div class="section-title">🌟 今のあなたに最優先のこと</div>';
+    s0.priority.forEach(function(p,i){
+      html += '<div class="priority-row"><div class="priority-num">'+(i+1)+'</div><div class="priority-text">'+p+'</div></div>';
+    });
+    html += '</div>';
+
+    // 6: シミタイプ詳細
+    sDs.forEach(function(s){
+      html += '<div class="card"><div class="section-title">'+s.emoji+' '+s.name+'の詳細</div>';
+      html += '<div style="font-size:13px;color:#b07080;margin-bottom:6px;text-align:center;font-style:italic">肌からのサイン：'+s.signal+'</div>';
+      html += '<div class="detail-box" style="color:#5a2030">'+s.skin_detail+'</div>';
+      html += '<div class="sub-label">起こりやすい悩み</div>';
+      s.concerns.forEach(function(c){html += '<div class="item">・'+c+'</div>';});
+      html += '<div class="sub-label">推奨成分</div>';
+      s.ingredients.forEach(function(ing){html += '<div class="item">・'+ing+'</div>';});
+      html += '<div class="sub-label">ぼたん流おすすめケア</div>';
+      s.cares.forEach(function(care){html += '<div class="item">・'+care+'</div>';});
+      html += '<div class="detail-note" style="margin-top:8px">'+s.spot_msg+'</div></div>';
+    });
+
+    // 7: ズボラタイプ詳細
+    html += '<div class="card"><div class="section-title green">'+zD.emoji+' '+zD.name+'の詳細</div>';
+    html += '<div class="sub-label">このタイプの特徴</div>';
+    zD.features.forEach(function(f){html += '<div class="item-green">・'+f+'</div>';});
+    html += '<div style="font-size:13px;font-weight:800;color:#70a080;margin:10px 0 5px">あなたに必要なのは</div>';
+    html += '<div style="font-size:15px;font-weight:900;color:#508060;margin-bottom:5px">'+zD.keyword+'</div>';
+    html += '<div style="font-size:13px;color:#304030;line-height:1.8;margin-bottom:8px">'+zD.desc+'</div>';
+    html += '<div class="sub-label">続けやすい工夫</div>';
+    zD.tips.forEach(function(t){html += '<div class="item-green">・'+t+'</div>';});
+    html += '<div class="detail-note-green" style="margin-top:8px">'+zD.msg+'</div></div>';
+
+    // 8: 脳疲労タイプ詳細
+    html += '<div class="card"><div class="section-title purple">'+nD.emoji+' '+nD.name+'の詳細</div>';
+    html += '<div class="sub-label">このタイプの特徴</div>';
+    nD.features.forEach(function(f){html += '<div class="item-purple">・'+f+'</div>';});
+    html += '<div class="sub-label">肌に出やすいサイン</div>';
+    nD.skin_signs.forEach(function(s){html += '<div class="item-purple">・'+s+'</div>';});
+    html += '<div class="sub-label">脳を整える行動</div>';
+    nD.actions.forEach(function(a){html += '<div class="item-purple">・'+a+'</div>';});
+    html += '<div class="detail-note-purple" style="margin-top:8px">'+nD.msg+'</div></div>';
+
+    // 9: 朝のルーティン
+    html += '<div class="card"><div class="section-title green">☀️ 朝のルーティン</div>';
+    s0.morning.forEach(function(r,i){html += '<div class="item-green">'+(i+1)+'. '+r+'</div>';});
+    html += '</div>';
+
+    // 10: 夜のルーティン
+    html += '<div class="card"><div class="section-title purple">🌙 夜のルーティン</div>';
+    s0.night.forEach(function(r,i){html += '<div class="item-purple">'+(i+1)+'. '+r+'</div>';});
+    html += '</div>';
+
+    // 11: 食事・生活習慣
+    html += '<div class="card"><div class="section-title brown">🍽 食事・生活習慣</div>';
+    s0.lifestyle.forEach(function(l){html += '<div class="item-brown">・'+l+'</div>';});
+    html += '</div>';
+
+    // 12: 自分にかけたい言葉
+    html += '<div class="card card-word"><div class="section-title" style="text-align:left">自分にかけたい言葉</div>';
+    s0.self_words.forEach(function(w){html += '<div class="self-words">・'+w+'</div>';});
+    html += '</div>';
+
+    // 13: 1か月実践プラン
+    html += '<div class="card"><div class="section-title">📅 1か月実践プラン</div>';
+    s0.plan.forEach(function(p,i){
+      html += '<div class="week-row"><div class="week-label">Week'+(i+1)+'</div><div class="week-text">'+p+'</div></div>';
+    });
+    html += '</div>';
+
+    // 14: 1か月後の変化
+    html += '<div class="card card-green"><div class="section-title teal">🌱 1か月後の変化</div>';
+    s0.after.forEach(function(a){html += '<div style="font-size:13px;color:#304030;padding:3px 0;border-bottom:1px solid #e0f0e8">・'+a+'</div>';});
+    html += '<div style="font-size:12px;color:#508060;margin-top:8px">さらに継続すると：'+nD.actions[0]+'を続けることで、睡眠の質も改善されていきます。</div>';
+    html += '</div>';
+
+    // 15: ぼたんからの手紙
+    html += '<div class="card card-letter"><div class="section-title">💌 ぼたんからの手紙</div>';
+    html += '<div class="letter-body">';
+    html += s0.personality[0]+'で'+zD.personality[0]+'なあなたへ。<br><br>';
+    html += '肌のケアを頑張る前に、脳を安心させることが一番の近道かもしれません🌿<br><br>';
+    html += nD.detail+'<br><br>';
+    html += '完璧なケアじゃなくていい。続けられることが、一番肌を変えます。<br>';
+    html += 'あなたの肌も心も、少しずつやさしく整っていきますように💜';
+    html += '</div>';
+    html += '<div class="letter-sign">15年美容ナース｜ぼたん 🌸</div></div>';
+
+    // 次のステップ
+    html += '<div class="card"><div class="section-title">🎁 次のステップ</div>';
+    [{icon:'🌿',title:'ズボラ美容セミナー（無料）',desc:'続けられる美容ルーティンを一緒に作ります'},
+     {icon:'🧠',title:'有料セミナー：脳×ズボラ美容',desc:'3,300円（モニター価格）'},
+     {icon:'✨',title:'ズボラ巡りプログラム（3ヶ月）',desc:'49,800円〜'}
+    ].forEach(function(s){
+      html += '<div class="next-row"><div class="next-icon">'+s.icon+'</div><div><div class="next-title">'+s.title+'</div><div class="next-desc">'+s.desc+'</div></div></div>';
+    });
+    html += '<a href="https://x.gd/NZs7N" target="_blank" class="line-btn">💚 LINEで詳しく聞く →</a></div>';
+    html += '<button class="btn-back" onclick="reset()">最初からやり直す</button>';
+  }
+
+  c.innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function toggleShimi(id) {
+  var idx = state.shimis.indexOf(id);
+  if(idx>=0) { state.shimis.splice(idx,1); }
+  else if(state.shimis.length<2) { state.shimis.push(id); }
+  render();
+}
+function setZubora(id) { state.zubora=id; render(); }
+function setNouhi(id) { state.nouhi=id; render(); }
+function nextStep() { state.step++; render(); }
+function prevStep() { state.step--; render(); }
+function reset() { state={step:0,shimis:[],zubora:null,nouhi:null}; render(); }
+
+render();
+</script>
+</body>
+</html>

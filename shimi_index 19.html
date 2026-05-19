@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シミ・くすみタイプ診断｜ぼたん</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+</head>
+<body style="margin:0;padding:0;">
+<div id="root"></div>
+<script type="text/babel">
+
+const PHOTO = "data:image/jpeg;base64,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";
+
+
+const animStyles = `
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+`;
+
+const Sakura = () => (
+  <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+    <style>{animStyles}</style>
+    {[...Array(12)].map((_, i) => (
+      <div key={i} style={{
+        position: "absolute", top: "-20px",
+        left: `${5 + ((i * 8.3) % 90)}%`,
+        fontSize: `${14 + (i % 10)}px`,
+        opacity: 0.4 + (i % 5) * 0.1,
+        animation: `fall ${6 + (i % 4)}s ${(i * 0.7) % 5}s linear infinite`,
+      }}>🌸</div>
+    ))}
+  </div>
+);
+
+const ShareButton = ({ title, text }) => {
+  const share = () => {
+    if (navigator.share) {
+      navigator.share({ title, text });
+    } else {
+      navigator.clipboard.writeText(text);
+      alert("テキストをコピーしました！");
+    }
+  };
+  return (
+    <button onClick={share} style={{ display: "block", width: "100%", padding: "14px", background: "linear-gradient(135deg,#e07aaa,#c05070)", color: "#fff", border: "none", borderRadius: 99, fontSize: 15, fontWeight: 700, cursor: "pointer", marginTop: 12, fontFamily: "sans-serif" }}>
+      📤 結果をシェアする
+    </button>
+  );
+};
+
+const questions = [
+  { id: "Q1", type: "A", title: "🩷 肝斑タイプかも？", items: [
+    "頬にモヤっと広く出る",
+    "左右対称にある",
+    "30〜50代で増えた",
+    "こすり癖がある",
+    "ストレス・睡眠不足が多い",
+    "妊娠・ピル・ホルモン変化で濃くなった",
+    "美白を頑張るほど荒れる",
+  ]},
+  { id: "Q2", type: "B", title: "☀️ 紫外線シミタイプかも？", items: [
+    "小さい茶色い点が増えた",
+    "昔よりシミが濃い",
+    "日焼けしやすい",
+    "学生時代スポーツしていた",
+    "日焼け止め塗り忘れる",
+    "夏後に増える",
+    "そばかすっぽい",
+  ]},
+  { id: "Q3", type: "C", title: "🌸 炎症ぐすみタイプかも？", items: [
+    "肌が赤くなりやすい",
+    "ニキビ跡が残る",
+    "摩擦しがち",
+    "毛穴を触る",
+    "スクラブ好き",
+    "クレンジング強め",
+    "なんとなく顔色が暗い",
+  ]},
+  { id: "Q4", type: "D", title: "🌙 お疲れ肌タイプかも？", items: [
+    "化粧したまま寝る",
+    "お風呂キャンセルある",
+    "とにかく疲れてる",
+    "スキンケア面倒",
+    "睡眠不足",
+    "甘いもの多い",
+    "肌がどんよりする",
+  ]},
+  { id: "Q5", type: "E", title: "🌫 ADMタイプかも？", items: [
+    "グレーっぽい色味",
+    "頬骨あたりに出る",
+    "左右対称っぽい",
+    "肝斑と言われたことある",
+    "化粧品で変化しにくい",
+    "若い頃から少しあった",
+    "青黒く見える時がある",
+  ]},
+  { id: "Q6", type: "F", title: "🌪 ターンオーバー低下タイプかも？", items: [
+    "肌がゴワつく",
+    "透明感が出にくい",
+    "優しくしすぎている",
+    "角質ケアほぼしてない",
+    "化粧ノリ悪い",
+    "肌がくすんで見える",
+    "毛穴詰まりやすい",
+  ]},
+  { id: "Q7", type: "G", title: "🔴 血管系くすみタイプかも？", items: [
+    "赤黒いくすみ",
+    "顔色が悪く見える",
+    "冷え性",
+    "クマが出やすい",
+    "疲れるとくすむ",
+    "血色感がない",
+    "むくみやすい",
+  ]},
+  { id: "Q8", type: "H", title: "🟤 老人性色素斑・イボタイプかも？", items: [
+    "境界がはっきりしてる",
+    "茶色が濃い",
+    "年齢とともに増えた",
+    "紫外線歴長い",
+    "盛り上がりある",
+    "触るとザラつく",
+    "一部だけ濃い",
+  ]},
+  { id: "Q9", type: "I", title: "🧠 脳疲労タイプかも？", items: [
+    "考えすぎて頭がいつもフル回転",
+    "イライラ・モヤモヤしやすい",
+    "寝つきが悪い・眠りが浅い",
+    "肩こりや頭痛がある",
+    "集中力が続かない",
+    "肌の調子が不安定",
+    "くすみやシミが濃くなりやすい",
+    "リラックスする時間が少ない",
+  ]},
+  { id: "Q10", type: "J", title: "✨ 糖化タイプかも？", items: [
+    "甘いものや炭水化物が大好き",
+    "食後に眠くなることが多い",
+    "肌が黄ぐすみしやすい",
+    "ハリや弾力の低下を感じる",
+    "毛穴の開きやたるみが気になる",
+    "シミが茶色く濃くなりやすい",
+    "肌がゴワつきくすんで見える",
+    "太りやすく疲れやすい",
+  ]},
+];
+
+const results = {
+  A: { emoji: "🩷", title: "肝斑（かんぱん）タイプ", sub: "", color: "#e07aaa", bg: "#fff0f8",
+    tag: "頑張るほど悪化することも。引き算美容がカギです",
+    warning: "肝斑は「炎症」と「摩擦」が大敵！\nゴシゴシ洗顔・やりすぎ美容・刺激強めの施術で悪化します。",
+    cares: ["こすらない", "保湿重視", "紫外線対策", "抗炎症ケア", "頑張りすぎない"],
+    extra: "推奨成分：トラネキサム酸、セラミド、ヒアルロン酸\nケア：低刺激クレンジング、W洗顔不要コスメ",
+    point: "頑張るほど悪化するタイプがあること、知ってほしい。引き算美容が一番の美白です🌸",
+    msg: "頑張り屋さんほど悪化しやすいのが肝斑です🩷\n\n美白成分を重ねれば重ねるほど刺激になって悪化……そんな方をたくさん見てきました。\n\nまず今夜のケアから1アイテム減らしてみて。引き算美容が一番の美白ケアです🌸" },
+  B: { emoji: "☀️", title: "紫外線シミタイプ", sub: "", color: "#e09040", bg: "#fff8f0",
+    tag: "焼けた後の48時間が勝負！今すぐできるケアがあります",
+    warning: "紫外線でメラニンが増え続けている状態。\n放置すると定着しやすいです。",
+    cares: ["日焼け止め", "飲む日焼け止め", "ビタミンC", "抗炎症ケア", "日傘・帽子"],
+    extra: "推奨成分：ビタミンC誘導体、ハイドロキノン、トラネキサム酸、ナイアシンアミド\nケア：UV対策強化、ブライトニング美容液",
+    point: "焼けた後の48時間が勝負🌞 冷却・抗炎症ケアでメラニンの定着を防げます",
+    msg: "日焼け止めは毎日・室内でも必須です☀️\n\n曇りの日でも紫外線は降り注いでいます。\n\n今日から日焼け止めを朝の歯磨きと同じレベルの習慣にしてみてください🌸" },
+  C: { emoji: "🌸", title: "炎症ぐすみタイプ", sub: "", color: "#c06080", bg: "#fff5f8",
+    tag: "顔は桃みたいに優しく扱って。触りすぎが色素沈着の原因です",
+    warning: "炎症が続くとメラニンが増え、くすみや色素沈着につながります。\n無意識の摩擦が積み重なっていることが多いです。",
+    cares: ["触りすぎない", "シカ系", "グリチルリチン酸", "セラミド", "優しく洗う"],
+    extra: "成分：グリチルリチン酸2K、セラミド、アラントイン、ツボクサエキス\nケア：低刺激・保湿クレンジング、保湿マスク",
+    point: "顔は桃🍑みたいに優しく扱う。摩擦ゼロを意識するだけで肌が変わります",
+    msg: "摩擦は目に見えないダメージを積み重ねます🌸\n\nゴシゴシ洗顔、強いクレンジング、毛穴を触る癖……全部肌への刺激です。\n\n今夜の洗顔から、泡をころがすだけに変えてみてください🌸" },
+  D: { emoji: "🌙", title: "お疲れ肌タイプ", sub: "（回復不足タイプ）", color: "#7090c0", bg: "#f0f4ff",
+    tag: "まず休んでいい。回復することが最高のスキンケアです",
+    warning: "肌は「回復」できないと整いません。\nやる気より先に、まず休息が必要なこともあります。",
+    cares: ["拭き取りクレンジング常備", "1個で終わる保湿", "睡眠優先", "完璧を目指さない"],
+    extra: "推奨成分：ナイアシンアミド、レチノール（少量）、プラセンタエキス、セラミド\nケア：オールインワン、ナイトクリーム、アロマテラピー",
+    point: "寝れた私、最高👍 睡眠が最強のスキンケアです",
+    msg: "疲れているのにケアしなきゃって頑張っているあなたへ🌙\n\n睡眠は最強のスキンケアです。成長ホルモンが肌を修復してくれます。\n\nウェットシートで顔を拭いて、そのまま寝る。それで十分です🌸" },
+  E: { emoji: "🌫️", title: "ADMタイプ", sub: "（後天性真皮メラノサイトーシス）", color: "#7080a0", bg: "#f5f5ff",
+    tag: "頑張ってるのに変わらない時、「深さ」が違うこともあります",
+    warning: "ADMは肌の深い層にある色素。\n表面ケアだけでは変化しにくいタイプです。\n肝斑と混同されやすいですが、実は別物なことも。",
+    cares: ["紫外線対策", "摩擦を減らす", "炎症を溜めない", "美容医療相談も視野に", "肝斑と見分け重要"],
+    extra: "推奨成分：トラネキサム酸、ナイアシンアミド、ビタミンC\nケア：レーザー適応確認、肝斑併発チェック",
+    point: "ADMは化粧品では届かない深さにあります。正しい診断が最初の一歩です🔥",
+    msg: "ADMは見逃されやすいタイプです🌫️\n\n肝斑と間違えて美白ケアを頑張っても改善しない……そんな方がとても多いです。\n\nまず正しいタイプを知ることが一番の近道。気になる方はぜひ専門家に相談してみてください🌸" },
+  F: { emoji: "🌪️", title: "ターンオーバー低下タイプ", sub: "", color: "#8070b0", bg: "#f8f5ff",
+    tag: "優しくしすぎ問題、結構あります🔥",
+    warning: "「刺激NG」を頑張りすぎて、古い角質が溜まっている状態かも。\n肌は「守るだけ」でも代謝が落ちることがあります。",
+    cares: ["やさしい角質ケア", "保湿＋代謝サポート", "血流改善", "洗えてるか見直し", "やりすぎないピーリング"],
+    extra: "推奨成分：乳酸、PHA、ナイアシンアミド、酵素系\nケア：週1角質ケア、炭酸ケア、軽めピーリング",
+    point: "優しくしすぎ問題！刺激ゼロが正解じゃない。落とす美容・代謝を上げる美容のバランスが大切🔥",
+    msg: "「優しければ優しいほど良い」は正解じゃないことも🌪️\n\n落とせていない古い角質が溜まると、くすみ・ゴワつき・スキンケアが浸透しない状態に。\n\n週1〜2回、ピーリングや角質ケアを取り入れるだけで肌が変わります🌸" },
+  G: { emoji: "🔴", title: "血管系くすみタイプ", sub: "（血流低下タイプ）", color: "#c05060", bg: "#fff0f2",
+    tag: "肌って「血色」でも変わる🌿",
+    warning: "血流や毛細血管の影響で、暗く見えている状態。\nメラニンだけが原因じゃないことも。",
+    cares: ["温める", "睡眠改善", "軽い運動", "マッサージしすぎ注意", "巡りサポート"],
+    extra: "推奨成分：ビタミンE、ナイアシンアミド、アルニカ、ヘスペリジン\nケア：入浴、温活、ホットタオル",
+    point: "くすみは血流改善で変わる！温活・軽い運動・睡眠の質を上げることが最高のくすみケアです🔴",
+    msg: "顔色が悪いのは、血流のサインかもしれません🔴\n\n体が冷えていたり、睡眠不足だったり……全部が肌のくすみにつながります。\n\nまず今夜、少し早く寝てみてください。それだけで翌朝の顔色が変わります🌸" },
+  I: { emoji: "🧠", title: "脳疲労タイプ", sub: "（脳疲れが肌に出るタイプ）", color: "#7060b0", bg: "#f5f0ff",
+    tag: "がんばりすぎるあなたへ。脳が休まると、肌も心もふわっと軽くなるよ",
+    warning: "脳が疲れると自律神経・ホルモンバランスが乱れ、血流が悪くなります。\nくすみ・シミ・肌荒れが起こりやすくなります。",
+    cares: ["質の良い睡眠", "深呼吸・瞑想", "スマホをオフにする時間", "ぬるめのお風呂", "首肩のコリをほぐす"],
+    extra: "推奨成分：ナイアシンアミド、マグネシウム、GABA、ビタミンB群\nケア：睡眠ケア、リラックスルーティン、ストレスケア",
+    point: "脳が休まると、お肌も心もふわっと軽くなります。小さなリセット習慣を毎日に🧠",
+    msg: "脳疲労は見た目にも影響します🧠\n\n「考えすぎモード」を「ゆるめモード」に切り替えるだけで、血流が改善しくすみやシミが薄くなることも。\n\n今夜は寝る1時間前にスマホをオフにしてみてください🌸" },
+  J: { emoji: "✨", title: "糖化タイプ", sub: "（焦げやすい肌タイプ）", color: "#c08040", bg: "#fffaf0",
+    tag: "未来の自分のために、「焦げない習慣」を始めよう",
+    warning: "糖とタンパク質が結びついてAGEs（終末糖化産物）ができると、\nコラーゲンが硬くなり黄ぐすみ・シミ・たるみの原因に。",
+    cares: ["血糖値を急上昇させない食事", "野菜・たんぱく質を先に食べる", "糖質は控えめに", "適度な運動", "抗糖化ケア"],
+    extra: "推奨成分：ビタミンC誘導体、α-リポ酸、ナイアシンアミド、アスタキサンチン\nケア：低GI食品を選ぶ、食後に軽く体を動かす、甘いものは時間・量を決めて",
+    point: "糖化は「老化の隠れ加速装置」。食生活の見直しと抗糖化ケアで未来の美肌を守ろう✨",
+    msg: "毎日の食事は、お肌の未来をつくる大切な選択✨\n\n完璧じゃなくて大丈夫。できることからコツコツ続けて、10年後のあなたをもっと輝かせていきましょう！\n\n白いものを玄米・全粒粉に変えるだけでも違いが出ます🌸" },
+  H: { emoji: "🟤", title: "老人性色素斑・イボタイプ", sub: "", color: "#a06030", bg: "#fff8f0",
+    tag: "「塗るだけで全部消える」じゃない世界もあります🌿",
+    warning: "紫外線蓄積による「定着型シミ」の可能性。\nイボ系はスキンケアで限界あることも。",
+    cares: ["UV対策", "早め相談", "摩擦減らす", "炎症を溜めない", "美容医療選択肢も"],
+    extra: "推奨成分：ハイドロキノン、レチノール、ビタミンC\nケア：スポットケア、美容医療相談、再発予防UV",
+    point: "レーザーは◎なタイプ。でもまず日焼け止めなしには始まりません。毎朝しっかりUV対策を🌸",
+    msg: "紫外線をずっと浴び続けた結果、メラニンが定着した状態です🟤\\n\\n放置するほど濃くなりやすいので早めのアプローチが大切。\\n\\nまず専門家に相談して、自分のシミのタイプを正確に知ることから始めましょう🌸" },
+};
+
+const ScreenshotGuide = () => {
+  const [show, setShow] = React.useState(false);
+  return (
+    <>
+      <button onClick={() => setShow(!show)} style={{ display: "block", width: "100%", padding: 14, background: "linear-gradient(135deg,#f0789a,#e05070)", color: "#fff", border: "none", borderRadius: 99, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 12, fontFamily: "sans-serif" }}>
+        📸 結果をスクショしてシェアする
+      </button>
+      {show && (
+        <div style={{ background: "#fff8fb", border: "2px solid #f0a0c0", borderRadius: 12, padding: 16, marginBottom: 12 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#c05070", marginBottom: 8 }}>📱 スクショの撮り方</div>
+          <div style={{ fontSize: 13, color: "#5a2030", lineHeight: 1.8 }}>
+            iPhone：サイドボタン＋音量UPボタンを同時押し📸<br />
+            Android：電源ボタン＋音量DOWNボタンを同時押し📸<br /><br />
+            撮ったスクショをFacebook・Instagramに貼ってシェアしてね🌸
+          </div>
+          <button onClick={() => setShow(false)} style={{ background: "none", border: "none", color: "#b07080", fontSize: 13, cursor: "pointer", marginTop: 8, textDecoration: "underline" }}>閉じる</button>
+        </div>
+      )}
+    </>
+  );
+};
+
+function App() {
+  const [screen, setScreen] = React.useState("start");
+  const [qi, setQi] = React.useState(0);
+  const [checked, setChecked] = React.useState({});
+  const [allChecked, setAllChecked] = React.useState({});
+  const [winner, setWinner] = React.useState(null);
+
+  const startQuiz = () => {
+    setQi(0);
+    setChecked({});
+    setAllChecked({});
+    setWinner(null);
+    setScreen("question");
+  };
+
+  const toggleCheck = (idx) => {
+    setChecked(prev => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
+  const nextQuestion = () => {
+    const newAll = { ...allChecked, [qi]: checked };
+    setAllChecked(newAll);
+    if (qi + 1 >= questions.length) {
+      // Count checked per type
+      const counts = {};
+      questions.forEach((q, i) => {
+        const c = newAll[i] ? Object.values(newAll[i]).filter(Boolean).length : 0;
+        counts[q.type] = (counts[q.type] || 0) + c;
+      });
+      const w = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+      setWinner(w);
+      setScreen("result");
+    } else {
+      setAllChecked(newAll);
+      setChecked(allChecked[qi + 1] || {});
+      setQi(qi + 1);
+    }
+  };
+
+  const goBack = () => {
+    if (qi === 0) { setScreen("start"); return; }
+    setChecked(allChecked[qi - 1] || {});
+    setQi(qi - 1);
+  };
+
+  const q = questions[qi];
+  const r = winner ? results[winner] : null;
+
+  const chips = [
+    ["🩷 肝斑", "#f8d0e8", "#702050"],
+    ["☀️ 紫外線シミ", "#fde8d0", "#704020"],
+    ["🌸 炎症ぐすみ", "#f8d8e0", "#602040"],
+    ["🌙 お疲れ肌", "#d8e0f8", "#203060"],
+    ["🌫 ADM", "#e0e0f0", "#303060"],
+    ["🌪 ターンオーバー低下", "#e8d8f8", "#402060"],
+    ["🔴 血管系くすみ", "#f8d0d0", "#602020"],
+    ["🟤 老人性色素斑", "#f0e0c8", "#604020"],
+    ["🧠 脳疲労タイプ", "#e8e0ff", "#5040a0"],
+    ["✨ 糖化タイプ", "#fff0d0", "#806020"],
+  ];
+
+  return (
+    <div style={{ background: "#fff8f5", position: "relative", minHeight: "100vh", padding: "16px", fontFamily: "sans-serif" }}>
+      <Sakura />
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 480, margin: "0 auto" }}>
+
+        {/* ヘッダー */}
+        <div style={{ textAlign: "center", marginBottom: 12 }}>
+          <div style={{ display: "inline-block", background: "linear-gradient(90deg,#e07aaa,#f09878)", color: "#fff", borderRadius: 99, padding: "6px 18px", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>夏前に知らないと損するシミ対策 ☀️</div>
+          <div style={{ fontSize: 12, color: "#a06070", marginBottom: 4 }}>15年美容ナースが教える</div>
+          <h1 style={{ fontSize: 22, color: "#6a2040", lineHeight: 1.4, margin: "8px 0" }}>あなたの<br />「シミ・くすみタイプ」診断</h1>
+        </div>
+
+        {/* プロフィール */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, background: "#fff", borderRadius: 12, padding: "10px 16px", border: "1px solid #f0c8d8", marginBottom: 16 }}>
+          <img src={PHOTO} alt="ぼたん" style={{ width: 50, height: 50, borderRadius: "50%", objectFit: "cover", border: "2px solid #f0a0c0" }} />
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#6a2040" }}>ぼたん</div>
+            <div style={{ fontSize: 11, color: "#b07880" }}>15年美容ナース｜魂のめぐり専門家</div>
+          </div>
+        </div>
+
+        {/* カード */}
+        <div style={{ background: "#fff", borderRadius: 16, padding: 24, marginBottom: 16, border: "1px solid #f5c8d8" }}>
+
+          {/* スタート */}
+          {screen === "start" && (
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 44, marginBottom: 12 }}>🔍</div>
+              <p style={{ fontSize: 16, color: "#7a3050", lineHeight: 1.8, fontWeight: 500 }}>そのシミ、全部同じだと<br />思っていませんか？🌸</p>
+              <p style={{ fontSize: 13, color: "#b07880", margin: "8px 0 8px", lineHeight: 1.7 }}>種類によってケアを間違えると悪化することも。<br />特にADMは肝斑と混同されやすく要注意！</p>
+              <p style={{ fontSize: 13, color: "#b07880", margin: "0 0 20px" }}>全8問｜所要時間 約3分</p>
+              <button onClick={startQuiz} style={{ display: "block", width: "100%", padding: 16, background: "linear-gradient(135deg,#e07aaa,#c05070,#f09878)", color: "#fff", border: "none", borderRadius: 99, fontSize: 18, fontWeight: 700, cursor: "pointer", marginBottom: 16 }}>
+                診断スタート！ →
+              </button>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
+                {chips.map(([label, bg, color]) => (
+                  <span key={label} style={{ background: bg, color, borderRadius: 99, padding: "4px 10px", fontSize: 11, fontWeight: 700 }}>{label}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 質問 */}
+          {screen === "question" && (
+            <div>
+              <div style={{ height: 6, background: "#fdd0e0", borderRadius: 99, marginBottom: 16, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${(qi / questions.length) * 100}%`, background: "linear-gradient(90deg,#e07aaa,#c05070)", borderRadius: 99, transition: "width .3s" }} />
+              </div>
+              <div style={{ textAlign: "center", fontSize: 13, color: "#c07080", marginBottom: 8 }}>{qi + 1} / {questions.length}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#5a2030", textAlign: "center", marginBottom: 6, lineHeight: 1.6 }}>{q.title}</div>
+              <div style={{ fontSize: 12, color: "#b07880", textAlign: "center", marginBottom: 16 }}>✅ 当てはまるものをチェックしてね</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                {q.items.map((item, i) => (
+                  <div key={i} onClick={() => toggleCheck(i)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 12, border: checked[i] ? "2px solid #e07aaa" : "2px solid #f0c8d8", background: checked[i] ? "#ffe0ee" : "#fff8fb", cursor: "pointer" }}>
+                    <div style={{ width: 22, height: 22, borderRadius: 6, border: "2px solid #e07aaa", background: checked[i] ? "#e07aaa" : "white", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "white", fontSize: 14, fontWeight: 700 }}>{checked[i] ? "✓" : ""}</div>
+                    <span style={{ fontSize: 14, color: "#5a2030" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={nextQuestion} style={{ display: "block", width: "100%", padding: 14, background: "linear-gradient(135deg,#e07aaa,#c05070)", color: "#fff", border: "none", borderRadius: 99, fontSize: 16, fontWeight: 700, cursor: "pointer", marginBottom: 12 }}>
+                次へ →
+              </button>
+              <button onClick={goBack} style={{ background: "none", border: "none", color: "#c07080", fontSize: 13, cursor: "pointer", textDecoration: "underline", display: "block" }}>← 前の質問に戻る</button>
+            </div>
+          )}
+
+          {/* 結果 */}
+          {screen === "result" && r && (
+            <div style={{ background: r.bg, borderRadius: 16, padding: 20 }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ display: "inline-block", background: "linear-gradient(135deg,#e07aaa,#c05070)", color: "#fff", borderRadius: 99, padding: "5px 20px", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>診断結果</div>
+                <div style={{ fontSize: 52, margin: "8px 0" }}>{r.emoji}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: r.color, marginBottom: 4 }}>{r.title}</div>
+                {r.sub && <div style={{ fontSize: 12, color: "#a06070", marginBottom: 6 }}>{r.sub}</div>}
+                <div style={{ fontSize: 13, color: "#7a3050", marginBottom: 12, lineHeight: 1.6 }}>{r.tag}</div>
+              </div>
+              <div style={{ height: 1, background: "rgba(220,100,140,.2)", margin: "12px 0" }} />
+
+              {/* 注意点 */}
+              <div style={{ borderRadius: 12, padding: 14, marginBottom: 12, border: `2px solid ${r.color}`, background: r.color + "15" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: r.color, marginBottom: 6 }}>⚠️ 特徴・注意点</div>
+                <div style={{ fontSize: 13, lineHeight: 1.7, color: "#5a2030", whiteSpace: "pre-wrap" }}>{r.warning}</div>
+              </div>
+
+              {/* おすすめケア */}
+              <div style={{ fontSize: 12, fontWeight: 700, color: r.color, marginBottom: 8 }}>🌿 おすすめケア</div>
+              {r.cares.map((c, i) => <div key={i} style={{ fontSize: 14, color: "#5a2030", marginBottom: 8, paddingLeft: 4 }}>✓ {c}</div>)}
+
+              {/* 推奨成分 */}
+              <div style={{ borderRadius: 12, padding: 14, margin: "12px 0", border: `2px solid ${r.color}`, background: "#fff8fb" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#c05070", marginBottom: 6 }}>💊 推奨成分・ケア方法</div>
+                <div style={{ fontSize: 13, lineHeight: 1.8, color: "#5a2030", whiteSpace: "pre-wrap" }}>{r.extra}</div>
+              </div>
+              {/* ぼたんの視点 */}
+              <div style={{ borderRadius: 12, padding: 14, margin: "12px 0", border: `2px solid ${r.color}`, background: r.color + "10" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: r.color, marginBottom: 6 }}>💥 ぼたん流ひとこと</div>
+                <div style={{ fontSize: 14, lineHeight: 1.7, color: "#5a2030", fontWeight: 500 }}>{r.point}</div>
+              </div>
+
+              {/* ぼたんより */}
+              <div style={{ borderRadius: 12, border: `2px solid ${r.color}`, overflow: "hidden", marginTop: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "rgba(255,255,255,.8)" }}>
+                  <img src={PHOTO} alt="ぼたん" style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid #f0a0c0" }} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#6a2040" }}>ぼたんより</div>
+                    <div style={{ fontSize: 10, color: "#b07880" }}>15年美容ナース｜魂のめぐり専門家</div>
+                  </div>
+                </div>
+                <div style={{ padding: "12px 14px", background: r.color + "18" }}>
+                  <div style={{ fontSize: 13, lineHeight: 1.8, color: "#5a2030", whiteSpace: "pre-wrap" }}>{r.msg}</div>
+                </div>
+              </div>
+
+              <a href="https://x.gd/NZs7N" target="_blank" rel="noopener noreferrer" style={{ display: "block", textAlign: "center", background: "#06C755", color: "#fff", borderRadius: 99, padding: 15, fontSize: 16, fontWeight: 700, textDecoration: "none", margin: "16px 0" }}>💚 タップして公式LINEへ</a>
+              <ScreenshotGuide />
+              <ShareButton title={`私は「${r.title}」でした！`} text={`🌸 私は「${r.title}」でした！\n\n${r.tag}\n\nあなたも無料で簡易版診断してみて✨\n👇\nhttps://glistening-smakager-89ebee.netlify.app\n\n詳しい解説はLINEで受け取れます💚\nhttps://x.gd/NZs7N`} />
+              <button onClick={startQuiz} style={{ display: "block", width: "100%", textAlign: "center", background: "none", border: "2px solid #f0a0c0", borderRadius: 99, padding: 10, fontSize: 13, color: "#b07080", cursor: "pointer", marginTop: 12 }}>もう一度診断する 🌸</button>
+            </div>
+          )}
+        </div>
+
+        <div style={{ textAlign: "center", fontSize: 13, color: "#8a5060", lineHeight: 1.8 }}>
+          <span style={{ color: "#e07aaa", fontWeight: 700 }}>Point </span>
+          シミのタイプを知ることが、<span style={{ color: "#e07aaa" }}>正しいケアの第一歩</span>🌸
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById("root"));
+</script>
+</body>
+</html>
