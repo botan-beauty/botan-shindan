@@ -90,7 +90,7 @@ textarea::placeholder { color:#b8a8a8; }
 </div>
 
 <script>
-const KEY = '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';
+
 const AVATARS = [
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/C04DF61C-938F-4E51-A9BA-11B661F0B363.png',
@@ -144,7 +144,7 @@ async function send(){
   try{
     const r=await fetch('/api/chat',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':KEY,'anthropic-version':'2023-06-01'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM,messages:msgs})
     });
     const data=await r.json();
