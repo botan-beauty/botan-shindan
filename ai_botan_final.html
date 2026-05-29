@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIぼたん | ズボラ美容相談室</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --blush:#f2cfc7; --rose:#d4837a; --lavender:#c9b8d8;
+  --cream:#fdf8f5; --warm:#e8ddd5; --dark:#3d2b2b; --light:#f9f2ee;
+}
+body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); color:var(--dark); height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+.hero { position:relative; height:190px; overflow:hidden; flex-shrink:0; }
+.hero-img { width:100%; height:100%; object-fit:cover; object-position:center 25%; }
+.hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(61,43,43,0.05),rgba(61,43,43,0.55)); }
+.hero-content { position:absolute; bottom:0; left:0; right:0; padding:14px 18px; display:flex; align-items:flex-end; gap:13px; }
+.avatar-wrap { position:relative; width:68px; height:68px; border-radius:50%; overflow:hidden; border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,0.25); flex-shrink:0; }
+.avatar-slide { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; opacity:0; transition:opacity 1s ease; }
+.avatar-slide.active { opacity:1; }
+.hero-text h1 { font-family:'Shippori Mincho',serif; font-size:19px; font-weight:700; color:white; text-shadow:0 1px 6px rgba(0,0,0,0.4); }
+.hero-text p { font-size:11px; color:rgba(255,255,255,0.88); display:flex; align-items:center; gap:5px; margin-top:3px; }
+.dot-live { width:6px; height:6px; background:#7ec87e; border-radius:50%; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.6;transform:scale(1.3);} }
+.chat-area { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:13px; }
+.chat-area::-webkit-scrollbar { width:0; }
+.message { display:flex; gap:9px; animation:fadeUp 0.4s ease; }
+.message.user { flex-direction:row-reverse; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+.msg-av { width:34px; height:34px; border-radius:50%; overflow:hidden; flex-shrink:0; align-self:flex-end; border:2px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+.msg-av img { width:100%; height:100%; object-fit:cover; object-position:center top; }
+.msg-av.user { background:linear-gradient(135deg,#e8ddd5,#c9a96e); display:flex; align-items:center; justify-content:center; font-size:17px; }
+.bubble { max-width:78%; padding:11px 15px; border-radius:18px; font-size:14px; line-height:1.75; }
+.botan-msg .bubble { background:white; border-bottom-left-radius:5px; box-shadow:0 2px 10px rgba(61,43,43,0.08); }
+.user .bubble { background:linear-gradient(135deg,#d4837a,#c97070); color:white; border-bottom-right-radius:5px; }
+.quick-replies { display:flex; flex-wrap:wrap; gap:7px; padding:0 14px 8px; }
+.quick-btn { background:white; border:1.5px solid var(--blush); color:var(--rose); padding:7px 13px; border-radius:20px; font-size:12px; font-family:inherit; cursor:pointer; }
+.input-area { background:white; border-top:1px solid var(--warm); padding:11px 14px; padding-bottom:calc(11px + env(safe-area-inset-bottom)); display:flex; gap:9px; align-items:flex-end; }
+.input-wrap { flex:1; background:var(--light); border:1.5px solid var(--warm); border-radius:22px; padding:9px 15px; }
+textarea { width:100%; background:none; border:none; outline:none; font-family:inherit; font-size:14px; color:var(--dark); resize:none; max-height:100px; line-height:1.5; }
+textarea::placeholder { color:#b8a8a8; }
+.send-btn { width:43px; height:43px; border-radius:50%; background:linear-gradient(135deg,#d4837a,#c97070); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; color:white; box-shadow:0 3px 12px rgba(212,131,122,0.4); flex-shrink:0; }
+.send-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.typing { display:flex; gap:9px; align-items:flex-end; }
+.typing-bubble { background:white; border-radius:18px; border-bottom-left-radius:5px; padding:13px 17px; box-shadow:0 2px 10px rgba(61,43,43,0.08); display:flex; gap:5px; align-items:center; }
+.tdot { width:7px; height:7px; background:var(--blush); border-radius:50%; animation:bounce 1.2s ease-in-out infinite; }
+.tdot:nth-child(2){animation-delay:0.2s;} .tdot:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce { 0%,60%,100%{transform:translateY(0);} 30%{transform:translateY(-6px);} }
+</style>
+</head>
+<body>
+<div class="hero">
+  <img class="hero-img" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6889.jpeg" alt="ぼたん">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="avatar-wrap">
+      <img class="avatar-slide active" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="">
+      <img class="avatar-slide" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/C04DF61C-938F-4E51-A9BA-11B661F0B363.png" alt="">
+      <img class="avatar-slide" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6929.jpeg" alt="">
+      <img class="avatar-slide" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6760.jpeg" alt="">
+    </div>
+    <div class="hero-text">
+      <h1>AIぼたん 🌙</h1>
+      <p><span class="dot-live"></span>美容ナース歴15年・ズボラ代表</p>
+    </div>
+  </div>
+</div>
+
+<div class="chat-area" id="chatArea">
+  <div class="message botan-msg">
+    <div class="msg-av"><img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="ぼたん"></div>
+    <div class="bubble">こんにちは、あるいはこんばんは🌙<br><br>美容ナース歴15年、ズボラ代表のぼたんです🤣<br><br>肌のこと、脳疲労のこと、なんでも話してね💜<br><br><strong>「頑張らなくても、ちゃんと巡れる」</strong><br>そのお手伝いをするよ🌿</div>
+  </div>
+</div>
+
+<div class="quick-replies" id="quickReplies">
+  <button class="quick-btn" onclick="sendQ('化粧したまま寝落ちした😭')">寝落ちした😭</button>
+  <button class="quick-btn" onclick="sendQ('肌荒れ疲れた…')">肌荒れ疲れた</button>
+  <button class="quick-btn" onclick="sendQ('脳疲労ってどんな状態？')">脳疲労って？</button>
+  <button class="quick-btn" onclick="sendQ('引き算美容って何？')">引き算美容🌿</button>
+  <button class="quick-btn" onclick="sendQ('6月3日のセミナー教えて')">セミナー🌙</button>
+</div>
+
+<div class="input-area">
+  <div class="input-wrap">
+    <textarea id="inp" placeholder="なんでも相談してね🌙" rows="1" oninput="resize(this)" onkeydown="hk(event)"></textarea>
+  </div>
+  <button class="send-btn" id="sendBtn" onclick="send()">➤</button>
+</div>
+
+<script>
+const KEY = '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';
+const AVATARS = [
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/C04DF61C-938F-4E51-A9BA-11B661F0B363.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6929.jpeg',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6760.jpeg',
+];
+const SYSTEM = `あなたは「ぼたん」です。美容ナース歴15年のズボラ美容の専門家。温かく共感力が高く、🌙🤣🥺🌿の絵文字をよく使う。関西弁も時々。核心：引き算美容・脳と肌は双子・ズボラは戻す力。寝落ち→48時間リカバリー。肌荒れ→鎮静。続かない→設計ミス。セミナー6/3夜21時無料 https://tinyurl.com/botan-zuborabeauty 。短くテンポよく、共感→知識→温かいメッセージ。絶対責めない。`;
+
+let msgs=[], cur=0, loading=false;
+const slides=document.querySelectorAll('.avatar-slide');
+setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
+
+function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function sendQ(t){document.getElementById('inp').value=t;send();}
+function getAv(){return AVATARS[cur];}
+
+function addMsg(role,content){
+  const c=document.getElementById('chatArea');
+  const d=document.createElement('div');
+  if(role==='user'){
+    d.className='message user';
+    d.innerHTML=`<div class="msg-av user">🌸</div><div class="bubble">${content.replace(/\n/g,'<br>')}</div>`;
+  } else {
+    d.className='message botan-msg';
+    d.innerHTML=`<div class="msg-av"><img src="${getAv()}" alt="ぼたん"></div><div class="bubble">${content.replace(/\n/g,'<br>')}</div>`;
+  }
+  c.appendChild(d);
+  c.scrollTop=c.scrollHeight;
+}
+
+function showTyping(){
+  const c=document.getElementById('chatArea');
+  const d=document.createElement('div');
+  d.className='typing';d.id='typing';
+  d.innerHTML=`<div class="msg-av"><img src="${getAv()}" alt="ぼたん"></div><div class="typing-bubble"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function hideTyping(){const e=document.getElementById('typing');if(e)e.remove();}
+
+async function send(){
+  const inp=document.getElementById('inp');
+  const t=inp.value.trim();
+  if(!t||loading)return;
+  document.getElementById('quickReplies').style.display='none';
+  inp.value='';inp.style.height='auto';
+  loading=true;document.getElementById('sendBtn').disabled=true;
+  addMsg('user',t);
+  msgs.push({role:'user',content:t});
+  showTyping();
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEY,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM,messages:msgs})
+    });
+    const data=await r.json();
+    hideTyping();
+    const reply=data.content?.[0]?.text||'ちょっと待ってね🌙';
+    msgs.push({role:'assistant',content:reply});
+    addMsg('assistant',reply);
+  }catch(e){
+    hideTyping();
+    addMsg('assistant','ごめん、繋がれなかった😭 もう一度試してみて🌙');
+  }
+  loading=false;document.getElementById('sendBtn').disabled=false;
+}
+</script>
+</body>
+</html>
