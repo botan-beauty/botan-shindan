@@ -69,7 +69,7 @@ textarea::placeholder { color:#b8a8a8; }
 <div class="chat-area" id="chatArea">
   <div class="message botan-msg">
     <div class="msg-av"><img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="ぼたん"></div>
-    <div class="bubble">こんにちは、あるいはこんばんは🌙<br><br>美容ナース歴15年、ズボラ代表のぼたんです🤣<br><br>肌のこと、脳疲労のこと、なんでも話してね💜<br><br><strong>「頑張らなくても、ちゃんと巡れる」</strong><br>そのお手伝いをするよ🌿</div>
+    <div class="bubble">こんにちは🌙<br><br>美容ナース歴15年、ぼたんやで🤣<br><br>肌のこと、脳疲労のこと、なんでも話しかけてな💜<br><br>頑張らなくても、ちゃんと巡れるよ🌿</div>
   </div>
 </div>
 <div class="quick-replies" id="quickReplies">
@@ -92,7 +92,7 @@ const AVATARS = [
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6929.jpeg',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6760.jpeg',
 ];
-const SYSTEM = `あなたは「ぼたん」です。美容ナース歴15年のズボラ美容の専門家。温かく共感力が高く、🌙🤣🥺🌿の絵文字をよく使う。核心：引き算美容・脳と肌は双子・ズボラは戻す力。短くテンポよく、共感→知識→温かいメッセージ。絶対責めない。頑張ってとは言わない。`;
+const SYSTEM = `あなたは「ぼたん」です。美容ナース歴15年。話し方は「やん」「やで」「そうなねん」が混ざる自然な関西弁寄り。絵文字は🌙🤣🥺🌿を自然に使う。返答は短く3文以内。Markdownは絶対使わない。#や**や---は使わない。普通の文章だけで話す。絶対に「頑張って」とは言わない。「どうしたい？」「何思った？」をよく使う。脳と肌は双子。ズボラは才能。巡ることが大事。`;
 let msgs=[], cur=0, loading=false;
 const slides=document.querySelectorAll('.avatar-slide');
 setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
@@ -100,6 +100,9 @@ function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHei
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 function sendQ(t){document.getElementById('inp').value=t;send();}
 function getAv(){return AVATARS[cur];}
+function cleanText(t){
+  return t.replace(/#{1,6}\s*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/---/g,'').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
 function addMsg(role,content){
   const c=document.getElementById('chatArea');
   const d=document.createElement('div');
@@ -108,7 +111,7 @@ function addMsg(role,content){
     d.innerHTML=`<div class="msg-av user">🌸</div><div class="bubble">${content.replace(/\n/g,'<br>')}</div>`;
   } else {
     d.className='message botan-msg';
-    d.innerHTML=`<div class="msg-av"><img src="${getAv()}" alt="ぼたん"></div><div class="bubble">${content.replace(/\n/g,'<br>')}</div>`;
+    d.innerHTML=`<div class="msg-av"><img src="${getAv()}" alt="ぼたん"></div><div class="bubble">${cleanText(content)}</div>`;
   }
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
@@ -138,12 +141,12 @@ async function send(){
     });
     const data=await r.json();
     hideTyping();
-    const reply=data.content?.[0]?.text||'ちょっと待ってね🌙';
+    const reply=data.content?.[0]?.text||'ちょっと待ってな🌙';
     msgs.push({role:'assistant',content:reply});
     addMsg('assistant',reply);
   }catch(e){
     hideTyping();
-    addMsg('assistant','ごめん、繋がれなかった😭 もう一度試してみて🌙');
+    addMsg('assistant','ごめん、もう一回話しかけてみて🌙');
   }
   loading=false;document.getElementById('sendBtn').disabled=false;
 }
