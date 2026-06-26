@@ -8,45 +8,41 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-  --lavender: #e8e0f0;
-  --deep-lavender: #9b7ec8;
-  --gold: #c9a96e;
-  --cream: #fdf8f5;
-  --dark: #3d2b2b;
-  --light-text: #7a6a6a;
+  --lavender:#e8e0f0; --deep-lavender:#9b7ec8;
+  --gold:#c9a96e; --cream:#fdf8f5;
+  --dark:#3d2b2b; --light-text:#7a6a6a;
 }
-body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); color:var(--dark); min-height:100vh; }
+body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); color:var(--dark); }
 .hero { position:relative; width:100%; height:280px; overflow:hidden; }
 .hero img { width:100%; height:100%; object-fit:cover; object-position:center 15%; }
 .hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(0,0,0,0.05),rgba(61,43,43,0.6)); }
-.hero-text { position:absolute; bottom:32px; left:24px; right:24px; color:white; }
-.hero-text .moon { font-size:13px; letter-spacing:3px; color:rgba(255,255,255,0.8); margin-bottom:8px; }
-.hero-text h1 { font-family:'Shippori Mincho',serif; font-size:28px; font-weight:600; line-height:1.4; text-shadow:0 2px 8px rgba(0,0,0,0.3); }
-.hero-text .sub { font-size:13px; color:rgba(255,255,255,0.85); margin-top:8px; line-height:1.7; }
-.content { padding:40px 24px; max-width:600px; margin:0 auto; }
-.gold-line { width:40px; height:1px; background:var(--gold); margin:0 auto 32px; }
-.intro { margin-bottom:40px; }
-.intro .label { font-size:11px; letter-spacing:3px; color:var(--deep-lavender); margin-bottom:20px; text-align:center; }
-.intro p { font-size:15px; line-height:2; color:var(--dark); }
-.intro .highlight { font-family:'Shippori Mincho',serif; font-size:17px; color:var(--deep-lavender); line-height:1.9; margin:20px 0; padding:20px 20px 20px 24px; border-left:2px solid var(--gold); }
-.moon-list { list-style:none; margin:16px 0; }
-.moon-list li { font-size:15px; line-height:2; color:var(--dark); padding:4px 0; }
-.values { background:white; border-radius:16px; padding:28px 24px; margin-bottom:32px; box-shadow:0 4px 20px rgba(155,126,200,0.08); }
-.values h2 { font-family:'Shippori Mincho',serif; font-size:16px; color:var(--deep-lavender); margin-bottom:20px; }
-.values ul { list-style:none; }
-.values ul li { font-size:14px; line-height:1.8; padding:10px 0; border-bottom:1px solid var(--lavender); display:flex; align-items:center; gap:10px; color:var(--dark); }
-.values ul li:last-child { border-bottom:none; }
-.values ul li .check { color:var(--gold); font-size:12px; flex-shrink:0; }
-.features { margin-bottom:32px; }
-.features h2 { font-family:'Shippori Mincho',serif; font-size:16px; color:var(--deep-lavender); margin-bottom:16px; text-align:center; }
-.feature-item { background:white; border-radius:12px; padding:16px 20px; margin-bottom:10px; display:flex; align-items:center; gap:14px; box-shadow:0 2px 10px rgba(155,126,200,0.06); }
-.feature-item .icon { font-size:22px; flex-shrink:0; }
-.feature-item p { font-size:14px; line-height:1.6; color:var(--dark); }
-.closing { text-align:center; padding:32px 0 40px; }
-.closing .box { background:white; border-radius:16px; padding:28px 24px; margin-bottom:24px; box-shadow:0 4px 20px rgba(155,126,200,0.08); }
+.hero-text { position:absolute; bottom:24px; left:24px; right:24px; color:white; }
+.hero-text .moon { font-size:12px; letter-spacing:3px; color:rgba(255,255,255,0.8); margin-bottom:6px; }
+.hero-text h1 { font-family:'Shippori Mincho',serif; font-size:26px; font-weight:600; text-shadow:0 2px 8px rgba(0,0,0,0.3); }
+.hero-text .sub { font-size:12px; color:rgba(255,255,255,0.85); margin-top:6px; }
+.content { padding:36px 24px; max-width:600px; margin:0 auto; }
+.gold-line { width:40px; height:1px; background:var(--gold); margin:0 auto 28px; }
+.section { margin-bottom:36px; }
+.label { font-size:11px; letter-spacing:3px; color:var(--deep-lavender); margin-bottom:20px; text-align:center; }
+.story p { font-size:14px; line-height:2.2; color:var(--dark); margin-bottom:12px; }
+.story .question { font-family:'Shippori Mincho',serif; font-size:16px; color:var(--deep-lavender); margin:20px 0; padding:16px 20px; border-left:2px solid var(--gold); line-height:1.8; }
+.values { background:white; border-radius:16px; padding:28px 24px; margin-bottom:28px; box-shadow:0 4px 20px rgba(155,126,200,0.08); }
+.values h2 { font-family:'Shippori Mincho',serif; font-size:15px; color:var(--deep-lavender); margin-bottom:20px; }
+.value-item { padding:12px 0; border-bottom:1px solid var(--lavender); }
+.value-item:last-child { border-bottom:none; }
+.value-item .title { font-size:13px; font-weight:500; color:var(--dark); margin-bottom:4px; }
+.value-item .desc { font-size:13px; color:var(--light-text); line-height:1.7; }
+.features { margin-bottom:28px; }
+.features h2 { font-family:'Shippori Mincho',serif; font-size:15px; color:var(--deep-lavender); margin-bottom:16px; text-align:center; }
+.feature-item { background:white; border-radius:12px; padding:16px 20px; margin-bottom:10px; box-shadow:0 2px 10px rgba(155,126,200,0.06); }
+.feature-item .icon-title { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.feature-item .icon { font-size:20px; }
+.feature-item .ftitle { font-size:14px; font-weight:500; color:var(--dark); }
+.feature-item .fdesc { font-size:13px; color:var(--light-text); line-height:1.7; }
+.closing { background:white; border-radius:16px; padding:28px 24px; margin-bottom:28px; box-shadow:0 4px 20px rgba(155,126,200,0.08); text-align:center; }
 .closing p { font-size:14px; line-height:2; color:var(--light-text); }
-.closing .quote { font-family:'Shippori Mincho',serif; font-size:17px; color:var(--deep-lavender); margin:12px 0; }
-.closing .sign { font-family:'Shippori Mincho',serif; font-size:16px; color:var(--deep-lavender); margin-top:16px; }
+.closing .big { font-family:'Shippori Mincho',serif; font-size:17px; color:var(--deep-lavender); margin:12px 0; }
+.sign { text-align:center; font-family:'Shippori Mincho',serif; font-size:16px; color:var(--deep-lavender); padding-bottom:40px; }
 </style>
 </head>
 <body>
@@ -59,57 +55,80 @@ body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); co
     <p class="sub">美容ナース15年 / めぐる人生ナビゲーター</p>
   </div>
 </div>
+
 <div class="content">
   <div class="gold-line"></div>
-  <div class="intro">
+
+  <div class="section story">
     <p class="label">ABOUT BOTAN</p>
-    <div class="highlight">
-      「頑張ることで幸せになる人生から卒業。」そんな生き方を伝えています。
-    </div>
-    <p>美容ナースとして15年間、頑張る人ほど肌も心も疲れてしまう姿をたくさん見てきました。</p>
-    <br>
-    <p>そして、大切な妹との突然のお別れを経験し、「もっと頑張ること」より、今を大切に生きること、心が巡ることの方が人生はずっと豊かになると気づきました。</p>
-    <br>
-    <p>だから私は、美容だけではなく、</p>
-    <ul class="moon-list">
-      <li>🌙 脳</li>
-      <li>🌙 心</li>
-      <li>🌙 考え方</li>
-    </ul>
-    <p>まで整えることを大切にしています。</p>
+    <p>頑張ってるのに、なんでうまくいかないんやろ。</p>
+    <div class="question">「頑張れば報われる。」それって本当？</div>
+    <p>美容ナースとして15年間、たくさんの方の美容相談にのってきました。</p>
+    <p>同じ美容をしていても、変わる人と、変わらない人がいる。その違いは何だろう。その答えを探し続けていました。</p>
+    <p>そんな中、大切な妹との突然のお別れを経験しました。</p>
+    <p>「妹の分まで生きよう。」そう心に決め、2人分頑張ろうとしました。</p>
+    <p>でも、不思議なことに、頑張れば頑張るほど、望んでいるはずの現実とは反対の方向へ進んでいったんです。</p>
+    <p>そこで初めて、脳や心、思い込みについて学び始めました。</p>
+    <p>そして気づいたのは、美容も、脳も、心も、全部つながっている。ということ。</p>
+    <p>だから私は、美容だけではなく、その人自身を、まるごと見ることを大切にしています。</p>
+    <div class="question">「えっ、それほんま？」</div>
+    <p>そんな小さな問いから、思い込みが少しずつ外れていく。すると、美容だけじゃない。仕事も。人間関係も。人生も。気づけば自然と巡り始める。そんなきっかけになれたら嬉しいです😊💜</p>
   </div>
+
   <div class="values">
     <h2>🌿 私が大切にしていること</h2>
-    <ul>
-      <li><span class="check">✦</span>頑張る美容から卒業</li>
-      <li><span class="check">✦</span>脳を味方につける</li>
-      <li><span class="check">✦</span>ズボラでも整う</li>
-      <li><span class="check">✦</span>自分を責めない</li>
-      <li><span class="check">✦</span>棚からぼたもちのように、自然と巡る人生</li>
-    </ul>
-  </div>
-  <div class="features">
-    <h2>💜 このLINEでできること</h2>
-    <div class="feature-item"><span class="icon">🤖</span><p>AIぼたんと24時間おしゃべり</p></div>
-    <div class="feature-item"><span class="icon">🌙</span><p>ズボラ族診断</p></div>
-    <div class="feature-item"><span class="icon">✨</span><p>美容・脳・心に役立つ情報</p></div>
-    <div class="feature-item"><span class="icon">🎁</span><p>LINE限定のお知らせ</p></div>
-  </div>
-  <div class="closing">
-    <div class="box">
-      <p>🌙 最後に</p>
-      <br>
-      <p>ここは、「もっと頑張らなきゃ」と思う場所ではありません。</p>
-      <br>
-      <p class="quote">「そのままの私でも大丈夫😊」</p>
-      <p>少し肩の力を抜いて、そう思い出せる場所になれたら嬉しいです💜</p>
-      <br>
-      <p>AIでは答えきれないこともあります。「ぼたん本人に相談したい😊」そんな時は、いつでも気軽にメッセージしてください💜</p>
-      <br>
-      <p>あなたとお話しできる日を楽しみにしています🌿</p>
+    <div class="value-item">
+      <p class="title">🌙 「頑張れば報われる」を一度疑ってみること</p>
     </div>
-    <p class="sign">👑 ぼたん</p>
+    <div class="value-item">
+      <p class="title">🌙 美容・脳・心はすべてつながっているということ</p>
+    </div>
+    <div class="value-item">
+      <p class="title">🌙 足りない自分になるのではなく本来の自分を思い出すこと</p>
+    </div>
+    <div class="value-item">
+      <p class="title">🌙 「もっと頑張る」ではなく自然と巡る人生を選ぶこと</p>
+    </div>
+    <div class="value-item">
+      <p class="title">🌙 「えっ、それほんま？」そんな小さな問いを大切にすること</p>
+    </div>
   </div>
+
+  <div class="features">
+    <h2>🌿 このLINEでできること</h2>
+    <div class="feature-item">
+      <div class="icon-title"><span class="icon">🤖</span><span class="ftitle">AIぼたん</span></div>
+      <p class="fdesc">24時間、いつでも気軽に相談できます。美容のこと、仕事のこと、人間関係のこと。「なんかモヤモヤする」「えっ、それほんま？」と整理したい時も。まずは話しかけてみてください💜</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon-title"><span class="icon">🌙</span><span class="ftitle">ズボラ族診断</span></div>
+      <p class="fdesc">あなたに合った整え方のヒントが見つかります。</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon-title"><span class="icon">🌙</span><span class="ftitle">シミ・肌診断</span></div>
+      <p class="fdesc">肌だけではなく、ぼたんの知識をあますことなく必要なアドバイスをお伝えします。</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon-title"><span class="icon">✨</span><span class="ftitle">美容・脳・心のヒント</span></div>
+      <p class="fdesc">日常に取り入れやすい美容や考え方をお届けします。</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon-title"><span class="icon">🎁</span><span class="ftitle">LINE限定のお知らせ</span></div>
+      <p class="fdesc">セミナーや募集など、LINEだけのご案内をお届けします。</p>
+    </div>
+  </div>
+
+  <div class="closing">
+    <p>ここは、「もっと頑張らなきゃ」と思う場所ではありません。</p>
+    <p class="big">「そのままの私でも大丈夫😊」</p>
+    <p>少し肩の力を抜いて、そう思い出せる場所になれたら嬉しいです💜</p>
+    <br>
+    <p>「ぼたん本人に相談したい😊」そんな時は、いつでも気軽にメッセージしてください💜</p>
+    <br>
+    <p>あなたとお話しできる日を楽しみにしています🌿</p>
+  </div>
+
+  <p class="sign">👑 ぼたん</p>
 </div>
 </body>
 </html>
