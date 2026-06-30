@@ -86,6 +86,34 @@ textarea::placeholder { color:#b8a8a8; }
   <button class="send-btn" id="sendBtn" onclick="send()">➤</button>
 </div>
 <script>
+// ─── ログ設定 ───────────────────────────────────
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz2RxPDA4Fq_NoTq68gdB3AOXTnu0h1KaOTbzHyanFa7wFJBrjhAXnFhoh6FLuLpOonTw/exec";
+
+function getUserId() {
+  let uid = localStorage.getItem("botan_uid");
+  if (!uid) { uid = "u_" + Math.random().toString(36).slice(2,10); localStorage.setItem("botan_uid", uid); }
+  return uid;
+}
+function getSource() {
+  const ref = document.referrer;
+  if (ref.includes("instagram")) return "Instagram";
+  if (ref.includes("facebook")) return "Facebook";
+  if (ref.includes("lin.ee") || ref.includes("line.me")) return "LINE";
+  if (ref.includes("threads")) return "Threads";
+  if (ref === "") return "direct";
+  return "other";
+}
+let turnCount = 0;
+function sendLog(userMessage, botReply, lineClicked=false) {
+  turnCount++;
+  fetch(GAS_URL, {
+    method:"POST", mode:"no-cors",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ userId:getUserId(), source:getSource(), userMessage, botReply, lineClicked, turnCount }),
+  }).catch(()=>{});
+}
+// ─────────────────────────────────────────────────
+
 const AVATARS = [
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/C04DF61C-938F-4E51-A9BA-11B661F0B363.png',
@@ -324,6 +352,7 @@ RAS
 シミ診断8種類 https://botan-beauty.github.io/botan-shindan/shimi8_index.html
 有料・要問い合わせ：シミ10タイプ・脳疲労診断・お肌診断・ズボラ診断
 セミナー詳細 https://botan-beauty.github.io/botan-shindan/detail_lp.html`;
+
 let msgs=[], cur=0, loading=false;
 const slides=document.querySelectorAll('.avatar-slide');
 setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
@@ -375,6 +404,8 @@ async function send(){
     const reply=data.content?.[0]?.text||'ちょっと待ってな🌙';
     msgs.push({role:'assistant',content:reply});
     addMsg('assistant',reply);
+    // ── ログ送信 ──
+    sendLog(t, reply);
   }catch(e){
     hideTyping();
     addMsg('assistant','ごめん、もう一回話しかけてみてね🌙');
