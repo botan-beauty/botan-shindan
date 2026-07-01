@@ -107,7 +107,7 @@ let turnCount = 0;
 function sendLog(userMessage, botReply, lineClicked=false) {
   turnCount++;
   fetch("/api/log", {
-    method:"POST", mode:"no-cors",
+    method:"POST", 
     headers:{"Content-Type":"text/plain"},
     body:JSON.stringify({ userId:getUserId(), source:getSource(), userMessage, botReply, lineClicked, turnCount }),
   }).catch(()=>{});
