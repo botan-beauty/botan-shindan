@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ズボラ美容タイプ診断｜ぼたん</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    background: linear-gradient(160deg, #fdf2f4 0%, #f6ede4 100%);
+    color: #5a4a4a;
+    line-height: 1.8;
+    padding: 24px 18px 60px;
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #e8a0b0, #d98f7a);
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  h1 { font-size: 25px; color: #b06a76; margin-bottom: 6px; line-height: 1.4; }
+  .sub { font-size: 14px; color: #a08888; margin-bottom: 28px; }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 6px 20px rgba(176,106,118,0.10);
+    margin-bottom: 18px;
+  }
+  .q-num { font-size: 13px; color: #d98f7a; font-weight: bold; margin-bottom: 6px; }
+  .q-text { font-size: 17px; font-weight: bold; margin-bottom: 16px; }
+  button.opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #fdf2f4;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: #5a4a4a;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  button.opt:active { background: #f5dde2; border-color: #e8a0b0; }
+  .hidden { display: none; }
+  .result-emoji { font-size: 54px; text-align: center; margin: 8px 0; }
+  .result-type { font-size: 23px; color: #b06a76; text-align: center; font-weight: bold; margin-bottom: 14px; }
+  .result-desc { font-size: 15px; margin-bottom: 20px; }
+  .cta {
+    display: block;
+    background: linear-gradient(135deg, #e8a0b0, #d98f7a);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    margin-top: 8px;
+  }
+  .retry { text-align: center; margin-top: 18px; }
+  .retry button {
+    background: none; border: none; color: #a08888;
+    font-size: 14px; text-decoration: underline; cursor: pointer;
+  }
+  .progress { font-size: 13px; color: #c0a0a0; text-align: right; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="badge">🌸 15年美容ナースが教える</div>
+<h1>あなたの<br>ズボラ美容タイプ診断</h1>
+<p class="sub">Yes / No で答えるだけ🤣 30秒でわかる</p>
+
+<div id="quiz"></div>
+
+<div id="result" class="card hidden">
+  <div class="result-emoji" id="rEmoji"></div>
+  <div class="result-type" id="rType"></div>
+  <div class="result-desc" id="rDesc"></div>
+  <a class="cta" href="#" id="rCta">💜 あなたに合ったケアをLINEで受け取る</a>
+  <div class="retry"><button onclick="restart()">もう一度診断する</button></div>
+</div>
+
+<script>
+const questions = [
+  { q: "夜、疲れてスキンケアをサボりがち？", a: "A", b: "B" },
+  { q: "コスメは「なんとなく」で選んでいる？", a: "A", b: "B" },
+  { q: "本当は肌をいたわる時間がほしいと思ってる？", a: "A", b: "B" }
+];
+const options = ["はい", "いいえ"];
+
+const results = {
+  A: {
+    emoji: "🌙",
+    type: "がんばり卒業タイプ",
+    desc: "毎日おつかれさま。あなたに必要なのは、増やすケアより「引き算」。やることを減らして、肌本来の力をめぐらせるのが正解です。"
+  },
+  B: {
+    emoji: "✨",
+    type: "ていねい育みタイプ",
+    desc: "自分と向き合う余白がある人。その丁寧さを活かして、「頑張りすぎない」を意識すると、もっと肌も心も軽くなります。"
+  }
+};
+
+let step = 0;
+let scoreA = 0;
+
+function render() {
+  const quiz = document.getElementById("quiz");
+  const item = questions[step];
+  quiz.innerHTML = `
+    <div class="card">
+      <div class="progress">${step + 1} / ${questions.length}</div>
+      <div class="q-num">Q${step + 1}</div>
+      <div class="q-text">${item.q}</div>
+      <button class="opt" onclick="answer('A')">${options[0]}</button>
+      <button class="opt" onclick="answer('B')">${options[1]}</button>
+    </div>`;
+}
+
+function answer(choice) {
+  if (choice === "A") scoreA++;
+  step++;
+  if (step < questions.length) {
+    render();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz").classList.add("hidden");
+  const key = scoreA >= 2 ? "A" : "B";
+  const r = results[key];
+  document.getElementById("rEmoji").textContent = r.emoji;
+  document.getElementById("rType").textContent = r.type;
+  document.getElementById("rDesc").textContent = r.desc;
+  document.getElementById("result").classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function restart() {
+  step = 0; scoreA = 0;
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
