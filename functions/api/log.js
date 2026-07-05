@@ -1,4 +1,5 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwHgyNe39b2W0g4aVdPEIf6fN8jAG_6n-69p78NinPqY4Uog_pdJvrO1SMAbv5dmVja/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwbqSiEfEhEUBrVpqq2lF79GOyyQ4ZhBN7DWlHqwJnEqIU1v09seThB_IyObJtDNBAM/exec";
+
 
 export async function onRequestPost(context) {
   const { request } = context;
