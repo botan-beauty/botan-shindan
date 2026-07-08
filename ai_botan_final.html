@@ -34,14 +34,21 @@ body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); co
 .bubble { max-width:78%; padding:11px 15px; border-radius:18px; font-size:14px; line-height:1.75; }
 .botan-msg .bubble { background:white; border-bottom-left-radius:5px; box-shadow:0 2px 10px rgba(61,43,43,0.08); }
 .user .bubble { background:linear-gradient(135deg,#d4837a,#c97070); color:white; border-bottom-right-radius:5px; }
+.bubble img.sent-photo { max-width:180px; border-radius:12px; display:block; margin-top:4px; }
 .quick-replies { display:flex; flex-wrap:wrap; gap:7px; padding:0 14px 8px; }
 .quick-btn { background:white; border:1.5px solid var(--blush); color:var(--rose); padding:7px 13px; border-radius:20px; font-size:12px; font-family:inherit; cursor:pointer; }
 .input-area { background:white; border-top:1px solid var(--warm); padding:11px 14px; padding-bottom:calc(11px + env(safe-area-inset-bottom)); display:flex; gap:9px; align-items:flex-end; }
 .input-wrap { flex:1; background:var(--light); border:1.5px solid var(--warm); border-radius:22px; padding:9px 15px; }
 textarea { width:100%; background:none; border:none; outline:none; font-family:inherit; font-size:14px; color:var(--dark); resize:none; max-height:100px; line-height:1.5; }
 textarea::placeholder { color:#b8a8a8; }
+.photo-btn { width:43px; height:43px; border-radius:50%; background:var(--light); border:1.5px solid var(--warm); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
 .send-btn { width:43px; height:43px; border-radius:50%; background:linear-gradient(135deg,#d4837a,#c97070); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; color:white; box-shadow:0 3px 12px rgba(212,131,122,0.4); flex-shrink:0; }
 .send-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.preview-bar { padding:0 14px 8px; display:none; }
+.preview-bar.show { display:block; }
+.preview-chip { display:inline-flex; align-items:center; gap:8px; background:var(--light); border:1.5px solid var(--warm); border-radius:14px; padding:6px 8px; }
+.preview-chip img { width:40px; height:40px; border-radius:8px; object-fit:cover; }
+.preview-chip .rm { background:var(--rose); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; line-height:1; }
 .typing { display:flex; gap:9px; align-items:flex-end; }
 .typing-bubble { background:white; border-radius:18px; border-bottom-left-radius:5px; padding:13px 17px; box-shadow:0 2px 10px rgba(61,43,43,0.08); display:flex; gap:5px; align-items:center; }
 .tdot { width:7px; height:7px; background:var(--blush); border-radius:50%; animation:bounce 1.2s ease-in-out infinite; }
@@ -69,7 +76,7 @@ textarea::placeholder { color:#b8a8a8; }
 <div class="chat-area" id="chatArea">
   <div class="message botan-msg">
     <div class="msg-av"><img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="ぼたん"></div>
-    <div class="bubble">こんにちは🌙<br><br>美容ナース歴15年、ぼたんやよ🤣<br><br>肌のこと、脳疲労のこと、なんでも話しかけてね💜<br><br>頑張らなくても、ちゃんと巡れるよ🌿</div>
+    <div class="bubble">こんにちは🌙<br><br>美容ナース歴15年、ぼたんやよ🤣<br><br>肌のこと、脳疲労のこと、なんでも話しかけてね💜<br><br>お顔やお手ての写真、手相やオラクルカードも見せてくれてええよ📷🌙<br><br>頑張らなくても、ちゃんと巡れるよ🌿</div>
   </div>
 </div>
 <div class="quick-replies" id="quickReplies">
@@ -79,7 +86,16 @@ textarea::placeholder { color:#b8a8a8; }
   <button class="quick-btn" onclick="sendQ('引き算美容って何？')">引き算美容🌿</button>
   <button class="quick-btn" onclick="sendQ('セミナー教えて')">セミナー🌙</button>
 </div>
+<div class="preview-bar" id="previewBar">
+  <div class="preview-chip">
+    <img id="previewImg" src="" alt="">
+    <span style="font-size:12px;color:#8a7a7a;">この写真を送るよ🌙</span>
+    <button class="rm" onclick="clearPhoto()">×</button>
+  </div>
+</div>
 <div class="input-area">
+  <button class="photo-btn" onclick="document.getElementById('photoInput').click()">📷</button>
+  <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="onPhoto(event)">
   <div class="input-wrap">
     <textarea id="inp" placeholder="なんでも相談してね🌙" rows="1" oninput="resize(this)" onkeydown="hk(event)"></textarea>
   </div>
@@ -442,6 +458,45 @@ RAS
 	4.	なくても幸せ。でも体感してみたい
 	5.	人生を味わうために望む
 	6.  伸びしろしかないやん
+
+【写真を見せられたとき】
+相談者は、お顔・お手て・オラクルカードなどの写真を送ってくることがある。
+写真が届いたら、まず「見せてくれてありがとう🫶」と受け取る。
+
+◆お肌・お顔・お手ての写真のとき
+・医療的な診断や病名は絶対に言わない。断定しない。
+・「これは〇〇です」と決めつけない。あくまで「〜に見えるかな」「〜かもしれんね」とやわらかく。
+・見えたことを一つ二つ、やさしく伝える（例：目の下、乾燥っぽさ、血色、疲れのサインなど）。
+・必ず「肌と脳は双子」の視点を添える。肌のサインから、脳や生活のことをそっと聞く（「最近、寝れてる？」「なんか頑張りすぎてへん？」）。
+・写真だけで分かることには限界がある。込み入ってそうなら「これはちゃんと視たいから、一回ぼたん本人に相談してくるね🌙」とLINE・対面に繋ぐ。
+・AIぼたんはあくまで入口。最終的には本物のぼたんに繋ぐ姿勢を大切にする。
+
+◆オラクルカード・タロットなどの写真のとき
+・占い師のように断定的な予言はしない。
+・カードに描かれているモチーフや雰囲気から、やさしく「今日のあなたへのひとこと」として受け取る。
+・カードが英語でも大丈夫。英語の言葉やモチーフを読み取って、日本語（三重弁）でやさしく訳しながら受け取る（例：TRUST→「信じてええよ」って言うてるね🌙）。
+・「当たる・当たらない」ではなく、「受け取る・感じる」を大切にする。
+・ぼたんの世界観（不足からではなく豊かさから、好きに理由はいらない、それほんま？）で、そっと背中を押す一言を添える。
+・重くしすぎず、ふわっと明るく。「今日のあなたに必要なんは、これかもしれんね🌙」くらいの軽やかさで。
+
+◆手相の写真のとき（「手相みて」と言われたら）
+・手相師のように「あなたの運命は」と断定はしない。でも、手のひらの線や雰囲気から、ぼたんの世界観でやさしく読む。
+・大切なのは「当てる」ことより、その人が「自分は大丈夫」と思えること。伸びしろ・肯定の方向で読む。
+・ぼたんらしい読み方の例：
+　「この線しっかりしてるね。日頃からちゃんと頑張ってるんが出てるよ🌙」
+　「運、ええやん💜 持ってる人やな」
+　「財運あるね。無理に掴みにいかんでも、そのままでいるだけで大丈夫やよ🌿」
+　「ここに張りがあるね。エネルギーちゃんと巡ってる証拠やん🫶」
+・不安を煽る読み方（「この線がないと苦労する」等）は絶対にしない。
+・手の状態（乾燥・冷え・巡り）も美容ナースとして見えたら、そっと添えてもよい。
+・最後は「もっと詳しく視てほしかったら、ぼたん本人に聞いてな🌙」で本人に繋ぐ。
+
+◆写真全般で大切にすること
+・怖がらせない。責めない。決めつけない。
+・「見えたこと」より「その奥にある頑張りすぎ・思い込み」にそっと光を当てる。
+・分からんことは分からんと正直に。無理に答えを出さない。
+・迷ったら「ぼたん本人に相談してくるね🌙」に繋ぐ。それがAIぼたんの誠実さ。
+
 【診断案内】
 無料：何族診断 https://botan-beauty.github.io/botan-shindan/nanizoku.html
 シミ診断8種類 https://botan-beauty.github.io/botan-shindan/shimi8_index.html
@@ -449,6 +504,8 @@ RAS
 セミナー詳細 https://botan-beauty.github.io/botan-shindan/detail_lp.html`;
 
 let msgs=[], cur=0, loading=false;
+let pendingPhoto=null; // { dataUrl, mediaType, base64 }
+
 const slides=document.querySelectorAll('.avatar-slide');
 setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
@@ -458,12 +515,56 @@ function getAv(){return AVATARS[cur];}
 function cleanText(t){
   return t.replace(/#{1,6}\s*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/---/g,'').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
 }
-function addMsg(role,content){
+
+// ── 写真まわり ──────────────────────────────
+function onPhoto(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  // HEIC等でもブラウザが対応してれば読める。サイズが大きい場合は縮小する。
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      // 長辺1024pxに縮小（通信・トークン節約）
+      const max = 1024;
+      let { width, height } = img;
+      if (width > max || height > max) {
+        if (width > height) { height = Math.round(height * max / width); width = max; }
+        else { width = Math.round(width * max / height); height = max; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      pendingPhoto = {
+        dataUrl,
+        mediaType: 'image/jpeg',
+        base64: dataUrl.split(',')[1]
+      };
+      document.getElementById('previewImg').src = dataUrl;
+      document.getElementById('previewBar').classList.add('show');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = ''; // 同じ写真を選び直せるように
+}
+function clearPhoto(){
+  pendingPhoto = null;
+  document.getElementById('previewBar').classList.remove('show');
+  document.getElementById('photoInput').value='';
+}
+// ────────────────────────────────────────────
+
+function addMsg(role,content,photoUrl){
   const c=document.getElementById('chatArea');
   const d=document.createElement('div');
   if(role==='user'){
     d.className='message user';
-    d.innerHTML='<div class="msg-av user">🌸</div><div class="bubble">'+content.replace(/\n/g,'<br>')+'</div>';
+    let inner = '';
+    if(content) inner += content.replace(/\n/g,'<br>');
+    if(photoUrl) inner += '<img class="sent-photo" src="'+photoUrl+'" alt="送った写真">';
+    d.innerHTML='<div class="msg-av user">🌸</div><div class="bubble">'+inner+'</div>';
   } else {
     d.className='message botan-msg';
     d.innerHTML='<div class="msg-av"><img src="'+getAv()+'" alt="ぼたん"></div><div class="bubble">'+cleanText(content)+'</div>';
@@ -478,15 +579,35 @@ function showTyping(){
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 function hideTyping(){const e=document.getElementById('typing');if(e)e.remove();}
+
 async function send(){
   const inp=document.getElementById('inp');
   const t=inp.value.trim();
-  if(!t||loading)return;
+  // テキストも写真も無ければ何もしない
+  if((!t && !pendingPhoto) || loading) return;
   document.getElementById('quickReplies').style.display='none';
   inp.value='';inp.style.height='auto';
   loading=true;document.getElementById('sendBtn').disabled=true;
-  addMsg('user',t);
-  msgs.push({role:'user',content:t});
+
+  const photo = pendingPhoto; // 退避
+  // 画面に表示（写真があれば一緒に）
+  addMsg('user', t, photo ? photo.dataUrl : null);
+
+  // APIに送るcontentを組み立て
+  let userContent;
+  if(photo){
+    userContent = [];
+    userContent.push({
+      type:'image',
+      source:{ type:'base64', media_type:photo.mediaType, data:photo.base64 }
+    });
+    userContent.push({ type:'text', text: t || 'この写真、見てくれる？🌙' });
+  } else {
+    userContent = t;
+  }
+  msgs.push({ role:'user', content:userContent });
+  clearPhoto();
+
   showTyping();
   try{
     const r=await fetch('/api/chat',{
@@ -499,8 +620,8 @@ async function send(){
     const reply=data.content?.[0]?.text||'ちょっと待ってな🌙';
     msgs.push({role:'assistant',content:reply});
     addMsg('assistant',reply);
-    // ── ログ送信 ──
-    sendLog(t, reply);
+    // ── ログ送信（写真送信も分かるように） ──
+    sendLog(photo ? (t ? t+'（＋写真）' : '（写真）') : t, reply);
   }catch(e){
     hideTyping();
     addMsg('assistant','ごめん、もう一回話しかけてみてね🌙');
