@@ -163,8 +163,9 @@ const IMG = {
 // 表紙／人物
 const HALL  = GH+"C10ADBE6-8706-44FA-984D-265C4122951F.png"; // ✨ ホール（物語のはじまり）
 const DOOR  = GH+"5D5B628F-0EAF-4A09-9106-190646A4E590.png"; // 🚪 開いた扉
-const BOTAN = GH+"2EF32432-744F-4CCD-BCC8-87B1517734A8.png"; // 👤 ぼたん本人
-const FAIRY_IMG = GH+"IMG_9457.png";                         // 🧚 AIぼたん妖精
+const BOTAN_ROUND = GH+"IMG_8528.jpeg";                      // 👤 ぼたん（丸枠・アドバイス用）
+const BOTAN_BIG   = GH+"2EF32432-744F-4CCD-BCC8-87B1517734A8.png"; // 👤 ぼたん（最後の締め・大きく）
+const FAIRY_IMG = GH+"F925DB98-A1FA-4679-8914-15B316DDF515.png";   // 🧚 AIぼたん妖精
 
 // 8つの鏡の間（部屋写真・名前は伏せる）
 const ROOMS = [
@@ -287,8 +288,7 @@ function Fairy({text}){
       background:"linear-gradient(135deg,rgba(224,201,228,.16),rgba(216,190,134,.12))",
       border:`1px solid ${C.line}`,borderRadius:16,padding:"12px 14px",margin:"0 0 16px"}}>
       <img src={FAIRY_IMG} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
-        style={{width:34,height:34,borderRadius:"50%",objectFit:"cover",flexShrink:0,
-        border:`1px solid ${C.goldSoft}`}}/>
+        style={{width:38,flexShrink:0,display:"block"}}/>
       <p className="serif" style={{margin:0,fontSize:13.5,lineHeight:1.9,color:C.ink}}>{text}</p>
     </div>
   );
@@ -355,8 +355,7 @@ function App(){
           background:"linear-gradient(135deg,rgba(224,201,228,.2),rgba(216,190,134,.14))"}}>
           <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:12}}>
             <img src={FAIRY_IMG} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
-              style={{width:52,height:52,borderRadius:"50%",objectFit:"cover",flexShrink:0,
-              border:`1.5px solid ${C.goldSoft}`}}/>
+              style={{width:62,flexShrink:0,display:"block"}}/>
             <div>
               <div className="serif" style={{fontSize:15,color:C.lav,fontWeight:600}}>AIぼたん</div>
               <div style={{fontSize:11,color:C.inkSoft}}>今日の案内役・ぼたんの分身</div>
@@ -488,23 +487,36 @@ function App(){
         </Acc>
       </div>
 
+      {/* ぼたんより（丸枠） */}
       <div style={{...card,marginBottom:18,background:"linear-gradient(135deg,rgba(216,190,134,.14),rgba(224,201,228,.16))"}}>
         <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:12}}>
-          <img src={BOTAN} alt="ぼたん" onError={(e)=>{e.target.style.display='none';}}
-            style={{width:56,height:56,borderRadius:"50%",objectFit:"cover",flexShrink:0,
+          <img src={BOTAN_ROUND} alt="ぼたん" onError={(e)=>{e.target.style.display='none';}}
+            style={{width:60,height:60,borderRadius:"50%",objectFit:"cover",objectPosition:"50% 38%",flexShrink:0,
             border:`2px solid ${C.goldSoft}`}}/>
           <div className="serif" style={{fontSize:13,letterSpacing:".18em",color:C.gold}}>🤍 ぼたんより</div>
         </div>
         <p style={{fontSize:14,lineHeight:2,margin:0,color:C.ink,textAlign:"left"}}>{ADV[winner].botan}</p>
       </div>
 
-      <div style={{...card,textAlign:"center",marginBottom:16,background:"linear-gradient(135deg,rgba(216,190,134,.14),rgba(224,201,228,.14))"}}>
+      {/* 最後の締め */}
+      <div style={{...card,textAlign:"center",marginBottom:14,
+        background:"linear-gradient(135deg,rgba(216,190,134,.16),rgba(224,201,228,.16))"}}>
         <img src={FAIRY_IMG} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
-          style={{width:40,height:40,borderRadius:"50%",objectFit:"cover",margin:"0 auto 8px",
-          border:`1px solid ${C.goldSoft}`}}/>
-        <p className="serif" style={{fontSize:14,lineHeight:1.9,color:C.ink,margin:0}}>
-          あなたのお肌、ここから一緒に見ていこ🌙<br/>続きは、ぼたんが直接お話しするね。
+          style={{width:64,display:"block",margin:"0 auto 10px"}}/>
+        <p className="serif" style={{fontSize:14.5,lineHeight:2.1,color:C.ink,margin:0}}>
+          ここまで、おつかれさま🌙<br/><br/>
+          この診断でわからんことや、<br/>
+          <b style={{color:C.lav}}>“わたしの場合はどうなん？”</b>って思ったら——<br/>
+          <b style={{color:C.gold}}>ぼたんに、聞いてな</b>💕
         </p>
+      </div>
+
+      {/* 締めの一枚（ドン） */}
+      <div style={{width:"100%",borderRadius:20,marginBottom:16,border:`1px solid ${C.line}`,
+        background:"linear-gradient(135deg,#FBF3E4,#F5EAF3,#FBF0EC)",padding:8,
+        boxShadow:"0 10px 30px rgba(184,127,192,.16)"}}>
+        <img src={BOTAN_BIG} alt="ぼたん" onError={(e)=>{e.target.style.display='none';}}
+          style={{width:"100%",display:"block",borderRadius:13}}/>
       </div>
 
       <a href="#" style={{display:"block",padding:"15px 0",borderRadius:999,background:"#06C755",color:"#fff",
