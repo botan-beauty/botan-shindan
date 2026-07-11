@@ -55,17 +55,40 @@ const Q = [
 ];
 
 const R = {
-  A:{ animal:"🦒", world:"HERMÈS", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。" },
-  B:{ animal:"🐶", world:"Dolce & Gabbana", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。" },
-  C:{ animal:"🦌", world:"Dior", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。" },
-  D:{ animal:"🦓", world:"CHANEL", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。" },
-  E:{ animal:"🦚", world:"Tiffany & Co.", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。" },
-  F:{ animal:"🐿️", world:"Cartier", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。" },
-  G:{ animal:"🐅", world:"GUCCI", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。" },
-  H:{ animal:"🐆", world:"FENDI", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。" },
+  A:{ animal:"🦒", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。",
+      why:`両頬に、左右対称に。\nじわっと広く、網目のようにつながって——\nその広がり方は、\nキリンの優雅なモザイク柄そのもの。` },
+  B:{ animal:"🐶", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。",
+      why:`輪郭のはっきりした、丸い点。\nポツポツと、独立して散らばって——\n白地にクッキリ映える\nダルメシアンのドット柄そのもの。` },
+  C:{ animal:"🦌", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。",
+      why:`ニキビ跡、摩擦、赤み、ムラ。\n守ってあげたくなるような、\n繊細で儚げな白いドット。\nそっと鎮めてあげて、という合図。` },
+  D:{ animal:"🦓", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。",
+      why:`乾きと疲れで、キメが乱れて、\n細かな影がどんよりと落ちる。\nでもそれは、都会的でスタイリッシュな\n光と影のモノトーン・ストライプ。` },
+  E:{ animal:"🦚", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。",
+      why:`肌の奥——真皮に眠る、青とグレー。\n神秘的で、奥行きがあって、\n宝石を敷きつめたような羽の模様。\n深いからこそ、美しい。` },
+  F:{ animal:"🐿️", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。",
+      why:`古い殻を脱ぎ捨てて、\nキメがひとマスずつ、整っていく。\n繊細な宝石が規則正しく並ぶような、\n生まれ変わりのライン。` },
+  G:{ animal:"🐅", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。",
+      why:`薄い肌から透ける、赤みと青み。\n内側をめぐる生命力が、\nトラの力強い縦じまとなって、\nあなたの肌に現れている。` },
+  H:{ animal:"🐆", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。",
+      why:`年を重ねて現れる、厚みと深み。\nそれは、ホワイトとグレーを纏った\n最高級のファーのような——\n成熟した大人だけが持つ紋様。` },
 };
 
+// 8タイプ共通のひとこと
+const CREDO = `美しき個性（柄）は、\nあなたの素肌が輝くための道標`;
+
 // 結果に出す“ひとことだけ”（＝ケアも成分も脳の話も出さない）
+// 特徴・注意点（＝「あなたはこういう肌」だけ。ケア・成分は本編で）
+const TOKU = {
+  A:`頬にモヤっと、左右対称に広がるのが特徴。肝斑は「炎症」と「摩擦」がいちばん苦手で、美白を頑張るほど荒れることがあるタイプ。`,
+  B:`小さい茶色い点がポツポツ増えたり、昔よりシミが濃くなってきた状態。紫外線でメラニンが生まれ続けてる。放っておくと、そのまま定着していく。`,
+  C:`赤くなりやすい、ニキビ跡が残る、顔色が暗い……原因の多くは"無意識の摩擦"。小さな刺激が積み重なって、炎症→くすみ→色素沈着につながってる。`,
+  D:`メイクしたまま寝る、お風呂キャンセル、とにかく疲れてる——これはサボりやのうて、頑張ってる証拠。肌は「回復」できてはじめて整うもの。`,
+  E:`グレーっぽい・青黒い色味が、頬骨あたりに左右対称に出る。ADMは"真皮"という深い層にメラニンがあるから、表面を頑張っても届きにくい。しかも肝斑とめちゃくちゃ間違われやすい。`,
+  F:`ゴワつく、透明感が出にくい、化粧ノリが悪い……原因が「優しくしすぎ」なこともある。守りに入りすぎて、古い角質が溜まったままの状態。`,
+  G:`赤黒いくすみ、クマ、冷え性、むくみ——これ、実はメラニンが原因やない。血のめぐりが落ちて、肌が暗く見えてる状態。だから美白しても変わらへん。`,
+  H:`境界がはっきりした濃い茶色、触るとザラつく、年齢とともに増えた。紫外線を浴びてきた時間が積もって"定着"したシミ。放っておくほど濃くなる。`,
+};
+
 const TEASER = {
   A:`鏡はこう言うてる——「がんばるほど、濃くなることがある」。<br/>その意味は、あなたの肌がいちばんよう知ってるはず🌙`,
   B:`鏡はこう言うてる——「焼けたあとの48時間に、やり直せる」。<br/>もう遅い、は……<b>ほんま？</b>🌙`,
@@ -94,21 +117,22 @@ const GH = "";
 const IMG = {
   A: GH+"E07B48D2-A131-4A62-B5F5-3FC636C5DF3C.png",
   B: GH+"FDEAB3DE-1120-4DB5-907A-8CEB6C7271B1.png",
-  C: GH+"IMG_9369.jpeg",
+  C: GH+"IMG_9493.jpeg",
   D: GH+"32F589B4-55DE-479C-9603-AE7BD1CBFC5F.png",
   E: GH+"2073813E-F232-4765-A0A4-365E66E87E20.png",
   F: GH+"CD3F6B1A-370D-48D7-8CD5-26A730411BC9.png",
-  G: GH+"C9EACE53-3258-4E83-8E2E-5D3AF5783DB6.png",
-  H: GH+"682C73B2-7CBE-412B-BB89-05833BC60B3D.png",
+  G: GH+"IMG_9491.jpeg",
+  H: GH+"IMG_9492.jpeg",
 };
 
 const HALL       = GH+"C10ADBE6-8706-44FA-984D-265C4122951F.png";
 const DOOR       = GH+"5D5B628F-0EAF-4A09-9106-190646A4E590.png";
+const BOTAN_ROUND= GH+"IMG_8528.jpeg";
 const FAIRY_IMG  = GH+"IMG_9457.png";
 const FAIRY_ROOM = GH+"F925DB98-A1FA-4679-8914-15B316DDF515.png";
 
 const ROOMS = [
-  GH+"IMG_9409.jpeg", GH+"IMG_9424.jpeg", GH+"IMG_9421.jpeg", GH+"IMG_9412.jpeg",
+  GH+"IMG_9495.jpeg", GH+"IMG_9504.jpeg", GH+"IMG_9494.jpeg", GH+"IMG_9412.jpeg",
   GH+"IMG_9414.jpeg", GH+"IMG_9411.jpeg", GH+"IMG_9425.jpeg", GH+"IMG_9428.jpeg",
 ];
 
@@ -275,7 +299,7 @@ function App(){
 
   const share=()=>{
     const r=R[winner];
-    const text=`鏡が映した、わたしの肌は【${r.name}】${r.animal}\n「${r.word}」\n\nあなたはどの鏡に映る？🪞\n#シミ診断 #鏡をひらく物語`;
+    const text=`🪞 鏡が映した、わたしの肌は【${r.name}】${r.animal}\n「${r.word}」\n\nあなたはどの鏡に映る？\n👇\n${THIS_URL}\n\n#シミ診断 #鏡をひらく物語`;
     if(navigator.share){
       navigator.share({title:"鏡をひらく物語｜シミ診断", text:text, url:THIS_URL}).catch(()=>{});
     }else{
@@ -296,7 +320,7 @@ function App(){
         </h1>
         <div className="serif" style={{display:"inline-block",marginTop:10,padding:"6px 16px",borderRadius:999,
           border:`1px solid ${C.line}`,background:"rgba(255,255,255,.7)",fontSize:11.5,letterSpacing:".1em",color:C.gold}}>
-          24問・2分でわかる かんたん版
+          2分でひらく、はじめの鏡
         </div>
         <div style={{width:38,height:1,background:C.goldSoft,margin:"18px auto 18px"}}/>
 
@@ -425,16 +449,54 @@ function App(){
       <div style={{marginTop:6, marginBottom:22}}>
         <OrnateMirror typeKey={winner} w={230}/>
       </div>
-      <div className="serif" style={{fontSize:11,letterSpacing:".22em",color:C.gold,marginBottom:10}}>{r.world} の世界</div>
+      {/* なぜ、この動物なのか（見出しなし・文だけ） */}
+      <div style={{...card,marginBottom:16,
+        background:"linear-gradient(135deg,rgba(216,190,134,.12),rgba(224,201,228,.14))"}}>
+        <div style={{fontSize:30,marginBottom:10}}>{r.animal}</div>
+        <p className="serif" style={{fontSize:14.5,lineHeight:2.2,margin:0,color:C.ink,whiteSpace:"pre-wrap"}}>{r.why}</p>
+      </div>
+
       <h2 className="serif" style={{fontSize:24,margin:"0 0 8px",color:C.ink,letterSpacing:".04em"}}>{r.name}</h2>
       <p className="serif" style={{fontSize:14.5,lineHeight:1.9,color:C.lav,margin:"0 0 22px"}}>{r.word}</p>
 
-      {/* ひとことだけ（＝ケア・成分・脳の話は伏せる） */}
-      <div style={{...card,marginBottom:16,textAlign:"left",
+      {/* ⚠️ 特徴・注意点 */}
+      <div style={{...card,marginBottom:14,textAlign:"left"}}>
+        <div className="serif" style={{fontSize:13,letterSpacing:".1em",color:C.gold,marginBottom:12}}>⚠️ 特徴・注意点</div>
+        <p style={{fontSize:14,lineHeight:2,margin:0,color:C.ink}}>{TOKU[winner]}</p>
+      </div>
+
+      {/* 鏡のひとこと（＝ケア・成分・脳の話は伏せる） */}
+      <div style={{...card,marginBottom:14,textAlign:"left",
         background:"linear-gradient(135deg,rgba(216,190,134,.14),rgba(224,201,228,.16))"}}>
         <div className="serif" style={{fontSize:10,letterSpacing:".24em",color:C.gold,marginBottom:12}}>〈 鏡のひとこと 〉</div>
         <p className="serif" style={{fontSize:14.5,lineHeight:2.1,margin:0,color:C.ink}}
           dangerouslySetInnerHTML={{__html:TEASER[winner]}}/>
+      </div>
+
+      {/* 🤍 ぼたんより */}
+      <div style={{...card,marginBottom:14,
+        background:"linear-gradient(135deg,rgba(216,190,134,.14),rgba(224,201,228,.16))"}}>
+        <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:12}}>
+          <img src={BOTAN_ROUND} alt="ぼたん" onError={(e)=>{e.target.style.display='none';}}
+            style={{width:60,height:60,borderRadius:"50%",objectFit:"cover",objectPosition:"50% 38%",flexShrink:0,
+            border:`2px solid ${C.goldSoft}`}}/>
+          <div style={{textAlign:"left"}}>
+            <div className="serif" style={{fontSize:13,letterSpacing:".18em",color:C.gold}}>🤍 ぼたんより</div>
+            <div style={{fontSize:11,color:C.inkSoft}}>15年美容ナース｜魂のめぐり専門家</div>
+          </div>
+        </div>
+        <p style={{fontSize:14,lineHeight:2,margin:0,color:C.ink,textAlign:"left"}}>
+          自分のタイプを知ることが、いちばんの近道やと思ってる🌸<br/>
+          ここまで向き合ってくれて、ほんまにありがとう。<br/>
+          もっとちゃんと映してみたくなったら、いつでもおいで🌙
+        </p>
+      </div>
+
+      {/* 8タイプ共通のひとこと */}
+      <div style={{margin:"0 0 16px",padding:"20px 18px",borderRadius:18,
+        border:`1px solid ${C.line}`,background:"linear-gradient(135deg,rgba(216,190,134,.18),rgba(224,201,228,.16))"}}>
+        <div className="serif" style={{fontSize:10,letterSpacing:".26em",color:C.gold,marginBottom:12}}>― 鏡が、最後に映したもの ―</div>
+        <p className="serif" style={{fontSize:15,lineHeight:2.1,margin:0,color:C.ink,whiteSpace:"pre-wrap"}}>{CREDO}</p>
       </div>
 
       {/* 続きへ */}
@@ -442,19 +504,26 @@ function App(){
         <img src={FAIRY_IMG} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
           style={{width:64,display:"block",margin:"0 auto 12px"}}/>
         <p className="serif" style={{fontSize:14,lineHeight:2.1,color:C.ink,margin:"0 0 4px"}}>
-          ここで映ったのは、<b style={{color:C.lav}}>入口だけ</b>🌙<br/><br/>
-          あなたの肌の<b style={{color:C.gold}}>ほんとうの特徴</b>、<br/>
-          <b style={{color:C.gold}}>合うケア</b>、そして<br/>
+          ここで向き合ってもらった肌も、<br/>
+          鏡🪞に映った内容も、<b style={{color:C.lav}}>ほんの入口</b>だけ🌙<br/><br/>
+          もう少ししっかり、<br/>
+          <b style={{color:C.gold}}>鏡にうつった自分</b>と向き合ってみる？<br/><br/>
+          あなたの肌の<b style={{color:C.gold}}>特徴</b>、<br/>
+          <b style={{color:C.gold}}>合うケア</b>、<b style={{color:C.gold}}>推奨成分</b>、そして<br/>
           <b style={{color:C.lav}}>“肌と脳は双子”</b>のお話は——<br/>
-          ぜんぶ、この先にあるよ💕
+          ぜんぶ、<b style={{color:C.gold}}>ぼたんのLINEの中に</b>あるよ💕
         </p>
       </div>
 
       <a href={LINE_URL} target="_blank" rel="noopener noreferrer"
         style={{display:"block",padding:"16px 0",borderRadius:999,background:"#06C755",color:"#fff",
-        textDecoration:"none",fontSize:15,fontWeight:700,marginBottom:10,boxShadow:"0 8px 22px rgba(6,199,85,.28)"}}>
-        💚 続きをLINEで受け取る
+        textDecoration:"none",fontSize:15,fontWeight:700,marginBottom:14,boxShadow:"0 8px 22px rgba(6,199,85,.28)"}}>
+        💚 ほんとうの鏡を、LINEでひらく
       </a>
+
+      <p className="serif" style={{fontSize:12.5,lineHeight:1.9,color:C.inkSoft,margin:"0 0 10px"}}>
+        この鏡、お友だちにものぞいてもらう？🌙
+      </p>
 
       <ScreenshotGuide/>
 

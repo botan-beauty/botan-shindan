@@ -62,15 +62,26 @@ const Q = [
 ];
 
 const R = {
-  A:{ animal:"🦒", world:"HERMÈS", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。" },
-  B:{ animal:"🐶", world:"Dolce & Gabbana", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。" },
-  C:{ animal:"🦌", world:"Dior", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。" },
-  D:{ animal:"🦓", world:"CHANEL", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。" },
-  E:{ animal:"🦚", world:"Tiffany & Co.", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。" },
-  F:{ animal:"🐿️", world:"Cartier", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。" },
-  G:{ animal:"🐅", world:"GUCCI", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。" },
-  H:{ animal:"🐆", world:"FENDI", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。" },
+  A:{ animal:"🦒", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。",
+      why:`両頬に、左右対称に。\nじわっと広く、網目のようにつながって——\nその広がり方は、\nキリンの優雅なモザイク柄そのもの。` },
+  B:{ animal:"🐶", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。",
+      why:`輪郭のはっきりした、丸い点。\nポツポツと、独立して散らばって——\n白地にクッキリ映える\nダルメシアンのドット柄そのもの。` },
+  C:{ animal:"🦌", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。",
+      why:`ニキビ跡、摩擦、赤み、ムラ。\n守ってあげたくなるような、\n繊細で儚げな白いドット。\nそっと鎮めてあげて、という合図。` },
+  D:{ animal:"🦓", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。",
+      why:`乾きと疲れで、キメが乱れて、\n細かな影がどんよりと落ちる。\nでもそれは、都会的でスタイリッシュな\n光と影のモノトーン・ストライプ。` },
+  E:{ animal:"🦚", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。",
+      why:`肌の奥——真皮に眠る、青とグレー。\n神秘的で、奥行きがあって、\n宝石を敷きつめたような羽の模様。\n深いからこそ、美しい。` },
+  F:{ animal:"🐿️", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。",
+      why:`古い殻を脱ぎ捨てて、\nキメがひとマスずつ、整っていく。\n繊細な宝石が規則正しく並ぶような、\n生まれ変わりのライン。` },
+  G:{ animal:"🐅", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。",
+      why:`薄い肌から透ける、赤みと青み。\n内側をめぐる生命力が、\nトラの力強い縦じまとなって、\nあなたの肌に現れている。` },
+  H:{ animal:"🐆", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。",
+      why:`年を重ねて現れる、厚みと深み。\nそれは、ホワイトとグレーを纏った\n最高級のファーのような——\n成熟した大人だけが持つ紋様。` },
 };
+
+// 8タイプ共通のひとこと
+const CREDO = `美しき個性（柄）は、\nあなたの素肌が輝くための道標`;
 
 // 8つの鏡（世界観の色だけ。名前は伏せる＝ぼたんの自己満の隠し味）
 const MIRRORS = [
@@ -154,14 +165,14 @@ const GH = "";
 
 // 動物画像（タイプ→ファイル）
 const IMG = {
-  A: GH+"E07B48D2-A131-4A62-B5F5-3FC636C5DF3C.png",   // 🦒 キリン・肝斑・HERMÈS
-  B: GH+"FDEAB3DE-1120-4DB5-907A-8CEB6C7271B1.png",   // 🐶 ダルメシアン・紫外線・D&G
-  C: GH+"IMG_9369.jpeg",                              // 🦌 バンビ・炎症ぐすみ・Dior
-  D: GH+"32F589B4-55DE-479C-9603-AE7BD1CBFC5F.png",   // 🦓 ゼブラ・お疲れ肌・CHANEL
-  E: GH+"2073813E-F232-4765-A0A4-365E66E87E20.png",   // 🦚 クジャク・ADM・Tiffany
-  F: GH+"CD3F6B1A-370D-48D7-8CD5-26A730411BC9.png",   // 🐿️ シマリス・ターンオーバー・Cartier
-  G: GH+"C9EACE53-3258-4E83-8E2E-5D3AF5783DB6.png",   // 🐅 トラ・血管系・GUCCI
-  H: GH+"682C73B2-7CBE-412B-BB89-05833BC60B3D.png",   // 🐆 ユキヒョウ・老人性・FENDI
+  A: GH+"E07B48D2-A131-4A62-B5F5-3FC636C5DF3C.png",   // 🦒 キリン・肝斑
+  B: GH+"FDEAB3DE-1120-4DB5-907A-8CEB6C7271B1.png",   // 🐶 ダルメシアン・紫外線
+  C: GH+"IMG_9493.jpeg",                              // 🦌 バンビ・炎症ぐすみ
+  D: GH+"32F589B4-55DE-479C-9603-AE7BD1CBFC5F.png",   // 🦓 ゼブラ・お疲れ肌
+  E: GH+"2073813E-F232-4765-A0A4-365E66E87E20.png",   // 🦚 クジャク・ADM
+  F: GH+"CD3F6B1A-370D-48D7-8CD5-26A730411BC9.png",   // 🐿️ シマリス・ターンオーバー
+  G: GH+"IMG_9491.jpeg",   // 🐅 トラ・血管系
+  H: GH+"IMG_9492.jpeg",   // 🐆 ユキヒョウ・老人性
 };
 
 // 表紙／人物
@@ -174,14 +185,14 @@ const FAIRY_ROOM = GH+"F925DB98-A1FA-4679-8914-15B316DDF515.png";  // 🧚 AIぼ
 
 // 8つの鏡の間（部屋写真・名前は伏せる）
 const ROOMS = [
-  GH+"IMG_9409.jpeg", // HERMÈS
-  GH+"IMG_9424.jpeg", // GUCCI
-  GH+"IMG_9421.jpeg", // FENDI
-  GH+"IMG_9412.jpeg", // Dior
-  GH+"IMG_9414.jpeg", // Tiffany
-  GH+"IMG_9411.jpeg", // CHANEL
-  GH+"IMG_9425.jpeg", // D&G
-  GH+"IMG_9428.jpeg", // Cartier
+  GH+"IMG_9495.jpeg", // 鏡の間 1
+  GH+"IMG_9504.jpeg", // 鏡の間 2
+  GH+"IMG_9494.jpeg", // 鏡の間 3
+  GH+"IMG_9412.jpeg", // 鏡の間 4
+  GH+"IMG_9414.jpeg", // 鏡の間 5
+  GH+"IMG_9411.jpeg", // 鏡の間 6
+  GH+"IMG_9425.jpeg", // 鏡の間 7
+  GH+"IMG_9428.jpeg", // 鏡の間 8
 ];
 
 // 豪華な姿見（作品まるごと入れる／画像なければ絵文字）
@@ -210,7 +221,6 @@ function OrnateMirror({ typeKey, w, delayed }) {
                   style={{width:"100%", display:"block", objectFit:"cover"}}/>
               : <div style={{textAlign:"center", padding:"30px 0"}}>
                   <div style={{fontSize:70}}>{r.animal}</div>
-                  <div style={{fontSize:10, color:C.inkSoft, marginTop:6}}>（ここに{r.world}の{r.name.replace("タイプ","")}が入る）</div>
                 </div>}
           </div>
           {/* 登場時のフラッシュ光 */}
@@ -356,7 +366,7 @@ function App(){
   // 🔗 シェア（＝簡易版のURLを配る）
   const share=()=>{
     const r=R[winner];
-    const text=`🪞 鏡が映した、わたしの肌は【${r.name}】${r.animal}\n「${r.word}」（${r.world} の世界）\n\nあなたはどの鏡に映る？\nまずは、かんたん版から✨\n👇\n${LITE_URL}\n\nくわしい特徴・ケア・"肌と脳は双子"の話は、ぼたんのLINEで💚\n${LINE_URL}`;
+    const text=`🪞 鏡が映した、わたしの肌は【${r.name}】${r.animal}\n「${r.word}」\n\nあなたはどの鏡に映る？\nまずは、はじめの鏡から✨\n👇\n${LITE_URL}\n\nくわしい特徴・ケア・"肌と脳は双子"の話は、ぼたんのLINEで💚\n${LINE_URL}`;
     if(navigator.share){
       navigator.share({title:"鏡をひらく物語｜シミ診断", text:text}).catch(()=>{});
     }else{
@@ -510,7 +520,13 @@ function App(){
       <div style={{marginTop:6, marginBottom:22}}>
         <OrnateMirror typeKey={winner} w={230}/>
       </div>
-      <div className="serif" style={{fontSize:11,letterSpacing:".22em",color:C.gold,marginBottom:10}}>{r.world} の世界</div>
+      {/* なぜ、この動物なのか（見出しなし・文だけ） */}
+      <div style={{...card,marginBottom:16,
+        background:"linear-gradient(135deg,rgba(216,190,134,.12),rgba(224,201,228,.14))"}}>
+        <div style={{fontSize:30,marginBottom:10}}>{r.animal}</div>
+        <p className="serif" style={{fontSize:14.5,lineHeight:2.2,margin:0,color:C.ink,whiteSpace:"pre-wrap"}}>{r.why}</p>
+      </div>
+
       <h2 className="serif" style={{fontSize:24,margin:"0 0 8px",color:C.ink,letterSpacing:".04em"}}>{r.name}</h2>
       <p className="serif" style={{fontSize:14.5,lineHeight:1.9,color:C.lav,margin:"0 0 22px"}}>{r.word}</p>
 
@@ -543,6 +559,13 @@ function App(){
           <div className="serif" style={{fontSize:13,letterSpacing:".18em",color:C.gold}}>🤍 ぼたんより</div>
         </div>
         <p style={{fontSize:14,lineHeight:2,margin:0,color:C.ink,textAlign:"left"}}>{ADV[winner].botan}</p>
+      </div>
+
+      {/* 8タイプ共通のひとこと */}
+      <div style={{margin:"6px 0 18px",padding:"20px 18px",borderRadius:18,
+        border:`1px solid ${C.line}`,background:"linear-gradient(135deg,rgba(216,190,134,.18),rgba(224,201,228,.16))"}}>
+        <div className="serif" style={{fontSize:10,letterSpacing:".26em",color:C.gold,marginBottom:12}}>― 鏡が、最後に映したもの ―</div>
+        <p className="serif" style={{fontSize:15,lineHeight:2.1,margin:0,color:C.ink,whiteSpace:"pre-wrap"}}>{CREDO}</p>
       </div>
 
       {/* 最後の締め */}
@@ -581,7 +604,7 @@ function App(){
 
       {/* 友だちに配る用の一言 */}
       <p className="serif" style={{fontSize:11.5,lineHeight:1.9,color:C.inkSoft,margin:"0 0 14px"}}>
-        シェアすると、お友だちには<b style={{color:C.gold}}>かんたん版（24問）</b>が届くよ🌙<br/>
+        シェアすると、お友だちには<b style={{color:C.gold}}>はじめの鏡</b>が届くよ🌙<br/>
         <span style={{opacity:.8}}>{LITE_URL.replace("https://","")}</span>
       </p>
 
