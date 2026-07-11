@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鏡をひらく物語｜シミ診断 かんたん版</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:#FBFAF7;font-family:'Hiragino Sans','Yu Gothic',sans-serif;}
+  .serif{font-family:'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho',serif;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  @keyframes rise{0%{opacity:0;transform:translateY(28px) scale(.82);}100%{opacity:1;transform:translateY(0) scale(1);}}
+  @keyframes drift{0%{transform:translateY(-6vh) translateX(0) rotate(0);opacity:0;}14%{opacity:.5;}86%{opacity:.18;}100%{transform:translateY(108vh) translateX(18px) rotate(160deg);opacity:0;}}
+  @keyframes tw{0%,100%{opacity:0;transform:scale(.4);}50%{opacity:.8;transform:scale(1);}}
+  @keyframes shimmer{0%{opacity:.3;transform:translateX(-12%);}50%{opacity:.85;transform:translateX(0%);}100%{opacity:.3;transform:translateX(12%);}}
+  @keyframes flash{0%{opacity:.2;}40%{opacity:1;}100%{opacity:.5;}}
+  @keyframes emerge{0%{opacity:0;transform:translateY(30px) scale(.86);filter:blur(6px);}100%{opacity:1;transform:none;filter:blur(0);}}
+  .fu{animation:fadeUp .5s cubic-bezier(.2,.7,.3,1) both;}
+  .p{position:absolute;top:-6vh;pointer-events:none;}
+  .st{position:absolute;pointer-events:none;}
+  @media (prefers-reduced-motion: reduce){.fu,.p,.st{animation:none!important;}.p,.st{display:none;}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const C = {
+  ink:"#5E4E68", inkSoft:"#8B7C97",
+  gold:"#B89258", goldSoft:"#D8BE86",
+  lav:"#B87FC0", lavSoft:"#E0C9E4",
+  line:"rgba(184,146,88,.34)",
+  paper:"#FFFFFF",
+};
+
+// ── リンク（ここだけ差し替えれば全部つながる）───────────────
+const LINE_URL = "https://x.gd/NZs7N";
+const FULL_URL = "https://botan-beauty.github.io/botan-shindan/true_mirror.html"; // 本編56問
+const THIS_URL = "https://botan-beauty.github.io/botan-shindan/true_mirror_lite.html"; // このページ（シェア用）
+
+// ── 24問（8つの鏡 × 3問）／t = 裏で加点 ───────────────
+const Q = [
+  ["頬に、モヤっと広がるかげがある","A"],["小さな茶色い点が、前より増えた","B"],["肌が、赤くなりやすい","C"],
+  ["メイクしたまま寝てしまう夜がある","D"],["グレーっぽい色味の、くすみがある","E"],["肌が、ゴワゴワしている","F"],
+  ["赤黒いくすみで、顔色が沈んで見える","G"],["シミの境界が、くっきりしている","H"],["かげが、左右対称に出ている","A"],
+  ["夏のあとに、シミが増える","B"],["ニキビ跡が、なかなか消えない","C"],["お風呂をキャンセルする日がある","D"],
+  ["頬骨のあたりに、色ムラが出る","E"],["化粧ノリが、悪い","F"],["冷え性である","G"],
+  ["シミを触ると、ザラつく","H"],["美白を頑張るほど、肌が荒れる","A"],["日焼け止めを、塗り忘れがち","B"],
+  ["つい、肌をこすってしまう","C"],["とにかく、いつも疲れている","D"],["化粧品を変えても、色が変わらない","E"],
+  ["角質ケアを、ほとんどしていない","F"],["目の下のクマが、出やすい","G"],["紫外線を浴びてきた年数が長い","H"],
+];
+
+const R = {
+  A:{ animal:"🦒", world:"HERMÈS", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。" },
+  B:{ animal:"🐶", world:"Dolce & Gabbana", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。" },
+  C:{ animal:"🦌", world:"Dior", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。" },
+  D:{ animal:"🦓", world:"CHANEL", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。" },
+  E:{ animal:"🦚", world:"Tiffany & Co.", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。" },
+  F:{ animal:"🐿️", world:"Cartier", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。" },
+  G:{ animal:"🐅", world:"GUCCI", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。" },
+  H:{ animal:"🐆", world:"FENDI", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。" },
+};
+
+// 結果に出す“ひとことだけ”（＝ケアも成分も脳の話も出さない）
+const TEASER = {
+  A:`鏡はこう言うてる——「がんばるほど、濃くなることがある」。<br/>その意味は、あなたの肌がいちばんよう知ってるはず🌙`,
+  B:`鏡はこう言うてる——「焼けたあとの48時間に、やり直せる」。<br/>もう遅い、は……<b>ほんま？</b>🌙`,
+  C:`鏡はこう言うてる——「足すより、やめてみて」。<br/>正しくやろうとするほど、肌はしんどいのかもしれん🌙`,
+  D:`鏡はこう言うてる——「寝れた私、最高」。<br/>ケアする気力がない日があるのは、全力で生きてる証拠🌙`,
+  E:`鏡はこう言うてる——「あなたのせいや、なかった」。<br/>ケアが届いてへんだけかもしれん。責める前に、見極めよ🌙`,
+  F:`鏡はこう言うてる——「やさしくしすぎ、かも」。<br/>守るだけやのうて、巡らせることも肌には要るんよ🌙`,
+  G:`鏡はこう言うてる——「白くするより、めぐらせて」。<br/>その顔色、シミやのうて“巡り”のサインかもしれん🌙`,
+  H:`鏡はこう言うてる——「これは、生きてきた時間そのもの」。<br/>消すことより、ここからどうするか🌙`,
+};
+
+// 8つの鏡（色だけ）
+const MIRRORS = [
+  { a:"#C8873C", tint:"#F7EFE2" },
+  { a:"#A83C3C", tint:"#F6EBEA" },
+  { a:"#9C8464", tint:"#F4EFE7" },
+  { a:"#D28BA6", tint:"#F8ECF1" },
+  { a:"#3FB0AD", tint:"#E7F4F3" },
+  { a:"#6E6A72", tint:"#F0EEF0" },
+  { a:"#B23A48", tint:"#F7EAEB" },
+  { a:"#8A3B4A", tint:"#F3E9EB" },
+];
+
+const GH = "";
+
+const IMG = {
+  A: GH+"E07B48D2-A131-4A62-B5F5-3FC636C5DF3C.png",
+  B: GH+"FDEAB3DE-1120-4DB5-907A-8CEB6C7271B1.png",
+  C: GH+"IMG_9369.jpeg",
+  D: GH+"32F589B4-55DE-479C-9603-AE7BD1CBFC5F.png",
+  E: GH+"2073813E-F232-4765-A0A4-365E66E87E20.png",
+  F: GH+"CD3F6B1A-370D-48D7-8CD5-26A730411BC9.png",
+  G: GH+"C9EACE53-3258-4E83-8E2E-5D3AF5783DB6.png",
+  H: GH+"682C73B2-7CBE-412B-BB89-05833BC60B3D.png",
+};
+
+const HALL       = GH+"C10ADBE6-8706-44FA-984D-265C4122951F.png";
+const DOOR       = GH+"5D5B628F-0EAF-4A09-9106-190646A4E590.png";
+const FAIRY_IMG  = GH+"IMG_9457.png";
+const FAIRY_ROOM = GH+"F925DB98-A1FA-4679-8914-15B316DDF515.png";
+
+const ROOMS = [
+  GH+"IMG_9409.jpeg", GH+"IMG_9424.jpeg", GH+"IMG_9421.jpeg", GH+"IMG_9412.jpeg",
+  GH+"IMG_9414.jpeg", GH+"IMG_9411.jpeg", GH+"IMG_9425.jpeg", GH+"IMG_9428.jpeg",
+];
+
+function OrnateMirror({ typeKey, w, delayed }) {
+  const [imgOk, setImgOk] = useState(true);
+  const width = w || 260;
+  const r = R[typeKey];
+  const src = IMG[typeKey];
+  const contentAnim = delayed ? "emerge 1.4s cubic-bezier(.2,.7,.3,1) 1.15s both" : "none";
+  return (
+    <div style={{position:"relative", width:width, margin:"0 auto",
+      animation:"rise 1.4s cubic-bezier(.2,.7,.3,1) both"}}>
+      <div style={{position:"absolute", top:-22, left:"50%", transform:"translateX(-50%)",
+        fontSize:26, zIndex:5, filter:"drop-shadow(0 2px 4px rgba(184,146,88,.5))"}}>👑</div>
+      <div style={{position:"relative", borderRadius:"50% 50% 48% 48% / 42% 42% 58% 58%", padding:14,
+        background:"linear-gradient(135deg,#F2E1B0,#C9A24B 30%,#8A6A2E 50%,#E8D19A 70%,#B8873C 100%)",
+        boxShadow:"0 0 0 2px rgba(255,255,255,.4) inset, 0 0 40px rgba(216,190,134,.55), 0 18px 44px rgba(138,90,60,.32)"}}>
+        <div style={{position:"absolute", inset:7, borderRadius:"inherit", border:"2px solid rgba(255,255,255,.45)", pointerEvents:"none"}}/>
+        <div style={{position:"relative", borderRadius:"50% 50% 48% 48% / 42% 42% 58% 58%", overflow:"hidden",
+          boxShadow:"inset 0 0 28px rgba(0,0,0,.32), inset 0 4px 12px rgba(255,255,255,.3)",
+          minHeight:width*1.1, background:"radial-gradient(circle at 50% 40%, #FFFFFF, #F2E6F1)",
+          display:"flex", alignItems:"center", justifyContent:"center"}}>
+          <div style={{width:"100%", display:"flex", alignItems:"center", justifyContent:"center", animation:contentAnim}}>
+            {imgOk && src
+              ? <img src={src} onError={()=>setImgOk(false)} style={{width:"100%", display:"block", objectFit:"cover"}}/>
+              : <div style={{textAlign:"center", padding:"30px 0"}}>
+                  <div style={{fontSize:70}}>{r.animal}</div>
+                </div>}
+          </div>
+          {delayed && <div style={{position:"absolute", inset:0, pointerEvents:"none",
+            background:"radial-gradient(circle at 50% 42%, rgba(255,255,255,.95), rgba(255,245,220,.4) 45%, transparent 70%)",
+            animation:"flash 1.9s ease .35s both"}}/>}
+          <div style={{position:"absolute", inset:0, pointerEvents:"none", animation:"shimmer 3.6s ease-in-out infinite",
+            background:"linear-gradient(122deg, rgba(255,255,255,.15) 0%, rgba(255,255,255,.75) 24%, rgba(255,255,255,.15) 40%, transparent 55%, transparent 74%, rgba(255,255,255,.4) 90%, rgba(255,255,255,.1) 100%)"}}/>
+        </div>
+      </div>
+      <div style={{position:"absolute", bottom:-13, left:"50%", transform:"translateX(-50%)",
+        fontSize:20, zIndex:5, filter:"drop-shadow(0 2px 3px rgba(184,146,88,.5))"}}>💎</div>
+    </div>
+  );
+}
+
+function roomFairyNode(rm){
+  if(rm===0){
+    return (<span>
+      ようこそ、最初のお部屋へ🌙 鏡に合言葉を唱えてね。せーのっ💕<br/>
+      <b style={{color:C.lav}}>鏡よ鏡、鏡さん。私が世界で一番美肌になるには、どうしたらええのん？</b>
+    </span>);
+  }
+  if(rm===2){
+    return (<span>
+      次のお部屋へ🌙 合言葉、せーのっ💕<br/>
+      <span style={{color:C.inkSoft}}>（あなた）「鏡よ鏡…どうしたら <b style={{color:C.ink}}>いい？</b>」</span><br/>
+      ちがうちがう〜、<b style={{color:C.lav}}>「ええのん？」</b>やで💕 三重弁三重弁🤭
+    </span>);
+  }
+  if(rm===5){
+    return (<span>
+      次のお部屋へ🌙 せーのっ💕<br/>
+      <span style={{color:C.inkSoft}}>（あなた）「鏡よ鏡…どうしたら <b style={{color:C.ink}}>ええのー？</b>」</span><br/>
+      <b style={{color:C.lav}}>惜しいっ！</b> 「ええの<b style={{color:C.lav}}>ん</b>？」やで💕
+    </span>);
+  }
+  return "次のお部屋へ🌙 ……合言葉は？ せーのっ💕";
+}
+
+function Ambient(){
+  const petals=[..."✿❀✤❁✿"].map((ch,i)=>(
+    <div key={i} className="p serif" style={{left:`${8+(i*17)%86}%`,fontSize:`${12+(i%3)*5}px`,
+      color:i%2?"rgba(224,201,228,.55)":"rgba(216,190,134,.5)",
+      animation:`drift ${14+(i%4)*3}s ${(i*1.7)%8}s linear infinite`}}>{ch}</div>
+  ));
+  const stars=[...Array(6)].map((_,i)=>(
+    <div key={"s"+i} className="st" style={{left:`${(i*16+7)%92}%`,top:`${(i*19+8)%80}%`,
+      fontSize:`${8+(i%3)*3}px`,color:C.goldSoft,animation:`tw ${2.4+(i%3)}s ${(i*.5)%3}s ease-in-out infinite`}}>✦</div>
+  ));
+  return <div style={{position:"fixed",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>{petals}{stars}</div>;
+}
+
+function Meguri({frac}){
+  return (
+    <div style={{display:"flex",alignItems:"center",gap:11,background:"rgba(255,255,255,.7)",
+      borderRadius:999,padding:"9px 15px",border:`1px solid ${C.line}`,boxShadow:"0 4px 16px rgba(184,127,192,.1)"}}>
+      <div style={{position:"relative",width:22,height:22,borderRadius:"50%",flexShrink:0,
+        border:`1px solid ${C.goldSoft}`,overflow:"hidden",
+        boxShadow:`0 0 ${4+frac*10}px rgba(216,190,134,${.3+frac*.5})`}}>
+        <div style={{position:"absolute",left:0,right:0,bottom:0,height:`${frac*100}%`,
+          background:"linear-gradient(180deg,#F2E4BE,#D8BE86)",transition:"height .5s cubic-bezier(.2,.7,.3,1)"}}/>
+      </div>
+      <span className="serif" style={{fontSize:12,color:C.gold,letterSpacing:".14em",whiteSpace:"nowrap"}}>めぐり</span>
+      <div style={{flex:1,height:7,background:"rgba(184,127,192,.16)",borderRadius:999,overflow:"hidden"}}>
+        <div style={{height:"100%",width:`${frac*100}%`,background:"linear-gradient(90deg,#D8BE86,#E0C9E4)",
+          borderRadius:999,transition:"width .5s cubic-bezier(.2,.7,.3,1)"}}/>
+      </div>
+    </div>
+  );
+}
+
+function Fairy({text}){
+  return (
+    <div className="fu" style={{display:"flex",gap:10,alignItems:"flex-start",
+      background:"linear-gradient(135deg,rgba(224,201,228,.16),rgba(216,190,134,.12))",
+      border:`1px solid ${C.line}`,borderRadius:16,padding:"12px 14px",margin:"0 0 16px"}}>
+      <img src={FAIRY_ROOM} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
+        style={{width:38,flexShrink:0,display:"block"}}/>
+      <p className="serif" style={{margin:0,fontSize:13.5,lineHeight:1.9,color:C.ink}}>{text}</p>
+    </div>
+  );
+}
+
+const bg={minHeight:"100vh",background:"linear-gradient(180deg,#FBFAF6 0%,#F5EAF3 60%,#FAF6F0 100%)",
+  position:"relative",padding:"22px 16px 44px",color:C.ink};
+const card={background:"rgba(255,255,255,.9)",borderRadius:22,padding:"22px 20px",
+  border:`1px solid ${C.line}`,boxShadow:"0 10px 32px rgba(184,127,192,.12)",backdropFilter:"blur(2px)"};
+
+function App(){
+  const [screen,setScreen]=useState("intro");
+  const [i,setI]=useState(0);
+  const [score,setScore]=useState({});
+  const [winner,setWinner]=useState(null);
+  const [copied,setCopied]=useState(false);
+
+  const begin=()=>{ setI(0); setScore({}); setWinner(null); setCopied(false); setScreen("quiz"); };
+
+  const answer=(yes)=>{
+    const t=Q[i][1];
+    const ns={...score};
+    if(yes) ns[t]=(ns[t]||0)+1;
+    if(i+1>=Q.length){
+      const order=["A","B","C","D","E","F","G","H"];
+      let best=order[0], bv=-1;
+      order.forEach(k=>{ const v=ns[k]||0; if(v>bv){bv=v;best=k;} });
+      setScore(ns); setWinner(best); setScreen("reveal");
+    }else{ setScore(ns); setI(i+1); }
+  };
+
+  const share=()=>{
+    const r=R[winner];
+    const text=`鏡が映した、わたしの肌は【${r.name}】${r.animal}\n「${r.word}」\n\nあなたはどの鏡に映る？🪞\n#シミ診断 #鏡をひらく物語`;
+    if(navigator.share){
+      navigator.share({title:"鏡をひらく物語｜シミ診断", text:text, url:THIS_URL}).catch(()=>{});
+    }else{
+      navigator.clipboard.writeText(text+"\n"+THIS_URL).then(()=>{
+        setCopied(true); setTimeout(()=>setCopied(false),2200);
+      }).catch(()=>{});
+    }
+  };
+
+  // INTRO
+  if(screen==="intro"){
+    return (<div style={bg}><Ambient/>
+      <div style={{position:"relative",zIndex:1,maxWidth:470,margin:"0 auto",textAlign:"center"}} className="fu">
+        <div className="serif" style={{fontSize:11,letterSpacing:".34em",color:C.gold,marginBottom:14}}>真実の鏡 〜True Mirror〜</div>
+        <div style={{fontSize:22,marginBottom:6}}>🪞</div>
+        <h1 className="serif" style={{fontSize:26,lineHeight:1.7,letterSpacing:".06em",fontWeight:500,margin:"0 0 8px"}}>
+          勇気を出して、<br/>鏡に自分を映してみない？
+        </h1>
+        <div className="serif" style={{display:"inline-block",marginTop:10,padding:"6px 16px",borderRadius:999,
+          border:`1px solid ${C.line}`,background:"rgba(255,255,255,.7)",fontSize:11.5,letterSpacing:".1em",color:C.gold}}>
+          24問・2分でわかる かんたん版
+        </div>
+        <div style={{width:38,height:1,background:C.goldSoft,margin:"18px auto 18px"}}/>
+
+        <div style={{width:"100%",borderRadius:20,marginBottom:20,border:`1px solid ${C.line}`,
+          background:"linear-gradient(135deg,#FBF3E4,#F5EAF3,#FBF0EC)",padding:8,
+          boxShadow:"inset 0 0 34px rgba(255,255,255,.6)"}}>
+          <img src={HALL} alt="鏡の間" style={{width:"100%",display:"block",borderRadius:13}}/>
+        </div>
+
+        <div style={{...card,textAlign:"left"}}>
+          <div className="serif" style={{fontSize:10,letterSpacing:".26em",color:C.gold,marginBottom:14}}>― ある噂話 ―</div>
+          <p className="serif" style={{fontSize:14.5,lineHeight:2.2,color:C.ink,margin:0}}>
+            「ねぇ、ご存知？<br/>
+            　<b style={{color:C.lav}}>合言葉</b>を唱えると、鏡が<b style={{color:C.gold}}>美肌の秘密</b>を教えてくれる館があるんですって」<br/><br/>
+            「まあ……そんな夢みたいなお話が？」<br/><br/>
+            「ええ。<b style={{color:C.gold}}>8つの鏡</b>をめぐると、最後に<b style={{color:C.lav}}>“ほんとうの自分の肌”</b>を映してくださるとか」<br/><br/>
+            「……<b style={{color:C.lav}}>それでも、知りたいわ</b>。<br/>
+            　わたくし、行ってみたいの」
+          </p>
+        </div>
+
+        <div style={{...card,textAlign:"left",marginTop:16,
+          background:"linear-gradient(135deg,rgba(224,201,228,.2),rgba(216,190,134,.14))"}}>
+          <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:12}}>
+            <img src={FAIRY_IMG} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
+              style={{width:62,flexShrink:0,display:"block"}}/>
+            <div>
+              <div className="serif" style={{fontSize:15,color:C.lav,fontWeight:600}}>AIぼたん</div>
+              <div style={{fontSize:11,color:C.inkSoft}}>今日の案内役・ぼたんの分身</div>
+            </div>
+          </div>
+          <p className="serif" style={{margin:0,fontSize:14,lineHeight:2,color:C.ink}}>
+            あら、<b style={{color:C.lav}}>いらっしゃい</b>🌙<br/>
+            今日は<b style={{color:C.gold}}>ちょっとだけ</b>、鏡をのぞきに来たんやね💕<br/><br/>
+            ただね……鏡は、<b style={{color:C.gold}}>合言葉</b>を唱えんと答えてくれへんの。
+            お部屋に入るたびに、いっしょに唱えよな。
+            ……<b>忘れんといてね？</b>
+          </p>
+          <div style={{marginTop:14,padding:"14px 16px",borderRadius:14,
+            background:"rgba(255,255,255,.72)",border:`1px solid ${C.line}`}}>
+            <div className="serif" style={{fontSize:10,letterSpacing:".24em",color:C.gold,marginBottom:8}}>〈 合言葉 〉</div>
+            <p className="serif" style={{margin:0,fontSize:15,lineHeight:1.95,color:C.lav}}>
+              鏡よ鏡、鏡さん。<br/>私が世界で一番美肌になるには、どうしたらええのん？
+            </p>
+          </div>
+        </div>
+
+        <div style={{width:"100%",borderRadius:20,marginTop:18,border:`1px solid ${C.line}`,
+          background:"linear-gradient(135deg,#FBF3E4,#F5EAF3,#FBF0EC)",padding:8,
+          boxShadow:"0 8px 26px rgba(184,127,192,.14)"}}>
+          <img src={DOOR} alt="開いた扉" style={{width:"100%",display:"block",borderRadius:13}}/>
+        </div>
+
+        <button onClick={begin} className="serif" style={{width:"100%",marginTop:18,padding:"16px 0",border:"none",
+          borderRadius:999,background:"linear-gradient(135deg,#D8BE86,#E0C9E4)",color:"#4A3D53",fontSize:16,
+          letterSpacing:".14em",cursor:"pointer",boxShadow:"0 8px 26px rgba(184,127,192,.28)"}}>
+          開いた扉、進んじゃう？ 🚪✨
+        </button>
+        <div style={{marginTop:14,fontSize:11.5,color:C.inkSoft,opacity:.9,lineHeight:1.8}}>
+          🌙 しっかり鏡と向き合って、お肌を観察してね
+        </div>
+      </div></div>);
+  }
+
+  // QUIZ
+  if(screen==="quiz"){
+    const frac=i/Q.length;
+    const rm=Math.floor(i/3);
+    const M=MIRRORS[rm]||MIRRORS[7];
+    const atStart=(i%3===0);
+    return (<div style={{...bg,background:`linear-gradient(180deg,#FBFAF6 0%, ${M.tint} 60%, #FAF6F0 100%)`,transition:"background .6s"}}><Ambient/>
+      <div style={{position:"relative",zIndex:1,maxWidth:470,margin:"0 auto"}}>
+        <div style={{marginBottom:14}}><Meguri frac={frac}/></div>
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:7,marginBottom:14}}>
+          {MIRRORS.map((mm,idx)=>(
+            <div key={idx} style={{width:idx===rm?12:7,height:idx===rm?12:7,borderRadius:"50%",
+              background:idx<rm?"rgba(184,146,88,.4)":(idx===rm?mm.a:"rgba(184,146,88,.18)"),
+              transition:"all .3s",boxShadow:idx===rm?`0 0 9px ${mm.a}`:"none"}}/>
+          ))}
+        </div>
+        {atStart && <Fairy text={roomFairyNode(rm)}/>}
+        <div style={{width:"100%",borderRadius:16,marginBottom:14,
+          border:`1px solid ${M.a}55`,background:`linear-gradient(135deg, ${M.tint}, #FFFFFF 60%, ${M.a}22)`,
+          padding:7,boxShadow:`0 6px 20px ${M.a}1f`}}>
+          <img src={ROOMS[rm]||ROOMS[0]} alt="鏡の間" style={{width:"100%",display:"block",borderRadius:11}}/>
+        </div>
+        <div key={i} className="fu" style={{...card,textAlign:"center",minHeight:130,display:"flex",flexDirection:"column",justifyContent:"center",
+          border:`1px solid ${M.a}55`,boxShadow:`0 10px 32px ${M.a}22`}}>
+          <div className="serif" style={{fontSize:11,letterSpacing:".2em",color:M.a,marginBottom:14}}>◈ この鏡をのぞくと……</div>
+          <p className="serif" style={{fontSize:18,lineHeight:1.9,margin:"0 0 4px",letterSpacing:".02em"}}>{Q[i][0]}</p>
+        </div>
+        <div style={{display:"flex",gap:12,marginTop:18}}>
+          <button onClick={()=>answer(false)} className="serif" style={{flex:1,padding:"15px 0",borderRadius:999,
+            border:`1px solid ${C.line}`,background:"transparent",color:C.ink,fontSize:15,letterSpacing:".1em",cursor:"pointer"}}>そうでもない</button>
+          <button onClick={()=>answer(true)} className="serif" style={{flex:1,padding:"15px 0",borderRadius:999,border:"none",
+            background:`linear-gradient(135deg,#D8BE86,${M.a})`,color:"#fff",fontSize:15,letterSpacing:".1em",cursor:"pointer",
+            boxShadow:`0 6px 18px ${M.a}44`}}>あるかも ♡</button>
+        </div>
+        <div style={{textAlign:"center",marginTop:14,fontSize:11.5,color:C.inkSoft,opacity:.85,lineHeight:1.8}}>
+          🌙 鏡をよく見て、正直に答えてね
+        </div>
+        <div style={{textAlign:"center",marginTop:8,fontSize:11,color:C.inkSoft,opacity:.7}}>{i+1} / {Q.length}</div>
+      </div></div>);
+  }
+
+  // REVEAL
+  if(screen==="reveal"){
+    return (<div style={bg}><Ambient/>
+      <div style={{position:"relative",zIndex:1,maxWidth:470,margin:"0 auto",textAlign:"center",paddingTop:20}}>
+        <div style={{marginBottom:22}}><Meguri frac={1}/></div>
+        <div className="serif" style={{fontSize:13,letterSpacing:".26em",color:C.gold,marginBottom:24}}>鏡が、ふっと光って——</div>
+        <OrnateMirror typeKey={winner} w={270} delayed={true}/>
+        <p className="serif" style={{fontSize:16,lineHeight:1.9,color:C.ink,margin:"34px 0 22px"}}>
+          鏡が映した、あなたの肌は——
+        </p>
+        <button onClick={()=>setScreen("result")} className="serif" style={{padding:"14px 34px",borderRadius:999,border:"none",
+          background:"linear-gradient(135deg,#D8BE86,#E0C9E4)",color:"#4A3D53",fontSize:15,letterSpacing:".14em",cursor:"pointer",
+          boxShadow:"0 8px 24px rgba(184,127,192,.3)"}}>その子に会う ♡</button>
+      </div></div>);
+  }
+
+  // RESULT（かんたん版＝アドバイスは出さない）
+  const r=R[winner];
+  return (<div style={bg}><Ambient/>
+    <div style={{position:"relative",zIndex:1,maxWidth:470,margin:"0 auto",textAlign:"center"}} className="fu">
+      <div style={{marginTop:6, marginBottom:22}}>
+        <OrnateMirror typeKey={winner} w={230}/>
+      </div>
+      <div className="serif" style={{fontSize:11,letterSpacing:".22em",color:C.gold,marginBottom:10}}>{r.world} の世界</div>
+      <h2 className="serif" style={{fontSize:24,margin:"0 0 8px",color:C.ink,letterSpacing:".04em"}}>{r.name}</h2>
+      <p className="serif" style={{fontSize:14.5,lineHeight:1.9,color:C.lav,margin:"0 0 22px"}}>{r.word}</p>
+
+      {/* ひとことだけ（＝ケア・成分・脳の話は伏せる） */}
+      <div style={{...card,marginBottom:16,textAlign:"left",
+        background:"linear-gradient(135deg,rgba(216,190,134,.14),rgba(224,201,228,.16))"}}>
+        <div className="serif" style={{fontSize:10,letterSpacing:".24em",color:C.gold,marginBottom:12}}>〈 鏡のひとこと 〉</div>
+        <p className="serif" style={{fontSize:14.5,lineHeight:2.1,margin:0,color:C.ink}}
+          dangerouslySetInnerHTML={{__html:TEASER[winner]}}/>
+      </div>
+
+      {/* 続きへ */}
+      <div style={{...card,textAlign:"center",marginBottom:16}}>
+        <img src={FAIRY_IMG} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
+          style={{width:64,display:"block",margin:"0 auto 12px"}}/>
+        <p className="serif" style={{fontSize:14,lineHeight:2.1,color:C.ink,margin:"0 0 4px"}}>
+          ここで映ったのは、<b style={{color:C.lav}}>入口だけ</b>🌙<br/><br/>
+          あなたの肌の<b style={{color:C.gold}}>ほんとうの特徴</b>、<br/>
+          <b style={{color:C.gold}}>合うケア</b>、そして<br/>
+          <b style={{color:C.lav}}>“肌と脳は双子”</b>のお話は——<br/>
+          ぜんぶ、この先にあるよ💕
+        </p>
+      </div>
+
+      <a href={LINE_URL} target="_blank" rel="noopener noreferrer"
+        style={{display:"block",padding:"16px 0",borderRadius:999,background:"#06C755",color:"#fff",
+        textDecoration:"none",fontSize:15,fontWeight:700,marginBottom:10,boxShadow:"0 8px 22px rgba(6,199,85,.28)"}}>
+        💚 続きをLINEで受け取る
+      </a>
+
+      <a href={FULL_URL} target="_blank" rel="noopener noreferrer" className="serif"
+        style={{display:"block",padding:"14px 0",borderRadius:999,
+        background:"linear-gradient(135deg,#D8BE86,#E0C9E4)",color:"#4A3D53",textDecoration:"none",
+        fontSize:14.5,letterSpacing:".08em",marginBottom:10,boxShadow:"0 8px 22px rgba(184,127,192,.26)"}}>
+        🪞 8つの鏡を、ぜんぶひらく（本編・56問）
+      </a>
+
+      <button onClick={share} className="serif" style={{width:"100%",padding:"13px 0",borderRadius:999,
+        border:`1px solid ${C.line}`,background:"rgba(255,255,255,.75)",color:C.gold,fontSize:13.5,
+        letterSpacing:".1em",cursor:"pointer",marginBottom:10}}>
+        {copied ? "コピーしたよ ♡ 貼り付けてね" : "🔗 結果をシェアする"}
+      </button>
+
+      <button onClick={begin} className="serif" style={{width:"100%",padding:"13px 0",borderRadius:999,
+        border:`1px solid ${C.line}`,background:"transparent",color:C.gold,fontSize:13,letterSpacing:".12em",cursor:"pointer"}}>
+        もう一度、鏡をひらく ♡
+      </button>
+    </div></div>);
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById("root"));
+</script>
+</body>
+</html>
