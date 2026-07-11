@@ -40,7 +40,6 @@ const C = {
 
 // ── リンク（ここだけ差し替えれば全部つながる）───────────────
 const LINE_URL = "https://x.gd/NZs7N";
-const FULL_URL = "https://botan-beauty.github.io/botan-shindan/true_mirror.html"; // 本編56問
 const THIS_URL = "https://botan-beauty.github.io/botan-shindan/true_mirror_lite.html"; // このページ（シェア用）
 
 // ── 24問（8つの鏡 × 3問）／t = 裏で加点 ───────────────
@@ -216,6 +215,34 @@ function Fairy({text}){
       <img src={FAIRY_ROOM} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
         style={{width:38,flexShrink:0,display:"block"}}/>
       <p className="serif" style={{margin:0,fontSize:13.5,lineHeight:1.9,color:C.ink}}>{text}</p>
+    </div>
+  );
+}
+
+// 📸 スクショの撮り方（開閉）
+function ScreenshotGuide(){
+  const [o,setO]=useState(false);
+  return (
+    <div style={{marginBottom:10}}>
+      <button onClick={()=>setO(!o)} className="serif" style={{width:"100%",padding:"14px 0",borderRadius:999,
+        border:`1px solid ${C.line}`,background:"rgba(255,255,255,.8)",color:C.gold,fontSize:14,
+        letterSpacing:".08em",cursor:"pointer"}}>
+        📸 結果をスクショしてシェアする
+      </button>
+      {o && (
+        <div className="fu" style={{marginTop:10,padding:"16px 18px",borderRadius:16,textAlign:"left",
+          border:`1px solid ${C.line}`,background:"linear-gradient(135deg,rgba(224,201,228,.18),rgba(216,190,134,.12))"}}>
+          <div className="serif" style={{fontSize:10,letterSpacing:".24em",color:C.gold,marginBottom:10}}>〈 スクショの撮り方 〉</div>
+          <p className="serif" style={{margin:0,fontSize:13.5,lineHeight:2,color:C.ink}}>
+            <b>iPhone</b>：サイドボタン ＋ 音量アップ を同時押し📸<br/>
+            <b>Android</b>：電源ボタン ＋ 音量ダウン を同時押し📸<br/><br/>
+            撮った鏡を、Instagram・Facebookに貼って教えてね🌸<br/>
+            <b style={{color:C.lav}}>あなたの鏡</b>、見てみたいの🌙
+          </p>
+          <button onClick={()=>setO(false)} style={{background:"none",border:"none",color:C.inkSoft,
+            fontSize:12,cursor:"pointer",marginTop:10,textDecoration:"underline",fontFamily:"inherit"}}>閉じる</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -429,16 +456,11 @@ function App(){
         💚 続きをLINEで受け取る
       </a>
 
-      <a href={FULL_URL} target="_blank" rel="noopener noreferrer" className="serif"
-        style={{display:"block",padding:"14px 0",borderRadius:999,
-        background:"linear-gradient(135deg,#D8BE86,#E0C9E4)",color:"#4A3D53",textDecoration:"none",
-        fontSize:14.5,letterSpacing:".08em",marginBottom:10,boxShadow:"0 8px 22px rgba(184,127,192,.26)"}}>
-        🪞 8つの鏡を、ぜんぶひらく（本編・56問）
-      </a>
+      <ScreenshotGuide/>
 
-      <button onClick={share} className="serif" style={{width:"100%",padding:"13px 0",borderRadius:999,
-        border:`1px solid ${C.line}`,background:"rgba(255,255,255,.75)",color:C.gold,fontSize:13.5,
-        letterSpacing:".1em",cursor:"pointer",marginBottom:10}}>
+      <button onClick={share} className="serif" style={{width:"100%",padding:"14px 0",borderRadius:999,border:"none",
+        background:"linear-gradient(135deg,#D8BE86,#E0C9E4)",color:"#4A3D53",fontSize:14.5,
+        letterSpacing:".08em",cursor:"pointer",marginBottom:10,boxShadow:"0 8px 22px rgba(184,127,192,.26)"}}>
         {copied ? "コピーしたよ ♡ 貼り付けてね" : "🔗 結果をシェアする"}
       </button>
 
