@@ -130,13 +130,12 @@
   .fairy.on-cover{ width:150px; margin:0 auto 14px; }
   .fairy.on-result{ width:120px; margin:0 auto 6px; }
 
-  /* 物語順に意味で置く妖精 */
-  .story-fairy{ display:block; margin:0 auto; pointer-events:none; -webkit-user-drag:none; animation:sfloat 6s ease-in-out infinite; }
-  .sf-cover{ width:86px; margin:6px auto 0; }
-  .sf-select{ width:90px; margin:2px auto 24px; }
-  .sf-work{ width:78px; margin:0 auto 20px; }
-  @keyframes sfloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
-  @media (prefers-reduced-motion: reduce){ .story-fairy{ animation:none; } }
+  /* 透過妖精を"あちこち"に小さく散らす */
+  #cover,#select,#work,#result{ position:relative; }
+  .sp{ position:absolute; pointer-events:none; z-index:1; }
+  .sp img{ display:block; width:100%; -webkit-user-drag:none; animation:spfloat 6.5s ease-in-out infinite; }
+  @keyframes spfloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @media (prefers-reduced-motion: reduce){ .sp img{ animation:none; } }
 
 /* 透過妖精を"ちょこん"と散らす（いろんなポーズを文字のあちこちに） */
   #cover{ position:relative; }
@@ -159,6 +158,9 @@
 
   <!-- 画面1 表紙 -->
   <section class="screen" id="cover">
+    <span class="sp" style="top:24px;right:-6px;width:50px;transform:rotate(8deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:38%;left:-8px;width:40px;transform:rotate(-11deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="bottom:118px;right:-4px;width:44px;transform:rotate(7deg)"><img src="fairy-point.png" alt=""></span>
     <div class="hero">
       <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="hero-poster.jpg">
         <source src="hero.mp4" type="video/mp4">
@@ -172,12 +174,14 @@
     <div class="rule"></div>
     <p class="lead">まずは一回だけ、聞いてみよう。</p>
     <p class="ask-big">それ、ほんとなん？</p>
-    <img class="story-fairy sf-cover" src="fairy-point.png" alt="">
     <button class="btn" id="toSelect">思い込みを見つける</button>
   </section>
 
   <!-- 画面2 思い込みを選ぶ -->
   <section class="screen" id="select" hidden>
+    <span class="sp" style="top:44px;right:-6px;width:48px;transform:rotate(8deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="top:46%;left:-8px;width:38px;transform:rotate(-10deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="bottom:36px;right:-4px;width:42px;transform:rotate(7deg)"><img src="fairy-funn.png" alt=""></span>
     <p class="eyebrow">今の思い込みを、ひとつ</p>
     <div id="beliefList"></div>
     <div id="customRow">
@@ -188,11 +192,13 @@
 
   <!-- 画面3 魔法の質問 -->
   <section class="screen" id="work" hidden>
+    <span class="sp" style="top:120px;right:-6px;width:44px;transform:rotate(8deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="top:52%;left:-8px;width:38px;transform:rotate(-10deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="bottom:90px;right:-4px;width:40px;transform:rotate(7deg)"><img src="fairy-pray.png" alt=""></span>
     <div class="sticky-belief">
       <p class="sb-eyebrow">それ、ほんとなん？</p>
       <p class="sb-text" id="chosenText"></p>
     </div>
-    <img class="story-fairy sf-work" src="fairy-pray.png" alt="">
     <div id="questions"></div>
     <button class="btn" id="toResult">新しい設定を見る</button>
     <button class="btn ghost" id="backSelect">別の思い込みを選ぶ</button>
@@ -200,7 +206,10 @@
 
   <!-- 最後の画面 -->
   <section class="screen" id="result" hidden>
-    <img class="fairy on-result" src="fairy.png" alt="">
+    <span class="sp" style="top:40px;right:-6px;width:48px;transform:rotate(8deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="top:26%;left:-8px;width:40px;transform:rotate(-11deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="top:56%;right:-4px;width:42px;transform:rotate(7deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="bottom:120px;left:-6px;width:38px;transform:rotate(-8deg)"><img src="fairy.png" alt=""></span>
     <p class="eyebrow">RESET</p>
     <p class="closing">思い込みは、<br>無理やり消さなくても大丈夫。</p>
     <p class="closing soft">「絶対そう」と信じていたものに、<br>あれ？　本当にそうかな。<br>という小さな隙間ができたとき、<br>脳は初めて、今まで見えなかった<br>可能性を探し始めます。</p>
@@ -439,7 +448,7 @@ document.getElementById("consultBtn").addEventListener("click", e=>{ e.preventDe
   let s; try{ s=JSON.parse(raw); }catch(e){ return; }
   if(s && s.belief){
     state = { belief:s.belief, example:(s.example || EX_MAP[s.belief] || ""), answers:Array.isArray(s.answers)? s.answers : new Array(6).fill("") };
-    openWork(state.belief, true);
+    // aketara hyoushi kara
   }
 })();
 </script>

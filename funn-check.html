@@ -89,6 +89,13 @@
   .fairy-hero{width:80%; max-width:300px; margin:22px auto 10px;}
   .fairy-mini{width:84px; margin:0 auto 20px;}
 
+  /* チェック画面に小さい透過をあちこち散らす */
+  #check{ position:relative; }
+  .sp{ position:absolute; pointer-events:none; z-index:1; }
+  .sp img{ display:block; width:100%; -webkit-user-drag:none; animation:spfloat 6.5s ease-in-out infinite; }
+  @keyframes spfloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @media (prefers-reduced-motion: reduce){ .sp img{ animation:none; } }
+
   /* 透過妖精を"ちょこん"と散らす（表紙・文字のあちこち） */
   #cover{ position:relative; }
   .choko{ position:absolute; pointer-events:none; z-index:1; }
@@ -124,9 +131,9 @@
     <p class="eyebrow">SELF CHECK</p>
     <h1>無自覚の<br><span class="fun">「力み（ﾌﾝｯ）」</span>度<br>セルフチェック</h1>
     <img id="fxFunn" class="fairy fairy-hero" alt="" aria-hidden="true">
-    <p class="lead">頑張っているつもりはない。<br>無理をしているつもりもない。</p>
-    <p class="lead soft">なのに、なぜか疲れる。<br>休んでも、頭が止まらない。<br>やっているのに、なぜか巡らない。</p>
-    <p class="lead">もしかしたらあなたは、<br>何かを頑張っているのではなく、<br>ずっと無自覚に「ﾌﾝｯ」と<br>しているのかもしれません。</p>
+    <p class="lead">高い美容液を塗っても、<br>美容医療を試しても、<br>なぜか「疲れた顔」が変わらない。</p>
+    <p class="lead soft">夜寝ても疲れが取れなくて、<br>朝からどんよりしてしまう。<br>「私の頑張りが足りへんのかな」って<br>自分を責めてるかもしれんけど……<br>それ、ほんとなん？</p>
+    <p class="lead">あなたの肌や性格が<br>悪いわけじゃないんよ。<br>気づかんうちに、脳も身体も<br>ずっと「ﾌﾝｯ」って<br>踏ん張ってるだけかもしれん。</p>
     <div class="rule"></div>
     <p class="lead soft">考え込まずに、<br>普段の自分に近いものを選んでね。</p>
     <button class="btn" id="toCheck">チェックを始める</button>
@@ -136,6 +143,12 @@
   <section class="screen" id="check" hidden>
     <img id="fxPoint" class="fairy fairy-mini" alt="" aria-hidden="true">
     <p class="eyebrow">19 の問い</p>
+    <span class="sp" style="top:6%;right:-6px;width:44px;transform:rotate(8deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:20%;left:-8px;width:38px;transform:rotate(-10deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="top:35%;right:-4px;width:42px;transform:rotate(7deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:50%;left:-6px;width:38px;transform:rotate(-9deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="top:66%;right:-6px;width:44px;transform:rotate(8deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="top:82%;left:-8px;width:40px;transform:rotate(-10deg)"><img src="fairy-point.png" alt=""></span>
     <div id="groups"></div>
     <button class="btn" id="toResult">結果を見る</button>
   </section>
@@ -203,52 +216,43 @@ const KEY = "funn_check_v3";
 
 /* 19項目：g / label / copy（気づき＋ひとこと）/ ask（問い） */
 const ITEMS = [
-  /* 顔と肌の「ﾌﾝｯ」 */
-  {g:"顔と肌の「ﾌﾝｯ」", label:"気づくと眉間にシワが寄っている",
+  {g:"身体の力みサイン", label:"気づくと眉間にシワが寄っている",
     copy:["考えごとをしている間、","顔だけ先に力んでいるのかも。"], ask:"眉間を、いま指でそっとゆるめてみたら？"},
-  {g:"顔と肌の「ﾌﾝｯ」", label:"疲れると、決まった場所に吹き出物や痒みが出る",
+  {g:"身体の力みサイン", label:"疲れると、決まった場所に吹き出物や痒みが出る",
     copy:["それは不調というより、","体からの通知かもしれません。"], ask:"その場所は、いつも何を頑張ったあとに出る？"},
-  {g:"顔と肌の「ﾌﾝｯ」", label:"気づくと食いしばって、エラや顎が張っている",
+  {g:"身体の力みサイン", label:"気づくと奥歯をギュッと食いしばって、エラや顎が張っている",
     copy:["食いしばって、","何を持ちこたえようとしてる？"], ask:"その力をほどいたら、顔つきはどう変わる？"},
-  {g:"顔と肌の「ﾌﾝｯ」", label:"マッサージやケアをしても、すぐ元に戻る",
+  {g:"身体の力みサイン", label:"マッサージやケアをしても、すぐ元に戻ってしまう",
     copy:["表面をゆるめても、","奥がまだ踏ん張っているのかも。"], ask:"戻るのは、力んでいる根っこが残っているから？"},
-
-  /* 体の中の「ﾌﾝｯ」 */
-  {g:"体の中の「ﾌﾝｯ」", label:"気づくと息が浅くなっている",
+  {g:"身体の力みサイン", label:"気づくと息が浅くなっている気がする",
     copy:["集中しているつもりでも、","体は少し身構えているのかも。"], ask:"今ここで一度、長く吐いてみたら、何がゆるむ？"},
-  {g:"体の中の「ﾌﾝｯ」", label:"肩を下ろしたつもりでも、またすぐ上がる",
+  {g:"力みやすい行動", label:"肩を下ろしたつもりでも、気がつくとまたすぐ上がっている",
     copy:["肩は、いつから","下ろせなくなったんだろう。"], ask:"「もう上げなくていい」と言われたら、どこまで下がる？"},
-  {g:"体の中の「ﾌﾝｯ」", label:"スマホやバッグを必要以上に強く握っている",
+  {g:"力みやすい行動", label:"スマホやバッグを必要以上に強く握っている",
     copy:["その手の力は、","どこに向かっている？"], ask:"ゆるめて持っても、何も落とさないとしたら？"},
-  {g:"体の中の「ﾌﾝｯ」", label:"眠りが浅い・寝ても疲れが残っている",
+  {g:"力みやすい行動", label:"眠りが浅かったり、寝ても疲れが残っている",
     copy:["休んでいるはずの夜も、","脳と体はまだ働いていたのかも。"], ask:"眠る前のあなたは、何を手放せずにいる？"},
-
-  /* 行動の中の「ﾌﾝｯ」 */
-  {g:"行動の中の「ﾌﾝｯ」", label:"トイレや休憩を「これが終わってから」にする",
+  {g:"力みやすい行動", label:"トイレや休憩を「これが終わってから」といつも後回しにする",
     copy:["自分の番は、","いつも一番あと。"], ask:"先に自分を満たしたら、本当に何かが崩れる？"},
-  {g:"行動の中の「ﾌﾝｯ」", label:"LINEやSNSの文章を何度も読み返す",
+  {g:"人といるときの力み", label:"LINEやSNSの文章を「変に思われないように」と何度も読み返してしまう",
     copy:["間違えないように。","嫌われないように。","ちゃんと伝わるように。","いつの間にか文章だけでなく、自分の価値まで確認していない？"], ask:"一度で送ったら、何が起きそう？"},
-  {g:"行動の中の「ﾌﾝｯ」", label:"急いでいないのに、歩く・食べる・話すのが速い",
+  {g:"人といるときの力み", label:"急いでいないのに、歩く・食べる・話すのがいつも速い",
     copy:["誰も追いかけてきていないのに、","何から先に行こうとしている？"], ask:"半分の速さにしたら、何が見えてくる？"},
-
-  /* 人といるときの「ﾌﾝｯ」 */
-  {g:"人といるときの「ﾌﾝｯ」", label:"楽しかった集まりのあとなのに、どっと疲れている",
+  {g:"人といるときの力み", label:"楽しかったはずの集まりのあとなのに、帰ってくるとどっと疲れている",
     copy:["嫌だったわけじゃない。","楽しみながら、ずっと気を配っていただけ。"], ask:"その場のあなたは、誰のために動いていた？"},
-  {g:"人といるときの「ﾌﾝｯ」", label:"会話中、無意識に相手に合わせて笑っている",
+  {g:"人といるときの力み", label:"会話中、無意識に相手に合わせて笑っている",
     copy:["その笑顔は、","どこから来たものだろう。"], ask:"合わせるのをやめたら、あなたは何を話す？"},
-  {g:"人といるときの「ﾌﾝｯ」", label:"沈黙になると、自分が何か話さなきゃと思う",
+  {g:"人といるときの力み", label:"沈黙になると、「自分が何か話さなければいけないのかな」と焦る",
     copy:["静けさを、","埋めるのはいつも自分。"], ask:"沈黙のまま座っていたら、何が起きると思ってる？"},
-  {g:"人といるときの「ﾌﾝｯ」", label:"誰かが不機嫌だと、自分に原因がある気がする",
+  {g:"人といるときの力み", label:"周りの人が不機嫌そうだと、「私何かしたかな…」と不安になる",
     copy:["その人の機嫌は、","本当にあなたが作ったもの？"], ask:"相手の感情まで、抱えなくていいとしたら？"},
-
-  /* 頭の中の「ﾌﾝｯ」 */
-  {g:"頭の中の「ﾌﾝｯ」", label:"休んでいると「何かしなきゃ」が出てくる",
+  {g:"頭の中の力み", label:"休んでいるのに「何かしなければいけない」と義務感で動いてしまう",
     copy:["体は止まっていても、","頭の中ではまだ働いているのかも。"], ask:"何もしない時間に、あなたは何を感じるのが怖い？"},
-  {g:"頭の中の「ﾌﾝｯ」", label:"褒められても、すぐに否定する言葉が浮かぶ",
+  {g:"頭の中の力み", label:"褒められても、すぐに否定する言葉が頭に浮かんでしまう",
     copy:["受け取らないのは、","謙虚さ？それとも癖？"], ask:"「ありがとう」だけで返してみたら、落ち着かない？"},
-  {g:"頭の中の「ﾌﾝｯ」", label:"頭の中に「ちゃんとしなきゃ」がよく現れる",
+  {g:"頭の中の力み", label:"頭の中に「ちゃんとしなきゃ」という言葉がよく現れる",
     copy:["その「ちゃんと」は、","そもそも誰の基準だろう。"], ask:"少しくらい雑でも、世界はちゃんと回る？"},
-  {g:"頭の中の「ﾌﾝｯ」", label:"口癖のように「よし、頑張ろ」と言っている",
+  {g:"頭の中の力み", label:"口癖のように「よし、頑張ろう」「大丈夫」と自分を奮い立たせている",
     copy:["「頑張ろ」は、いつの間にか","自分にかけている号令。"], ask:"その一言のあと、体はどこが力んでる？"},
 ];
 
@@ -266,10 +270,10 @@ const TIERS = [
           "まずは直そうとせず、","「あ、今わたしﾌﾝｯとしてた」","と気づくだけで大丈夫。"]},
   {min:13, max:99, count:"13〜19個",
     verdict:"全身で<span class='fun'>「ﾌﾝｯ」</span>と<br>踏ん張っていたかも",
-    body:["ここまで来ると、あなたは","何か一つを頑張っているというより、","日常そのものを、ずっと","踏ん張りながら生きていたのかもしれません。","",
-          "休んでも疲れが取れないのは、","休んでいる間も脳と体が","見えない仕事を続けていたから。","",
-          "さらに何かを足す必要はありません。","深呼吸を頑張る必要も、","上手に力を抜く必要もない。","",
-          "ただひとつ、","「あ、今までずっと力んでたんや」","その気づきが入った瞬間から、","止まっていた巡りは動き始めます。"]},
+    body:["日常そのものをずっと、","一人で踏ん張りながら","生きてきたんやね。","本当にお疲れ様。","",
+          "もうこれ以上、何かを足して","頑張らんでもいいんよ。","",
+          "まずは「あ、私ずっと","踏ん張ってたんや」って","気づくだけで十分。","",
+          "気づいた瞬間から、","隙間はもう生まれ始めとるよ。"]},
 ];
 
 const groupsEl = document.getElementById("groups");
@@ -344,7 +348,7 @@ document.getElementById("backLine1").addEventListener("click", backToLine);
     const el = document.querySelector('.item[data-i="'+i+'"]');
     if(el){ el.classList.add("on"); el.setAttribute("aria-checked","true"); }
   });
-  renderResult(chosen); show("result");
+  renderResult(chosen);
 })();
 </script>
 </body>
