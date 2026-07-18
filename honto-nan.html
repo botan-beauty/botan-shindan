@@ -130,22 +130,26 @@
   .fairy.on-cover{ width:150px; margin:0 auto 14px; }
   .fairy.on-result{ width:120px; margin:0 auto 6px; }
 
-  /* 透過妖精を"ちょこん"と散らす（文字の横・斜め・余白に） */
+  /* 物語順に意味で置く妖精 */
+  .story-fairy{ display:block; margin:0 auto; pointer-events:none; -webkit-user-drag:none; animation:sfloat 6s ease-in-out infinite; }
+  .sf-cover{ width:86px; margin:6px auto 0; }
+  .sf-select{ width:90px; margin:2px auto 24px; }
+  .sf-work{ width:78px; margin:0 auto 20px; }
+  @keyframes sfloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @media (prefers-reduced-motion: reduce){ .story-fairy{ animation:none; } }
+
+/* 透過妖精を"ちょこん"と散らす（いろんなポーズを文字のあちこちに） */
   #cover{ position:relative; }
   .choko{ position:absolute; pointer-events:none; z-index:1; }
   .choko img{ display:block; width:100%; -webkit-user-drag:none; animation:float 6s ease-in-out infinite; }
-  .choko.c2{ width:46px; top:52%; left:-6px; transform:rotate(-11deg); }
-  .choko.c2 img{ animation-delay:1.6s; animation-duration:7s; }
-  .choko.c3{ width:54px; bottom:92px; right:2px; transform:rotate(7deg); }
-  .choko.c3 img{ animation-delay:3s; animation-duration:6.5s; }
-
-  /* 表紙の動画（主役） */
-  .hero{ margin:2px 0 24px; display:flex; justify-content:center; }
-  .hero-video{
-    width:300px; max-width:100%; aspect-ratio:1/1; object-fit:cover; display:block;
-    border-radius:16px; border:1px solid var(--gold-soft); background:var(--mist);
-  }
-
+  .choko.c1{ width:52px; top:30px; right:-4px; transform:rotate(8deg); }
+  .choko.c1 img{ animation-delay:0s; }
+  .choko.c2{ width:40px; top:44%; left:-8px; transform:rotate(-10deg); }
+  .choko.c2 img{ animation-delay:1.2s; animation-duration:7s; }
+  .choko.c3{ width:46px; top:58%; right:0; transform:rotate(9deg); }
+  .choko.c3 img{ animation-delay:2.4s; animation-duration:6.5s; }
+  .choko.c4{ width:44px; bottom:88px; left:-6px; transform:rotate(-8deg); }
+  .choko.c4 img{ animation-delay:3.2s; animation-duration:7.5s; }
   @keyframes float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);} }
   @media (prefers-reduced-motion: reduce){ .choko img{ animation:none; } }
 </style>
@@ -160,8 +164,6 @@
         <source src="hero.mp4" type="video/mp4">
       </video>
     </div>
-    <span class="choko c2"><img src="fairy.png" alt=""></span>
-    <span class="choko c3"><img src="fairy.png" alt=""></span>
     <p class="eyebrow">MAGIC QUESTIONS</p>
     <h1>脳の思い込みをはずす<br><span class="fun">「それ、ほんとなん？」</span><br>魔法の質問シート</h1>
     <p class="lead">私はこういう人。<br>人生とはこういうもの。<br>お金とは、仕事とは、美容とは<br>こういうもの。</p>
@@ -170,6 +172,7 @@
     <div class="rule"></div>
     <p class="lead">まずは一回だけ、聞いてみよう。</p>
     <p class="ask-big">それ、ほんとなん？</p>
+    <img class="story-fairy sf-cover" src="fairy-point.png" alt="">
     <button class="btn" id="toSelect">思い込みを見つける</button>
   </section>
 
@@ -189,6 +192,7 @@
       <p class="sb-eyebrow">それ、ほんとなん？</p>
       <p class="sb-text" id="chosenText"></p>
     </div>
+    <img class="story-fairy sf-work" src="fairy-pray.png" alt="">
     <div id="questions"></div>
     <button class="btn" id="toResult">新しい設定を見る</button>
     <button class="btn ghost" id="backSelect">別の思い込みを選ぶ</button>
@@ -212,7 +216,6 @@
       <div class="divider"></div>
       <p class="sub">自由に選び直した、新しい設定</p>
       <p class="new" id="cardNew"></p>
-      <p class="sig">それ、ほんとなん？</p>
     </div>
 
     <button class="btn" id="saveImg">画像として残す</button>
@@ -221,11 +224,11 @@
     <div class="botan-card">
       <img class="botan-photo" src="botan-profile.jpg" alt="ぼたん">
       <p class="botan-name">ぼたん <span>／ 美容ナース15年</span></p>
-      <p class="botan-msg">今日気づけたことって、めっちゃ最高やね。<br>根っこまで一緒に巡らせたい人は、<br>ぼたんに話しかけてね💜</p>
+      <p class="botan-msg">今日、ここまでひとりで<br>できるなんてすごい✨️<br>「それ、ほんとなん？」の魔法の言葉を<br>続けるほど、本当の自分を<br>思い出していけるよ💜</p>
     </div>
 
     <div class="consult">
-      <p>ひとりで見るより、<br>誰かと一緒に見た方が、<br>隙間は広がることもあります。<br>もっと深く見てみたくなったら、<br>ぼたんに話してみる？</p>
+      <p>ひとりでは気づけないことも、<br>誰かと一緒に見ると、<br>もっと見えてくるよ。<br>もっと深く見てみたくなったら、<br>ぼたんに話してみる？💜</p>
       <a class="btn" id="consultBtn" href="#">LINEでぼたんに相談する</a>
     </div>
 
@@ -236,7 +239,7 @@
 
     <button class="btn ghost" id="again">もう一つやってみる</button>
     <a class="btn plain" id="backLine" href="#">LINEに戻る</a>
-    <p class="note" id="saveNote">保存できないときは、<br>そのままスクリーンショットで残してね。</p>
+    <p class="note" id="saveNote">「画像として残す」を押すと、<br>下に画像が出ます。長押しで保存できます。</p>
   </section>
 
 </div>
@@ -407,6 +410,10 @@ document.getElementById("saveImg").addEventListener("click", async ()=>{
 
     // 生成した画像を画面に表示（iPhoneは長押しで写真に保存できる）
     preview.innerHTML = "";
+    const tip = document.createElement("p");
+    tip.textContent = "▼ この画像を長押しして「写真に追加」";
+    tip.style.cssText = "font-family:var(--gothic);font-weight:400;font-size:.82rem;color:var(--wisteria);text-align:center;letter-spacing:.04em;margin:0 0 12px;";
+    preview.appendChild(tip);
     const img = document.createElement("img");
     img.src = dataURL; img.alt = "新しい設定";
     preview.appendChild(img);

@@ -89,6 +89,19 @@
   .fairy-hero{width:80%; max-width:300px; margin:22px auto 10px;}
   .fairy-mini{width:84px; margin:0 auto 20px;}
 
+  /* 透過妖精を"ちょこん"と散らす（表紙・文字のあちこち） */
+  #cover{ position:relative; }
+  .choko{ position:absolute; pointer-events:none; z-index:1; }
+  .choko img{ display:block; width:100%; -webkit-user-drag:none; animation:cfloat 6s ease-in-out infinite; }
+  .choko.c1{ width:50px; top:150px; right:-4px; transform:rotate(8deg); }
+  .choko.c1 img{ animation-delay:0s; }
+  .choko.c2{ width:40px; top:44%; left:-8px; transform:rotate(-10deg); }
+  .choko.c2 img{ animation-delay:1.4s; animation-duration:7s; }
+  .choko.c3{ width:44px; top:60%; right:-2px; transform:rotate(9deg); }
+  .choko.c3 img{ animation-delay:2.6s; animation-duration:6.5s; }
+  @keyframes cfloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);} }
+  @media (prefers-reduced-motion: reduce){ .choko img{ animation:none; } }
+
   /* AIぼたんの名乗り（表紙） */
   .ai-intro{display:flex; align-items:center; gap:14px; text-align:left; margin:0 0 30px; padding-bottom:22px; border-bottom:1px solid var(--wisteria-line);}
   .ai-intro-img{width:64px; height:auto; flex:0 0 auto; -webkit-user-drag:none;}
