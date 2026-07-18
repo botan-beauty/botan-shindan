@@ -137,6 +137,10 @@
   @keyframes spfloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
   @media (prefers-reduced-motion: reduce){ .sp img{ animation:none; } }
 
+  /* 表紙の動画 */
+  .hero{ margin:2px 0 22px; display:flex; justify-content:center; }
+  .hero-video{ width:320px; max-width:86%; aspect-ratio:1/1; object-fit:cover; display:block; border-radius:16px; border:1px solid var(--gold-soft); background:var(--mist); }
+
 /* 透過妖精を"ちょこん"と散らす（いろんなポーズを文字のあちこちに） */
   #cover{ position:relative; }
   .choko{ position:absolute; pointer-events:none; z-index:1; }
@@ -158,9 +162,10 @@
 
   <!-- 画面1 表紙 -->
   <section class="screen" id="cover">
-    <span class="sp" style="top:24px;right:-6px;width:50px;transform:rotate(8deg)"><img src="fairy-point.png" alt=""></span>
-    <span class="sp" style="top:38%;left:-8px;width:40px;transform:rotate(-11deg)"><img src="fairy.png" alt=""></span>
-    <span class="sp" style="bottom:118px;right:-4px;width:44px;transform:rotate(7deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:300px;right:-15px;width:44px;transform:rotate(8deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:52%;left:-15px;width:38px;transform:rotate(-11deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="bottom:150px;right:-13px;width:40px;transform:rotate(7deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="bottom:54px;left:-13px;width:38px;transform:rotate(-8deg)"><img src="fairy.png" alt=""></span>
     <div class="hero">
       <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="hero-poster.jpg">
         <source src="hero.mp4" type="video/mp4">
@@ -179,9 +184,10 @@
 
   <!-- 画面2 思い込みを選ぶ -->
   <section class="screen" id="select" hidden>
-    <span class="sp" style="top:44px;right:-6px;width:48px;transform:rotate(8deg)"><img src="fairy-funn.png" alt=""></span>
-    <span class="sp" style="top:46%;left:-8px;width:38px;transform:rotate(-10deg)"><img src="fairy-funn.png" alt=""></span>
-    <span class="sp" style="bottom:36px;right:-4px;width:42px;transform:rotate(7deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="top:56px;right:-15px;width:42px;transform:rotate(8deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="top:40%;left:-15px;width:36px;transform:rotate(-10deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:66%;right:-13px;width:40px;transform:rotate(7deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="bottom:40px;left:-13px;width:38px;transform:rotate(-8deg)"><img src="fairy-pray.png" alt=""></span>
     <p class="eyebrow">今の思い込みを、ひとつ</p>
     <div id="beliefList"></div>
     <div id="customRow">
@@ -192,9 +198,10 @@
 
   <!-- 画面3 魔法の質問 -->
   <section class="screen" id="work" hidden>
-    <span class="sp" style="top:120px;right:-6px;width:44px;transform:rotate(8deg)"><img src="fairy-pray.png" alt=""></span>
-    <span class="sp" style="top:52%;left:-8px;width:38px;transform:rotate(-10deg)"><img src="fairy-pray.png" alt=""></span>
-    <span class="sp" style="bottom:90px;right:-4px;width:40px;transform:rotate(7deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="top:130px;right:-15px;width:40px;transform:rotate(8deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="top:44%;left:-15px;width:36px;transform:rotate(-10deg)"><img src="fairy-funn.png" alt=""></span>
+    <span class="sp" style="top:64%;right:-13px;width:40px;transform:rotate(7deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="bottom:80px;left:-13px;width:38px;transform:rotate(-8deg)"><img src="fairy.png" alt=""></span>
     <div class="sticky-belief">
       <p class="sb-eyebrow">それ、ほんとなん？</p>
       <p class="sb-text" id="chosenText"></p>
@@ -206,10 +213,10 @@
 
   <!-- 最後の画面 -->
   <section class="screen" id="result" hidden>
-    <span class="sp" style="top:40px;right:-6px;width:48px;transform:rotate(8deg)"><img src="fairy.png" alt=""></span>
-    <span class="sp" style="top:26%;left:-8px;width:40px;transform:rotate(-11deg)"><img src="fairy.png" alt=""></span>
-    <span class="sp" style="top:56%;right:-4px;width:42px;transform:rotate(7deg)"><img src="fairy.png" alt=""></span>
-    <span class="sp" style="bottom:120px;left:-6px;width:38px;transform:rotate(-8deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="top:60px;right:-15px;width:44px;transform:rotate(8deg)"><img src="fairy.png" alt=""></span>
+    <span class="sp" style="top:28%;left:-15px;width:38px;transform:rotate(-11deg)"><img src="fairy-point.png" alt=""></span>
+    <span class="sp" style="top:52%;right:-13px;width:40px;transform:rotate(7deg)"><img src="fairy-pray.png" alt=""></span>
+    <span class="sp" style="bottom:130px;left:-13px;width:38px;transform:rotate(-8deg)"><img src="fairy-funn.png" alt=""></span>
     <p class="eyebrow">RESET</p>
     <p class="closing">思い込みは、<br>無理やり消さなくても大丈夫。</p>
     <p class="closing soft">「絶対そう」と信じていたものに、<br>あれ？　本当にそうかな。<br>という小さな隙間ができたとき、<br>脳は初めて、今まで見えなかった<br>可能性を探し始めます。</p>
@@ -233,7 +240,7 @@
     <div class="botan-card">
       <img class="botan-photo" src="botan-profile.jpg" alt="ぼたん">
       <p class="botan-name">ぼたん <span>／ 美容ナース15年</span></p>
-      <p class="botan-msg">今日、ここまでひとりで<br>できるなんてすごい✨️<br>「それ、ほんとなん？」の魔法の言葉を<br>続けるほど、本当の自分を<br>思い出していけるよ💜</p>
+      <p class="botan-msg">今日、ここまでひとりで<br>できるなんてすごい✨️<br>「それ、ほんとなん？」の<br>魔法の言葉を続けるほど、<br>本当の自分を<br>思い出していけるよ💜</p>
     </div>
 
     <div class="consult">
