@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>無自覚の「力み（ﾌﾝｯ）」度セルフチェック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFAFD; --ink:#423B4A; --ink-soft:#6E6577;
+    --wisteria:#A692C9; --wisteria-line:#CABEE0; --mist:#F2EDF8;
+    --gold:#BFA05A; --gold-soft:#D9C58C;
+    --mincho:"Shippori Mincho",serif;
+    --gothic:"Zen Kaku Gothic New",sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:var(--gothic); font-weight:300;
+    line-height:1.9; letter-spacing:.02em;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:440px; margin:0 auto; padding:64px 30px 90px;}
+  .screen{animation:rise .8s ease both;}
+  .screen[hidden]{display:none;}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+  .eyebrow{font-family:var(--gothic); font-weight:400; font-size:.7rem; letter-spacing:.34em; color:var(--wisteria); text-indent:.34em; margin:0 0 26px;}
+  h1{font-family:var(--mincho); font-weight:500; font-size:1.62rem; line-height:1.7; letter-spacing:.06em; margin:0 0 34px; color:var(--ink);}
+  h1 .fun{color:var(--wisteria); font-weight:600;}
+  .lead{font-family:var(--mincho); font-weight:400; font-size:1.02rem; line-height:2.15; color:var(--ink); margin:0 0 14px;}
+  .lead.soft{color:var(--ink-soft);}
+  .rule{width:1px; height:52px; margin:40px auto; background:linear-gradient(var(--gold-soft),transparent);}
+
+  /* 詩の部分だけ中央揃え（チェック項目・個別メッセージは左のまま） */
+  #cover{text-align:center;}
+  #result > .count, #result > .verdict, #result > #verdictBody{text-align:center;}
+  #verdictBody p{font-size:.92rem; letter-spacing:0; text-wrap:pretty; hanging-punctuation:allow-end;}
+
+  .btn{
+    display:block; width:100%; margin:26px auto 0; background:transparent; color:var(--ink);
+    font-family:var(--gothic); font-weight:400; font-size:.98rem; letter-spacing:.16em;
+    text-indent:.16em; text-align:center; text-decoration:none;
+    padding:18px 20px; border:1px solid var(--gold); border-radius:2px; cursor:pointer;
+    transition:background .5s ease;
+  }
+  .btn:active{background:var(--mist);}
+  .btn:focus-visible{outline:2px solid var(--gold-soft); outline-offset:3px;}
+  .btn.ghost{border-color:var(--wisteria-line); color:var(--ink-soft); font-size:.86rem;}
+  .btn.plain{border:none; color:var(--wisteria); letter-spacing:.2em; padding:14px; font-size:.82rem;}
+
+  .group{margin:0 0 42px;}
+  .group-label{font-family:var(--gothic); font-weight:400; font-size:.72rem; letter-spacing:.28em; color:var(--wisteria); text-indent:.28em; padding-bottom:12px; margin-bottom:8px; border-bottom:1px solid var(--wisteria-line);}
+  .item{display:flex; align-items:flex-start; gap:15px; padding:15px 4px; cursor:pointer; border-bottom:1px solid #EEE9F3;}
+  .item:last-child{border-bottom:none;}
+  .box{flex:0 0 auto; width:21px; height:21px; margin-top:3px; border:1px solid var(--wisteria-line); border-radius:3px; position:relative; transition:border-color .3s ease, background .3s ease;}
+  .item.on .box{border-color:var(--gold); background:var(--mist);}
+  .box::after{content:""; position:absolute; left:6px; top:2px; width:6px; height:11px; border:solid var(--gold); border-width:0 1.5px 1.5px 0; transform:rotate(45deg) scale(0); transition:transform .3s cubic-bezier(.2,.8,.2,1);}
+  .item.on .box::after{transform:rotate(45deg) scale(1);}
+  .item .txt{font-size:.97rem; color:var(--ink); line-height:1.7;}
+
+  .verdict{font-family:var(--mincho); font-weight:500; font-size:1.32rem; line-height:1.75; letter-spacing:.05em; margin:0 0 26px; color:var(--ink);}
+  .verdict .fun{color:var(--wisteria); font-weight:600;}
+  .count{font-family:var(--gothic); font-weight:400; font-size:.72rem; letter-spacing:.3em; color:var(--wisteria); margin:0 0 20px;}
+  .detail-head{font-family:var(--gothic); font-weight:400; font-size:.72rem; letter-spacing:.28em; color:var(--wisteria); text-indent:.28em; margin:64px 0 30px; padding-bottom:12px; border-bottom:1px solid var(--wisteria-line);}
+  .card{padding:6px 0 30px; margin-bottom:30px; border-bottom:1px solid #EEE9F3;}
+  .card:last-of-type{border-bottom:none;}
+  .card .label{font-family:var(--gothic); font-weight:400; font-size:.82rem; letter-spacing:.06em; color:var(--ink-soft); margin:0 0 16px;}
+  .card p.body{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.05; margin:0; color:var(--ink);}
+  .card p.ask{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.05; color:var(--wisteria); margin-top:14px;}
+
+  .bridge{margin-top:60px; padding-top:40px; border-top:1px solid var(--wisteria-line);}
+  .bridge p{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.05; color:var(--ink-soft); margin:0;}
+
+  /* ぼたん本人のプロフィールカード */
+  .botan-card{margin:44px 0 8px; padding:34px 26px; border:1px solid var(--gold-soft); border-radius:2px; text-align:center;}
+  .botan-photo{width:98px; height:98px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 18px; border:1px solid var(--wisteria-line);}
+  .botan-name{font-family:var(--mincho); font-weight:600; font-size:1.1rem; color:var(--ink); letter-spacing:.04em; margin:0 0 16px;}
+  .botan-name span{font-family:var(--gothic); font-weight:400; font-size:.76rem; color:var(--ink-soft); letter-spacing:.06em;}
+  .botan-msg{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.05; color:var(--ink); margin:0;}
+  .note{font-size:.72rem; color:var(--ink-soft); line-height:1.9; text-align:center; margin-top:16px; letter-spacing:.04em;}
+
+  /* AIぼたん（妖精） */
+  .fairy{display:block; height:auto; margin:0 auto; border:none; user-select:none; -webkit-user-drag:none;}
+  .fairy-hero{width:80%; max-width:300px; margin:22px auto 10px;}
+  .fairy-mini{width:84px; margin:0 auto 20px;}
+
+  /* AIぼたんの名乗り（表紙） */
+  .ai-intro{display:flex; align-items:center; gap:14px; text-align:left; margin:0 0 30px; padding-bottom:22px; border-bottom:1px solid var(--wisteria-line);}
+  .ai-intro-img{width:64px; height:auto; flex:0 0 auto; -webkit-user-drag:none;}
+  .ai-name{font-family:var(--mincho); font-weight:600; font-size:1.08rem; color:var(--wisteria); letter-spacing:.06em; margin:0 0 3px;}
+  .ai-role{font-family:var(--gothic); font-weight:400; font-size:.76rem; color:var(--ink-soft); letter-spacing:.08em; margin:0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 画面1 表紙 -->
+  <section class="screen" id="cover">
+    <div class="ai-intro">
+      <img id="fxIntro" class="ai-intro-img" alt="" aria-hidden="true">
+      <div class="ai-intro-txt">
+        <p class="ai-name">AIぼたん</p>
+        <p class="ai-role">今日の案内役・ぼたんの分身</p>
+      </div>
+    </div>
+    <p class="eyebrow">SELF CHECK</p>
+    <h1>無自覚の<br><span class="fun">「力み（ﾌﾝｯ）」</span>度<br>セルフチェック</h1>
+    <img id="fxFunn" class="fairy fairy-hero" alt="" aria-hidden="true">
+    <p class="lead">頑張っているつもりはない。<br>無理をしているつもりもない。</p>
+    <p class="lead soft">なのに、なぜか疲れる。<br>休んでも、頭が止まらない。<br>やっているのに、なぜか巡らない。</p>
+    <p class="lead">もしかしたらあなたは、<br>何かを頑張っているのではなく、<br>ずっと無自覚に「ﾌﾝｯ」と<br>しているのかもしれません。</p>
+    <div class="rule"></div>
+    <p class="lead soft">考え込まずに、<br>普段の自分に近いものを選んでね。</p>
+    <button class="btn" id="toCheck">チェックを始める</button>
+  </section>
+
+  <!-- 画面2 チェック -->
+  <section class="screen" id="check" hidden>
+    <img id="fxPoint" class="fairy fairy-mini" alt="" aria-hidden="true">
+    <p class="eyebrow">19 の問い</p>
+    <div id="groups"></div>
+    <button class="btn" id="toResult">結果を見る</button>
+  </section>
+
+  <!-- 画面3 結果 -->
+  <section class="screen" id="result" hidden>
+    <p class="eyebrow">RESULT</p>
+    <img id="fxPakkan" class="fairy fairy-hero" alt="" aria-hidden="true">
+    <p class="count" id="countLine"></p>
+    <p class="verdict" id="verdict"></p>
+    <div id="verdictBody"></div>
+    <div id="details"></div>
+
+    <div class="bridge">
+      <img id="fxMeguru" class="fairy fairy-hero" alt="" aria-hidden="true">
+      <p>力んでいたことに気づいたら、<br>次はその奥にある「ちゃんとしなきゃ」を<br>見てみる？</p>
+      <a class="btn" href="honto-nan.html">「それ、ほんとなん？」をやってみる</a>
+    </div>
+
+    <button class="btn ghost" id="reset">もう一度チェックする</button>
+
+    <div class="botan-card">
+      <img class="botan-photo" src="botan-profile.jpg" alt="ぼたん">
+      <p class="botan-name">ぼたん <span>／ 美容ナース15年</span></p>
+      <p class="botan-msg">今日気づけたことって、めっちゃ最高やね。<br>根っこまで一緒に巡らせたい人は、<br>ぼたんに話しかけてね💜</p>
+    </div>
+
+    <a class="btn plain" id="backLine1" href="#">LINEに戻る</a>
+    <img id="fxPray" class="fairy fairy-mini" alt="" aria-hidden="true">
+    <p class="note">結果はこの端末に保存されます。<br>また疲れたとき、見に来てね。</p>
+  </section>
+
+</div>
+
+<script>
+/* ▼▼ ここにLINEのURLを貼ってね（空のままなら前の画面に戻ります） ▼▼ */
+const LINE_URL = "https://x.gd/NZs7N";
+/* ▲▲ ここまで ▲▲ */
+
+/* ▼▼ AIぼたん（妖精）の画像。ファイル名を貼るだけ。空にすると出ません ▼▼ */
+const FUNN_IMG    = "IMG_9650.jpeg";                               // ﾌﾝｯ（表紙・重い荷物）
+const PAKKAN_IMG  = "IMG_9649.jpeg";                               // パッカーン（結果）
+const MEGURU_IMG  = "5477DC74-402D-4CDF-A99A-FC1E66033038.png";    // 巡る（締め）
+const BOTAN_POINT = "954796EC-63E3-411E-B2F0-3428B61CA1F9.png";    // 指さし（案内・小）
+const BOTAN_PRAY  = "IMG_9648.jpeg";                               // 祈り（見守り・小）
+/* ▲▲ ここまで ▲▲ */
+
+(function setFairies(){
+  const map = { fxIntro:BOTAN_POINT, fxFunn:FUNN_IMG, fxPoint:BOTAN_POINT, fxPakkan:PAKKAN_IMG, fxMeguru:MEGURU_IMG, fxPray:BOTAN_PRAY };
+  Object.keys(map).forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    const src = map[id];
+    if(src){ el.onerror = ()=>el.remove(); el.src = src; }
+    else { el.remove(); }
+  });
+})();
+
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const KEY = "funn_check_v3";
+
+/* 19項目：g / label / copy（気づき＋ひとこと）/ ask（問い） */
+const ITEMS = [
+  /* 顔と肌の「ﾌﾝｯ」 */
+  {g:"顔と肌の「ﾌﾝｯ」", label:"気づくと眉間にシワが寄っている",
+    copy:["考えごとをしている間、","顔だけ先に力んでいるのかも。"], ask:"眉間を、いま指でそっとゆるめてみたら？"},
+  {g:"顔と肌の「ﾌﾝｯ」", label:"疲れると、決まった場所に吹き出物や痒みが出る",
+    copy:["それは不調というより、","体からの通知かもしれません。"], ask:"その場所は、いつも何を頑張ったあとに出る？"},
+  {g:"顔と肌の「ﾌﾝｯ」", label:"気づくと食いしばって、エラや顎が張っている",
+    copy:["食いしばって、","何を持ちこたえようとしてる？"], ask:"その力をほどいたら、顔つきはどう変わる？"},
+  {g:"顔と肌の「ﾌﾝｯ」", label:"マッサージやケアをしても、すぐ元に戻る",
+    copy:["表面をゆるめても、","奥がまだ踏ん張っているのかも。"], ask:"戻るのは、力んでいる根っこが残っているから？"},
+
+  /* 体の中の「ﾌﾝｯ」 */
+  {g:"体の中の「ﾌﾝｯ」", label:"気づくと息が浅くなっている",
+    copy:["集中しているつもりでも、","体は少し身構えているのかも。"], ask:"今ここで一度、長く吐いてみたら、何がゆるむ？"},
+  {g:"体の中の「ﾌﾝｯ」", label:"肩を下ろしたつもりでも、またすぐ上がる",
+    copy:["肩は、いつから","下ろせなくなったんだろう。"], ask:"「もう上げなくていい」と言われたら、どこまで下がる？"},
+  {g:"体の中の「ﾌﾝｯ」", label:"スマホやバッグを必要以上に強く握っている",
+    copy:["その手の力は、","どこに向かっている？"], ask:"ゆるめて持っても、何も落とさないとしたら？"},
+  {g:"体の中の「ﾌﾝｯ」", label:"眠りが浅い・寝ても疲れが残っている",
+    copy:["休んでいるはずの夜も、","脳と体はまだ働いていたのかも。"], ask:"眠る前のあなたは、何を手放せずにいる？"},
+
+  /* 行動の中の「ﾌﾝｯ」 */
+  {g:"行動の中の「ﾌﾝｯ」", label:"トイレや休憩を「これが終わってから」にする",
+    copy:["自分の番は、","いつも一番あと。"], ask:"先に自分を満たしたら、本当に何かが崩れる？"},
+  {g:"行動の中の「ﾌﾝｯ」", label:"LINEやSNSの文章を何度も読み返す",
+    copy:["間違えないように。","嫌われないように。","ちゃんと伝わるように。","いつの間にか文章だけでなく、自分の価値まで確認していない？"], ask:"一度で送ったら、何が起きそう？"},
+  {g:"行動の中の「ﾌﾝｯ」", label:"急いでいないのに、歩く・食べる・話すのが速い",
+    copy:["誰も追いかけてきていないのに、","何から先に行こうとしている？"], ask:"半分の速さにしたら、何が見えてくる？"},
+
+  /* 人といるときの「ﾌﾝｯ」 */
+  {g:"人といるときの「ﾌﾝｯ」", label:"楽しかった集まりのあとなのに、どっと疲れている",
+    copy:["嫌だったわけじゃない。","楽しみながら、ずっと気を配っていただけ。"], ask:"その場のあなたは、誰のために動いていた？"},
+  {g:"人といるときの「ﾌﾝｯ」", label:"会話中、無意識に相手に合わせて笑っている",
+    copy:["その笑顔は、","どこから来たものだろう。"], ask:"合わせるのをやめたら、あなたは何を話す？"},
+  {g:"人といるときの「ﾌﾝｯ」", label:"沈黙になると、自分が何か話さなきゃと思う",
+    copy:["静けさを、","埋めるのはいつも自分。"], ask:"沈黙のまま座っていたら、何が起きると思ってる？"},
+  {g:"人といるときの「ﾌﾝｯ」", label:"誰かが不機嫌だと、自分に原因がある気がする",
+    copy:["その人の機嫌は、","本当にあなたが作ったもの？"], ask:"相手の感情まで、抱えなくていいとしたら？"},
+
+  /* 頭の中の「ﾌﾝｯ」 */
+  {g:"頭の中の「ﾌﾝｯ」", label:"休んでいると「何かしなきゃ」が出てくる",
+    copy:["体は止まっていても、","頭の中ではまだ働いているのかも。"], ask:"何もしない時間に、あなたは何を感じるのが怖い？"},
+  {g:"頭の中の「ﾌﾝｯ」", label:"褒められても、すぐに否定する言葉が浮かぶ",
+    copy:["受け取らないのは、","謙虚さ？それとも癖？"], ask:"「ありがとう」だけで返してみたら、落ち着かない？"},
+  {g:"頭の中の「ﾌﾝｯ」", label:"頭の中に「ちゃんとしなきゃ」がよく現れる",
+    copy:["その「ちゃんと」は、","そもそも誰の基準だろう。"], ask:"少しくらい雑でも、世界はちゃんと回る？"},
+  {g:"頭の中の「ﾌﾝｯ」", label:"口癖のように「よし、頑張ろ」と言っている",
+    copy:["「頑張ろ」は、いつの間にか","自分にかけている号令。"], ask:"その一言のあと、体はどこが力んでる？"},
+];
+
+const TIERS = [
+  {min:0, max:4, count:"0〜4個",
+    verdict:"今は、比較的<span class='fun'>そのまま</span>で<br>いられているみたい",
+    body:["力みがまったくないというより、","自分の状態に気づけているのかもしれません。","",
+          "ただ、忙しくなったときや、","誰かの期待に応えようとしたときには、","いつの間にか「ﾌﾝｯ」が戻ることもあります。","",
+          "そんなときは、","「今、何かを頑張ってる？」ではなく","「今、どこか力んでない？」と見てみてね。"]},
+  {min:5, max:12, count:"5〜12個",
+    verdict:"ところどころで<br><span class='fun'>「ﾌﾝｯ」</span>が発動中",
+    body:["あなたは頑張ろうとしていないのに、","体や脳が先に「ちゃんとしなきゃ」と","戦闘態勢に入っているのかもしれません。","",
+          "だから、やることを減らしても疲れる。","休んでも、なぜか休んだ感じがしない。","",
+          "あなたがダメなんじゃない。","無自覚に力んでいただけ。","",
+          "まずは直そうとせず、","「あ、今わたしﾌﾝｯとしてた」","と気づくだけで大丈夫。"]},
+  {min:13, max:99, count:"13〜19個",
+    verdict:"全身で<span class='fun'>「ﾌﾝｯ」</span>と<br>踏ん張っていたかも",
+    body:["ここまで来ると、あなたは","何か一つを頑張っているというより、","日常そのものを、ずっと","踏ん張りながら生きていたのかもしれません。","",
+          "休んでも疲れが取れないのは、","休んでいる間も脳と体が","見えない仕事を続けていたから。","",
+          "さらに何かを足す必要はありません。","深呼吸を頑張る必要も、","上手に力を抜く必要もない。","",
+          "ただひとつ、","「あ、今までずっと力んでたんや」","その気づきが入った瞬間から、","止まっていた巡りは動き始めます。"]},
+];
+
+const groupsEl = document.getElementById("groups");
+let currentGroup = "";
+ITEMS.forEach((it, i)=>{
+  if(it.g !== currentGroup){
+    currentGroup = it.g;
+    const gl = document.createElement("div");
+    gl.className = "group-label"; gl.textContent = it.g;
+    groupsEl.appendChild(gl);
+  }
+  const row = document.createElement("div");
+  row.className = "item"; row.dataset.i = i;
+  row.setAttribute("role","checkbox"); row.setAttribute("aria-checked","false"); row.tabIndex = 0;
+  row.innerHTML = `<span class="box"></span><span class="txt">${it.label}</span>`;
+  const toggle = ()=>{ row.classList.toggle("on"); row.setAttribute("aria-checked", row.classList.contains("on")); };
+  row.addEventListener("click", toggle);
+  row.addEventListener("keydown", e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); }});
+  groupsEl.appendChild(row);
+});
+
+const screens = {cover:document.getElementById("cover"), check:document.getElementById("check"), result:document.getElementById("result")};
+function show(name){
+  Object.values(screens).forEach(s=>s.hidden=true);
+  screens[name].hidden=false;
+  window.scrollTo({top:0,behavior:"auto"});
+}
+
+document.getElementById("toCheck").addEventListener("click", ()=>show("check"));
+document.getElementById("toResult").addEventListener("click", ()=>{
+  const chosen = [...document.querySelectorAll(".item.on")].map(el=>Number(el.dataset.i));
+  store.set(KEY, JSON.stringify(chosen));
+  renderResult(chosen); show("result");
+});
+document.getElementById("reset").addEventListener("click", ()=>{
+  store.del(KEY);
+  document.querySelectorAll(".item.on").forEach(el=>{el.classList.remove("on"); el.setAttribute("aria-checked","false");});
+  show("cover");
+});
+
+function renderResult(chosen){
+  const n = chosen.length;
+  const tier = TIERS.find(t=> n>=t.min && n<=t.max);
+  document.getElementById("countLine").textContent = "当てはまった数　" + n + " / 19";
+  document.getElementById("verdict").innerHTML = tier.verdict;
+  document.getElementById("verdictBody").innerHTML =
+    "<p class='lead soft'>" + tier.body.map(l=> l===""? "<br>" : l).join("<br>") + "</p>";
+  const details = document.getElementById("details");
+  if(chosen.length){
+    let html = "<p class='detail-head'>チェックした項目から</p>";
+    chosen.forEach(i=>{
+      const it = ITEMS[i];
+      html += "<div class='card'><p class='label'>「" + it.label + "」にチェックしたあなたへ</p><p class='body'>" +
+              it.copy.join("<br>") + "</p><p class='ask'>" + it.ask + "</p></div>";
+    });
+    details.innerHTML = html;
+  } else { details.innerHTML = ""; }
+}
+
+function backToLine(e){
+  e.preventDefault();
+  if(LINE_URL){ location.href = LINE_URL; }
+  else if(history.length>1){ history.back(); }
+}
+document.getElementById("backLine1").addEventListener("click", backToLine);
+
+(function restore(){
+  const raw = store.get(KEY); if(!raw) return;
+  let chosen; try{ chosen = JSON.parse(raw); }catch(e){ return; }
+  if(!Array.isArray(chosen)) return;
+  chosen.forEach(i=>{
+    const el = document.querySelector('.item[data-i="'+i+'"]');
+    if(el){ el.classList.add("on"); el.setAttribute("aria-checked","true"); }
+  });
+  renderResult(chosen); show("result");
+})();
+</script>
+</body>
+</html>

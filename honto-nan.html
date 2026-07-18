@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>「それ、ほんとなん？」魔法の質問シート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFAFD; --ink:#423B4A; --ink-soft:#6E6577;
+    --wisteria:#A692C9; --wisteria-line:#CABEE0; --mist:#F2EDF8;
+    --gold:#BFA05A; --gold-soft:#D9C58C;
+    --mincho:"Shippori Mincho",serif;
+    --gothic:"Zen Kaku Gothic New",sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:var(--gothic); font-weight:300; line-height:1.9; letter-spacing:.02em;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:440px; margin:0 auto; padding:64px 30px 90px;}
+  .screen{animation:rise .8s ease both;}
+  .screen[hidden]{display:none;}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+  .eyebrow{font-family:var(--gothic); font-weight:400; font-size:.7rem; letter-spacing:.34em; color:var(--wisteria); text-indent:.34em; margin:0 0 26px;}
+  h1{font-family:var(--mincho); font-weight:500; font-size:1.5rem; line-height:1.75; letter-spacing:.06em; margin:0 0 34px;}
+  h1 .fun{color:var(--wisteria); font-weight:600;}
+  .lead{font-family:var(--mincho); font-weight:400; font-size:1.02rem; line-height:2.15; margin:0 0 14px;}
+  .lead.soft{color:var(--ink-soft);}
+  .ask-big{font-family:var(--mincho); font-weight:600; font-size:1.34rem; color:var(--wisteria); letter-spacing:.05em; margin:8px 0 0;}
+  .rule{width:1px; height:52px; margin:40px auto; background:linear-gradient(var(--gold-soft),transparent);}
+
+  .btn{
+    display:block; width:100%; margin:26px auto 0; background:transparent; color:var(--ink);
+    font-family:var(--gothic); font-weight:400; font-size:.98rem; letter-spacing:.16em;
+    text-indent:.16em; text-align:center; text-decoration:none;
+    padding:18px 20px; border:1px solid var(--gold); border-radius:2px; cursor:pointer;
+    transition:background .5s ease;
+  }
+  .btn:active{background:var(--mist);}
+  .btn:focus-visible{outline:2px solid var(--gold-soft); outline-offset:3px;}
+  .btn:disabled{opacity:.35; cursor:default;}
+  .btn.ghost{border-color:var(--wisteria-line); color:var(--ink-soft); font-size:.86rem;}
+  .btn.plain{border:none; color:var(--wisteria); letter-spacing:.2em; padding:14px; font-size:.82rem;}
+
+  .cat-label{font-family:var(--gothic); font-weight:400; font-size:.72rem; letter-spacing:.28em; color:var(--wisteria); text-indent:.28em; padding-bottom:12px; margin:34px 0 4px; border-bottom:1px solid var(--wisteria-line);}
+  .cat-label:first-of-type{margin-top:0;}
+  .belief{display:block; width:100%; text-align:left; background:transparent; cursor:pointer; font-family:var(--gothic); font-weight:300; font-size:.97rem; color:var(--ink); padding:15px 6px; border:none; border-bottom:1px solid #EEE9F3; line-height:1.7; transition:color .3s ease;}
+  .belief::before{content:"—　"; color:var(--wisteria-line);}
+  .belief:active{color:var(--wisteria);}
+  .belief:focus-visible{outline:2px solid var(--gold-soft); outline-offset:2px;}
+  #customRow{display:flex; gap:10px; align-items:center; padding:15px 6px; margin-top:22px; border-top:1px solid var(--wisteria-line);}
+  #customInput{flex:1; font-family:var(--gothic); font-size:.95rem; color:var(--ink); background:transparent; border:none; border-bottom:1px solid var(--wisteria-line); padding:8px 2px; outline:none;}
+  #customInput:focus{border-bottom-color:var(--gold);}
+  #customGo{flex:0 0 auto; font-family:var(--gothic); font-size:.8rem; letter-spacing:.1em; color:var(--ink-soft); background:transparent; border:1px solid var(--wisteria-line); border-radius:2px; padding:9px 14px; cursor:pointer;}
+  #customGo:disabled{opacity:.35;}
+
+  .chosen{font-family:var(--mincho); font-weight:600; font-size:1.5rem; letter-spacing:.05em; color:var(--ink); margin:0 0 8px; line-height:1.6;}
+  .chosen-mark{font-family:var(--mincho); font-weight:500; font-size:1.05rem; color:var(--wisteria); margin:0 0 40px;}
+  .q{margin:0 0 34px;}
+  .q .qn{font-family:var(--gothic); font-weight:400; font-size:.7rem; letter-spacing:.2em; color:var(--wisteria); margin:0 0 10px;}
+  .q label{display:block; font-family:var(--mincho); font-weight:400; font-size:1.02rem; line-height:1.8; margin:0 0 12px;}
+  .q textarea{width:100%; min-height:56px; resize:vertical; font-family:var(--gothic); font-weight:300; font-size:1rem; color:var(--ink); line-height:1.8; background:transparent; border:none; border-bottom:1px solid var(--wisteria-line); padding:6px 2px; outline:none; transition:border-color .3s ease;}
+  .q textarea:focus{border-bottom-color:var(--gold);}
+  .q .guide{font-family:var(--gothic); font-weight:300; font-size:.8rem; line-height:1.85; color:var(--ink-soft); margin:0 0 14px; padding:14px 16px; border-left:1px solid var(--gold-soft);}
+  .q .hint{font-family:var(--mincho); font-weight:400; font-size:.86rem; color:var(--wisteria); margin:12px 0 0; line-height:1.8;}
+  .q .eg{font-family:var(--gothic); font-weight:300; font-size:.78rem; color:#9A90A6; margin:9px 0 0;}
+  .phase{font-family:var(--mincho); font-weight:500; font-size:.92rem; letter-spacing:.22em; color:var(--wisteria); text-indent:.22em; margin:2px 0 24px; padding-bottom:10px; border-bottom:1px solid var(--wisteria-line);}
+  .q-guide{font-family:var(--gothic); font-weight:300; font-size:.84rem; line-height:1.95; color:var(--ink-soft); margin:0 0 32px; padding:16px 18px; border-left:1px solid var(--gold-soft);}
+
+  #card{padding:44px 30px; margin:8px 0 4px; border:1px solid var(--gold-soft); border-radius:2px; background:var(--paper);}
+  #card .ct{font-family:var(--gothic); font-weight:400; font-size:.68rem; letter-spacing:.3em; color:var(--wisteria); text-indent:.3em; margin:0 0 30px;}
+  #card .sub{font-family:var(--gothic); font-weight:400; font-size:.72rem; letter-spacing:.08em; color:var(--ink-soft); margin:0 0 10px;}
+  #card .old{font-family:var(--mincho); font-weight:400; font-size:1.06rem; color:var(--ink-soft); margin:0; line-height:1.7;}
+  #card .arrow{width:1px; height:34px; margin:20px auto; background:linear-gradient(var(--wisteria-line),var(--gold-soft));}
+  #card .new{font-family:var(--mincho); font-weight:600; font-size:1.3rem; color:var(--ink); margin:0; line-height:1.8; letter-spacing:.04em;}
+  #card .qa{margin:0 0 18px; text-align:left;}
+  #card .qa .cq{font-family:var(--gothic); font-weight:400; font-size:.72rem; color:var(--wisteria); letter-spacing:.04em; margin:0 0 5px;}
+  #card .qa .ca{font-family:var(--mincho); font-weight:400; font-size:.95rem; color:var(--ink); line-height:1.7; margin:0; white-space:pre-wrap;}
+  #card .qa .ca.empty{color:var(--wisteria-line);}
+  #card .divider{height:1px; background:var(--wisteria-line); margin:26px 0;}
+  #card .sig{font-family:var(--mincho); font-weight:400; font-size:.72rem; color:var(--wisteria); letter-spacing:.16em; margin:32px 0 0;}
+
+  .closing{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.15; color:var(--ink); margin:0 0 14px;}
+  .closing.soft{color:var(--ink-soft);}
+  .consult{margin-top:56px; padding-top:40px; border-top:1px solid var(--wisteria-line);}
+  .consult p{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.05; color:var(--ink-soft); margin:0;}
+
+  /* ぼたん本人のプロフィールカード */
+  .botan-card{margin:56px 0 8px; padding:34px 26px; border:1px solid var(--gold-soft); border-radius:2px; text-align:center;}
+  .botan-photo{width:98px; height:98px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 18px; border:1px solid var(--wisteria-line);}
+  .botan-name{font-family:var(--mincho); font-weight:600; font-size:1.1rem; color:var(--ink); letter-spacing:.04em; margin:0 0 16px;}
+  .botan-name span{font-family:var(--gothic); font-weight:400; font-size:.76rem; color:var(--ink-soft); letter-spacing:.06em;}
+  .botan-msg{font-family:var(--mincho); font-weight:400; font-size:1rem; line-height:2.05; color:var(--ink); margin:0;}
+  .bridge{margin-top:34px;}
+  .bridge p{font-family:var(--mincho); font-weight:400; font-size:.95rem; line-height:2; color:var(--ink-soft); margin:0;}
+  .note{font-size:.72rem; color:var(--ink-soft); line-height:1.9; text-align:center; margin-top:16px; letter-spacing:.04em;}
+
+  /* ③ 選んだ思い込みを画面上に固定表示 */
+  .sticky-belief{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper);
+    margin:0 0 30px; padding:15px 0 13px;
+    border-bottom:1px solid var(--gold-soft);
+  }
+  .sticky-belief .sb-eyebrow{
+    font-family:var(--gothic); font-weight:400; font-size:.64rem;
+    letter-spacing:.28em; color:var(--wisteria); text-indent:.28em; margin:0 0 7px;
+  }
+  .sticky-belief .sb-text{
+    font-family:var(--mincho); font-weight:600; font-size:1.12rem;
+    color:var(--ink); margin:0; line-height:1.55; letter-spacing:.04em;
+  }
+
+  /* ⑤ 詩・締め・カードは中央揃え（質問と入力欄は左のまま） */
+  #cover, #result{ text-align:center; }
+
+  /* 生成画像プレビュー（長押し保存用） */
+  #imgPreview{ margin:22px 0 0; }
+  #imgPreview img{ width:100%; display:block; border:1px solid var(--wisteria-line); border-radius:2px; }
+
+  /* 案内役の妖精（AIぼたん） */
+  .fairy{ display:block; margin:0 auto; pointer-events:none; user-select:none; -webkit-user-drag:none; }
+  .fairy.on-cover{ width:150px; margin:0 auto 14px; }
+  .fairy.on-result{ width:120px; margin:0 auto 6px; }
+
+  /* 透過妖精を"ちょこん"と散らす（文字の横・斜め・余白に） */
+  #cover{ position:relative; }
+  .choko{ position:absolute; pointer-events:none; z-index:1; }
+  .choko img{ display:block; width:100%; -webkit-user-drag:none; animation:float 6s ease-in-out infinite; }
+  .choko.c2{ width:46px; top:52%; left:-6px; transform:rotate(-11deg); }
+  .choko.c2 img{ animation-delay:1.6s; animation-duration:7s; }
+  .choko.c3{ width:54px; bottom:92px; right:2px; transform:rotate(7deg); }
+  .choko.c3 img{ animation-delay:3s; animation-duration:6.5s; }
+
+  /* 表紙の動画（主役） */
+  .hero{ margin:2px 0 24px; display:flex; justify-content:center; }
+  .hero-video{
+    width:300px; max-width:100%; aspect-ratio:1/1; object-fit:cover; display:block;
+    border-radius:16px; border:1px solid var(--gold-soft); background:var(--mist);
+  }
+
+  @keyframes float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);} }
+  @media (prefers-reduced-motion: reduce){ .choko img{ animation:none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 画面1 表紙 -->
+  <section class="screen" id="cover">
+    <div class="hero">
+      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="hero-poster.jpg">
+        <source src="hero.mp4" type="video/mp4">
+      </video>
+    </div>
+    <span class="choko c2"><img src="fairy.png" alt=""></span>
+    <span class="choko c3"><img src="fairy.png" alt=""></span>
+    <p class="eyebrow">MAGIC QUESTIONS</p>
+    <h1>脳の思い込みをはずす<br><span class="fun">「それ、ほんとなん？」</span><br>魔法の質問シート</h1>
+    <p class="lead">私はこういう人。<br>人生とはこういうもの。<br>お金とは、仕事とは、美容とは<br>こういうもの。</p>
+    <p class="lead soft">ずっと当たり前だと思っていたそれは、<br>本当のあなたではなく、<br>過去の出来事や、誰かの言葉から<br>作られた脳の設定かもしれません。</p>
+    <p class="lead soft">無理に変えなくていい。<br>前向きにならなくてもいい。</p>
+    <div class="rule"></div>
+    <p class="lead">まずは一回だけ、聞いてみよう。</p>
+    <p class="ask-big">それ、ほんとなん？</p>
+    <button class="btn" id="toSelect">思い込みを見つける</button>
+  </section>
+
+  <!-- 画面2 思い込みを選ぶ -->
+  <section class="screen" id="select" hidden>
+    <p class="eyebrow">今の思い込みを、ひとつ</p>
+    <div id="beliefList"></div>
+    <div id="customRow">
+      <input id="customInput" type="text" placeholder="その他（自分で入力する）" maxlength="40" autocomplete="off">
+      <button id="customGo" disabled>ひらく</button>
+    </div>
+  </section>
+
+  <!-- 画面3 魔法の質問 -->
+  <section class="screen" id="work" hidden>
+    <div class="sticky-belief">
+      <p class="sb-eyebrow">それ、ほんとなん？</p>
+      <p class="sb-text" id="chosenText"></p>
+    </div>
+    <div id="questions"></div>
+    <button class="btn" id="toResult">新しい設定を見る</button>
+    <button class="btn ghost" id="backSelect">別の思い込みを選ぶ</button>
+  </section>
+
+  <!-- 最後の画面 -->
+  <section class="screen" id="result" hidden>
+    <img class="fairy on-result" src="fairy.png" alt="">
+    <p class="eyebrow">RESET</p>
+    <p class="closing">思い込みは、<br>無理やり消さなくても大丈夫。</p>
+    <p class="closing soft">「絶対そう」と信じていたものに、<br>あれ？　本当にそうかな。<br>という小さな隙間ができたとき、<br>脳は初めて、今まで見えなかった<br>可能性を探し始めます。</p>
+    <p class="closing soft">元々あなたがダメだったんじゃない。<br>ただ、いつの間にか<br>そう信じるようになっていただけ。<br>でも今は、別の設定を選んでもいい。</p>
+    <div class="rule"></div>
+
+    <div id="card">
+      <p class="ct">MY SHEET</p>
+      <p class="sub">選んだ思い込み</p>
+      <p class="old" id="cardOld"></p>
+      <div class="divider"></div>
+      <div id="cardBody"></div>
+      <div class="divider"></div>
+      <p class="sub">自由に選び直した、新しい設定</p>
+      <p class="new" id="cardNew"></p>
+      <p class="sig">それ、ほんとなん？</p>
+    </div>
+
+    <button class="btn" id="saveImg">画像として残す</button>
+    <div id="imgPreview" hidden></div>
+
+    <div class="botan-card">
+      <img class="botan-photo" src="botan-profile.jpg" alt="ぼたん">
+      <p class="botan-name">ぼたん <span>／ 美容ナース15年</span></p>
+      <p class="botan-msg">今日気づけたことって、めっちゃ最高やね。<br>根っこまで一緒に巡らせたい人は、<br>ぼたんに話しかけてね💜</p>
+    </div>
+
+    <div class="consult">
+      <p>ひとりで見るより、<br>誰かと一緒に見た方が、<br>隙間は広がることもあります。<br>もっと深く見てみたくなったら、<br>ぼたんに話してみる？</p>
+      <a class="btn" id="consultBtn" href="#">LINEでぼたんに相談する</a>
+    </div>
+
+    <div class="bridge">
+      <p>また頭や体がﾌﾝｯとしてきたら、<br>力みチェックに戻ってみてね。</p>
+      <a class="btn ghost" href="funn-check.html">力みチェックに戻る</a>
+    </div>
+
+    <button class="btn ghost" id="again">もう一つやってみる</button>
+    <a class="btn plain" id="backLine" href="#">LINEに戻る</a>
+    <p class="note" id="saveNote">保存できないときは、<br>そのままスクリーンショットで残してね。</p>
+  </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+/* ▼▼ URLをここに貼ってね（空のままなら動作を省略／前画面に戻ります） ▼▼ */
+const LINE_URL = "https://x.gd/NZs7N";       // LINEに戻る先
+const CONSULT_URL = "https://line.me/R/oaMessage/@436ozksk/?相談";    // ぼたんに相談する先（LINEが開いて「相談」が入力される）
+/* ▲▲ ここまで ▲▲ */
+
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const KEY = "honto_nan_v3";
+
+/* 思い込み：cat（分類）ごと。ex＝少し信じられる新設定の例（あれば表示） */
+const CATS = [
+  { name:"自分について", items:[
+    {t:"私は何をしても続かない", ex:"続かなかったものもある。でも、続いているものもある。"},
+    {t:"私は不器用", ex:"私は、好きなことなら意外と器用。"},
+    {t:"私は人見知り"},
+    {t:"私には才能がない"},
+    {t:"私は変われない", ex:"「変われない」と思ってた私が、今ここでこれを見てる。"},
+    {t:"私は運が悪い"},
+  ]},
+  { name:"頑張ることについて", items:[
+    {t:"私は頑張らないと価値がない"},
+    {t:"人に迷惑をかけてはいけない"},
+    {t:"私が我慢すれば丸く収まる"},
+    {t:"休んでいる時間は無駄"},
+    {t:"もっと学ばないと提供できない"},
+    {t:"私はまだ準備不足", ex:"全部揃わなくても、今できることはある。"},
+  ]},
+  { name:"人との関係について", items:[
+    {t:"嫌われたら終わり"},
+    {t:"他人の機嫌は私の責任"},
+    {t:"期待には応えなければいけない"},
+  ]},
+  { name:"お金・仕事について", items:[
+    {t:"お金は苦労して稼ぐもの"},
+    {t:"お金は使ったら、なくなるだけ"},
+    {t:"高く売るには実績が必要"},
+  ]},
+  { name:"美容・年齢について", items:[
+    {t:"私はもう若くない", ex:"今の私だから似合うものもある。"},
+    {t:"私は敏感肌だから、何をしても荒れる", ex:"私の肌は、ずっと同じではないかもしれない。"},
+    {t:"シミは年齢だから仕方ない", ex:"シミには、年齢以外の理由もあるかもしれない。"},
+    {t:"高い化粧品ほど効くはず", ex:"高さより、今の肌がほしいものかもしれない。"},
+    {t:"美容医療をしないと綺麗になれない", ex:"綺麗になる方法は、美容医療だけではないかもしれない。"},
+    {t:"この肌質は生まれつきで変えられない", ex:"肌は、今日の私にも応えてくれるかもしれない。"},
+  ]},
+];
+const EX_MAP = {};
+CATS.forEach(c=>c.items.forEach(it=>{ if(it.ex) EX_MAP[it.t]=it.ex; }));
+
+const QUESTIONS = [
+  { phase:"昔", q:"いつ頃から、そう思うようになった？", eg:"例：気づいたら、もう思ってた／たぶん、ランドセルしょってた頃から" },
+  { q:"誰かの言葉？ それとも、何かの出来事からできた？", eg:"例：親の口ぐせが、いつのまにか私の口ぐせに／あの日の“やらかし”が、まだ効いてる" },
+  { q:"本当に、いつでも100％そうだった？ 違った出来事はなかった？", eg:"例：そういえば、できてた日もあったな／忘れてたけど、ちゃんと褒められたこともある" },
+  { phase:"今", q:"この設定を信じ続けて、今のあなたは何を我慢している？", eg:"例：ほんまは休みたいのに、まだ動いてる／また「私はいいよ」って言うてしもた" },
+  { phase:"未来", q:"その設定が少しゆるんだら、何をしてみたい？", eg:"例：な〜んもせん日を、罪悪感なしで過ごす／ずっと後回しにしてた、アレ" },
+  { q:"今のあなたが自由に選び直すなら、どんな設定にする？", eg:"例：私は、何度でも選び直せる。", bold:true },
+];
+const START_GUIDE = "全部きれいに答えなくて大丈夫。書けるところだけ、考えすぎずに書いてみてね。";
+const BOLD_GUIDE = "遠慮はいらない。現実的じゃなくていい。なりたい設定を、自由に選んでいい。";
+
+let state = { belief:"", example:"", answers:new Array(6).fill("") };
+
+const screens = {
+  cover:document.getElementById("cover"), select:document.getElementById("select"),
+  work:document.getElementById("work"), result:document.getElementById("result")
+};
+function show(name){
+  Object.values(screens).forEach(s=>s.hidden=true);
+  screens[name].hidden=false;
+  window.scrollTo({top:0,behavior:"auto"});
+}
+
+/* belief一覧（分類つき）描画 */
+const listEl = document.getElementById("beliefList");
+CATS.forEach(cat=>{
+  const cl = document.createElement("div"); cl.className="cat-label"; cl.textContent=cat.name;
+  listEl.appendChild(cl);
+  cat.items.forEach(it=>{
+    const btn=document.createElement("button"); btn.className="belief"; btn.type="button"; btn.textContent=it.t;
+    btn.addEventListener("click", ()=>openWork(it.t));
+    listEl.appendChild(btn);
+  });
+});
+
+const customInput = document.getElementById("customInput");
+const customGo = document.getElementById("customGo");
+customInput.addEventListener("input", ()=>{ customGo.disabled = customInput.value.trim()===""; });
+customGo.addEventListener("click", ()=>{ const v=customInput.value.trim(); if(v) openWork(v); });
+customInput.addEventListener("keydown", e=>{ if(e.key==="Enter"){ const v=customInput.value.trim(); if(v) openWork(v); }});
+
+function openWork(belief, restored){
+  if(!restored){ state = { belief:belief, example:(EX_MAP[belief]||""), answers:new Array(6).fill("") }; save(); }
+  document.getElementById("chosenText").textContent = state.belief;
+  const qWrap = document.getElementById("questions"); qWrap.innerHTML = "";
+
+  const sg = document.createElement("p"); sg.className="q-guide"; sg.textContent=START_GUIDE; qWrap.appendChild(sg);
+
+  QUESTIONS.forEach((item,i)=>{
+    if(item.phase){
+      const ph=document.createElement("p"); ph.className="phase"; ph.textContent=item.phase; qWrap.appendChild(ph);
+    }
+    const wrap=document.createElement("div"); wrap.className="q";
+    if(item.bold){ const bg=document.createElement("p"); bg.className="q-guide"; bg.textContent=BOLD_GUIDE; wrap.appendChild(bg); }
+    const qn=document.createElement("p"); qn.className="qn"; qn.textContent="Q "+(i+1); wrap.appendChild(qn);
+    const lb=document.createElement("label"); lb.setAttribute("for","q"+i); lb.textContent=item.q; wrap.appendChild(lb);
+    const ta=document.createElement("textarea"); ta.id="q"+i; ta.rows=2; ta.value=state.answers[i]||"";
+    ta.addEventListener("input", ()=>{ state.answers[i]=ta.value; save(); });
+    wrap.appendChild(ta);
+    if(item.bold && state.example){
+      const h=document.createElement("p"); h.className="hint"; h.textContent="例えば：「"+state.example+"」"; wrap.appendChild(h);
+    } else if(item.eg){
+      const e=document.createElement("p"); e.className="eg"; e.textContent=item.eg; wrap.appendChild(e);
+    }
+    qWrap.appendChild(wrap);
+  });
+  show("work");
+}
+
+function save(){ store.set(KEY, JSON.stringify(state)); }
+
+document.getElementById("toSelect").addEventListener("click", ()=>show("select"));
+document.getElementById("backSelect").addEventListener("click", ()=>show("select"));
+document.getElementById("toResult").addEventListener("click", ()=>{
+  document.getElementById("cardOld").textContent = "「" + state.belief + "」";
+  const body = document.getElementById("cardBody");
+  body.innerHTML = "";
+  QUESTIONS.forEach((item,i)=>{
+    if(i===5) return; // 最後のQ6は新しい設定として下に大きく出す
+    const ans = (state.answers[i]||"").trim();
+    const qa = document.createElement("div"); qa.className="qa";
+    const cq = document.createElement("p"); cq.className="cq"; cq.textContent="Q"+(i+1)+"　"+item.q; qa.appendChild(cq);
+    const ca = document.createElement("p"); ca.className="ca" + (ans?"":" empty"); ca.textContent = ans || "（空欄のまま）"; qa.appendChild(ca);
+    body.appendChild(qa);
+  });
+  const newSetting = (state.answers[5]||"").trim();
+  document.getElementById("cardNew").textContent = newSetting ? "「"+newSetting+"」" : "（Q6に、選び直す設定を書いてね）";
+  show("result");
+});
+document.getElementById("again").addEventListener("click", ()=>{
+  store.del(KEY); state = { belief:"", example:"", answers:new Array(6).fill("") };
+  customInput.value=""; customGo.disabled=true; show("cover");
+});
+
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+document.getElementById("saveImg").addEventListener("click", async ()=>{
+  const card = document.getElementById("card");
+  const note = document.getElementById("saveNote");
+  const preview = document.getElementById("imgPreview");
+  if(typeof html2canvas === "undefined"){ note.textContent = "画像を用意できひんかった。スクショで残してね。"; return; }
+  note.textContent = "画像を作ってるよ…";
+  try{
+    // iOS Safariのcanvas面積上限を超えないようscaleを調整（縦長でも1枚で出す）
+    const w = card.offsetWidth, h = card.offsetHeight;
+    const MAX_AREA = 15000000;
+    let scale = 2;
+    if(w*h*scale*scale > MAX_AREA){ scale = Math.max(1, Math.sqrt(MAX_AREA/(w*h))); }
+    const canvas = await html2canvas(card, { backgroundColor:"#FBFAFD", scale:scale, useCORS:true, logging:false });
+    const dataURL = canvas.toDataURL("image/png");
+
+    // 生成した画像を画面に表示（iPhoneは長押しで写真に保存できる）
+    preview.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = dataURL; img.alt = "新しい設定";
+    preview.appendChild(img);
+    preview.hidden = false;
+
+    if(isIOS){
+      note.textContent = "上に出た画像を長押しして「写真に追加」で保存してね。";
+    }else{
+      const link = document.createElement("a");
+      link.download = "新しい設定.png"; link.href = dataURL; link.click();
+      note.textContent = "保存できないときは、上の画像を長押しで残してね。";
+    }
+    preview.scrollIntoView({behavior:"smooth", block:"center"});
+  }catch(e){ note.textContent = "画像を作れへんかった。スクショで残してね。"; }
+});
+
+function goURL(url){ if(url){ location.href=url; } else if(history.length>1){ history.back(); } }
+document.getElementById("backLine").addEventListener("click", e=>{ e.preventDefault(); goURL(LINE_URL); });
+document.getElementById("consultBtn").addEventListener("click", e=>{ e.preventDefault(); goURL(CONSULT_URL || LINE_URL); });
+
+(function restore(){
+  const raw = store.get(KEY); if(!raw) return;
+  let s; try{ s=JSON.parse(raw); }catch(e){ return; }
+  if(s && s.belief){
+    state = { belief:s.belief, example:(s.example || EX_MAP[s.belief] || ""), answers:Array.isArray(s.answers)? s.answers : new Array(6).fill("") };
+    openWork(state.belief, true);
+  }
+})();
+</script>
+</body>
+</html>
