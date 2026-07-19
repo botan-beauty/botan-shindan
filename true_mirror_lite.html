@@ -269,9 +269,10 @@ function Fairy({node, ftype, side}){
       background:"linear-gradient(135deg,rgba(224,201,228,.16),rgba(216,190,134,.12))",
       border:`1px solid ${C.line}`,borderRadius:16,padding:"12px 14px",margin:"0 0 16px"}}>
       <div style={{flexShrink:0,width:size,animation:outerAnim,
-        filter:"drop-shadow(0 5px 10px rgba(184,127,192,.28))"}}>
+        filter:"drop-shadow(0 3px 8px rgba(255,255,255,.55)) drop-shadow(0 6px 12px rgba(184,127,192,.14))"}}>
         <img src={img} alt="AIぼたん" onError={(e)=>{e.target.style.display='none';}}
-          style={{width:"100%",display:"block",animation:innerAnim}}/>
+          style={{width:"100%",display:"block",animation:innerAnim,
+            filter:"saturate(.88) brightness(1.05) contrast(.96)"}}/>
       </div>
       <p className="serif" style={{margin:0,fontSize:14,lineHeight:1.95,color:C.ink,flex:1}}>{node}</p>
     </div>
