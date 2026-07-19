@@ -27,7 +27,7 @@
   @keyframes swayRot{0%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}100%{transform:rotate(-5deg);}}
   @keyframes swayFloat{0%{transform:translateY(0);}50%{transform:translateY(-7px);}100%{transform:translateY(0);}}
   /* ツッコミ：右からスッと登場＋指先ピクッ2回→待機は微ゆれ */
-  @keyframes tsukIn{0%{opacity:0;transform:translateX(22px) rotate(5deg);}55%{opacity:1;transform:translateX(0) rotate(0);}68%{transform:translateX(-3px) rotate(-2deg);}80%{transform:translateX(0) rotate(0);}90%{transform:translateX(-3px) rotate(-2deg);}100%{transform:translateX(0) rotate(0);}}
+  @keyframes tsukIn{0%{opacity:0;transform:translateX(22px) rotate(5deg);}55%{opacity:1;transform:translateX(0) rotate(0);}68%{transform:translateX(-7px) rotate(-3deg);}80%{transform:translateX(0) rotate(0);}90%{transform:translateX(-7px) rotate(-3deg);}100%{transform:translateX(0) rotate(0);}}
   @keyframes tsukIdle{0%{transform:rotate(-2.5deg);}50%{transform:rotate(2.5deg);}100%{transform:rotate(-2.5deg);}}
   @media (prefers-reduced-motion: reduce){
     [data-fairy] *{animation:none!important;}
@@ -202,8 +202,8 @@ function roomFairyNode(rm){
   switch(rm){
     case 0: return {ftype:"fly", side:"left", node:(<span>
       ようこそ、最初のお部屋へ🌙 鏡に合言葉を唱えてね。せーのっ💕<br/>{spell}</span>)};
-    case 1: return {ftype:"fly", side:"left", node:(<span>
-      2つめのお部屋🌙 もう一回、いっしょに。せーのっ💕<br/>{spell}</span>)};
+    case 1: return {ftype:"pray", side:"left", node:(<span>
+      2つめのお部屋🌙 手を合わせて、そっと。せーのっ💕<br/>{spell}</span>)};
     case 2: return {ftype:"tsukkomi", side:"right", node:(<span>
       3つめのお部屋🌙 せーのっ💕<br/>
       <span style={{color:C.inkSoft}}>（あなた）「鏡よ鏡、鏡さん。私が世界で一番美肌になるには、どうしたら <b style={{color:C.ink}}>いい？</b>」</span><br/>
@@ -258,7 +258,7 @@ function Meguri({frac}){
 function Fairy({node, ftype, side}){
   const right = side==="right";
   const img  = ftype==="pray" ? FAIRY_PRAY : ftype==="tsukkomi" ? FAIRY_TSU : FAIRY_FLY;
-  const size = ftype==="fly" ? 66 : 74;               // 祈り・ツッコミは気持ち大きめ
+  const size = ftype==="fly" ? 66 : ftype==="pray" ? 76 : 95;   // ツッコミは大きめに
   let outerAnim, innerAnim;
   if(ftype==="fly"){        outerAnim="flyDrift 3.6s ease-in-out infinite"; innerAnim="flyBob 1.1s ease-in-out infinite"; }
   else if(ftype==="pray"){  outerAnim="swayFloat 4.3s ease-in-out infinite"; innerAnim="swayRot 3.1s ease-in-out infinite"; }
@@ -437,7 +437,7 @@ function App(){
               transition:"all .3s",boxShadow:idx===rm?`0 0 9px ${mm.a}`:"none"}}/>
           ))}
         </div>
-        {atStart && f && <Fairy key={rm} node={f.node} ftype={f.ftype} side={f.side}/>}
+        {atStart && f && <Fairy key={"fairy"+i} node={f.node} ftype={f.ftype} side={f.side}/>}
         <div style={{width:"100%",borderRadius:16,marginBottom:14,
           border:`1px solid ${M.a}55`,background:`linear-gradient(135deg, ${M.tint}, #FFFFFF 60%, ${M.a}22)`,
           padding:7,boxShadow:`0 6px 20px ${M.a}1f`}}>
