@@ -94,6 +94,10 @@
 
   /* ぼたん本人のプロフィールカード */
   .botan-card{margin:56px 0 8px; padding:34px 26px; border:1px solid var(--gold-soft); border-radius:2px; text-align:center;}
+
+  /* ぼたんからの赦しの声（結果の締め） */
+  .yurushi{margin:52px 0 8px; padding:38px 28px; border:1px solid var(--wisteria-line); border-radius:2px; background:var(--paper);}
+  .yurushi p{font-family:var(--mincho); font-weight:400; font-size:1.02rem; line-height:2.2; color:var(--ink); margin:0; text-align:center; letter-spacing:.02em;}
   .botan-photo{width:98px; height:98px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 18px; border:1px solid var(--wisteria-line);}
   .botan-name{font-family:var(--mincho); font-weight:600; font-size:1.1rem; color:var(--ink); letter-spacing:.04em; margin:0 0 16px;}
   .botan-name span{font-family:var(--gothic); font-weight:400; font-size:.76rem; color:var(--ink-soft); letter-spacing:.06em;}
@@ -230,12 +234,16 @@
       <div class="divider"></div>
       <div id="cardBody"></div>
       <div class="divider"></div>
-      <p class="sub">自由に選び直した、新しい設定</p>
+      <p class="sub">今日、そっと置いてみた一言</p>
       <p class="new" id="cardNew"></p>
     </div>
 
     <button class="btn" id="saveImg">画像として残す</button>
     <div id="imgPreview" hidden></div>
+
+    <div class="yurushi">
+      <p>誰にも言わんと、ひとりで<br>ず〜っと持ちこたえてたんやね。<br>えらかったなぁ。<br><br>もうシャキッとしなくていいし、<br>ちゃんとしなくていいよ。<br><br>きゅっと縮こまってた背中を<br>ゆっくり伸ばして、<br>ただ息をしてるだけで100点満点。<br><br>今日はお布団にくるまって、<br>ふにゃふにゃのクラゲ🪼🫧になろ</p>
+    </div>
 
     <div class="botan-card">
       <img class="botan-photo" src="botan-profile.jpg" alt="ぼたん">
@@ -315,15 +323,15 @@ const EX_MAP = {};
 CATS.forEach(c=>c.items.forEach(it=>{ if(it.ex) EX_MAP[it.t]=it.ex; }));
 
 const QUESTIONS = [
-  { phase:"昔", q:"いつ頃から、そう思うようになった？", eg:"例：気づいたら、もう思ってた／たぶん、ランドセルしょってた頃から" },
-  { q:"誰かの言葉？ それとも、何かの出来事からできた？", eg:"例：親の口ぐせが、いつのまにか私の口ぐせに／あの日の“やらかし”が、まだ効いてる" },
+  { phase:"昔", q:"これ、いつ頃から自分の中にあった気がする？", eg:"例：気づいたら、もう持ってた／たぶん、ランドセルしょってた頃から" },
+  { q:"もし、きっかけになった場面があるとしたら、どんな感じ？", eg:"例：いつのまにか、誰かの口ぐせが私の口ぐせに／あの日のこと、まだどこかで効いてる気がする" },
   { q:"本当に、いつでも100％そうだった？ 違った出来事はなかった？", eg:"例：そういえば、できてた日もあったな／忘れてたけど、ちゃんと褒められたこともある" },
   { phase:"今", q:"この設定を信じ続けて、今のあなたは何を我慢している？", eg:"例：ほんまは休みたいのに、まだ動いてる／また「私はいいよ」って言うてしもた" },
   { phase:"未来", q:"その設定が少しゆるんだら、何をしてみたい？", eg:"例：な〜んもせん日を、罪悪感なしで過ごす／ずっと後回しにしてた、アレ" },
-  { q:"今のあなたが自由に選び直すなら、どんな設定にする？", eg:"例：私は、何度でも選び直せる。", bold:true },
+  { q:"いきなり新しくしなくていい。「今日はいったん、これくらいでいいかも」と思える一言があるとしたら？", eg:"例：今日はもう、これくらいでいいことにしとこ。", bold:true },
 ];
 const START_GUIDE = "全部きれいに答えなくて大丈夫。書けるところだけ、考えすぎずに書いてみてね。";
-const BOLD_GUIDE = "遠慮はいらない。現実的じゃなくていい。なりたい設定を、自由に選んでいい。";
+const BOLD_GUIDE = "書き換えなくていい。「今日はいったん、これくらいで置いとこ」くらいの、仮のひとことでいい。";
 
 let state = { belief:"", example:"", answers:new Array(6).fill("") };
 
@@ -400,7 +408,7 @@ document.getElementById("toResult").addEventListener("click", ()=>{
     body.appendChild(qa);
   });
   const newSetting = (state.answers[5]||"").trim();
-  document.getElementById("cardNew").textContent = newSetting ? "「"+newSetting+"」" : "（Q6に、選び直す設定を書いてね）";
+  document.getElementById("cardNew").textContent = newSetting ? "「"+newSetting+"」" : "（Q6に、今日のひとことを書いてね）";
   show("result");
 });
 document.getElementById("again").addEventListener("click", ()=>{
