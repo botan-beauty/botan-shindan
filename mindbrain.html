@@ -6,67 +6,84 @@
 <title>マインドブレイン診断（何族？）🌙</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;background:linear-gradient(165deg,#0d0520 0%,#1e0f3e 30%,#381a60 60%,#170733 100%);font-family:"Hiragino Maru Gothic Pro","BIZ UDPGothic","Yu Gothic",sans-serif;display:flex;align-items:flex-start;justify-content:center;padding:16px;position:relative;overflow-x:hidden}
+body{min-height:100vh;background:linear-gradient(170deg,#e8f4fb 0%,#dfeaf8 30%,#e6e2f6 65%,#f0eaf8 100%);font-family:"Hiragino Maru Gothic Pro","BIZ UDPGothic","Yu Gothic",sans-serif;display:flex;align-items:flex-start;justify-content:center;padding:16px;position:relative;overflow-x:hidden}
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0}
-.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite}
-@keyframes tw{0%,100%{opacity:.12}50%{opacity:.8}}
+.star{position:absolute;border-radius:50%;background:#8fb4d8;animation:tw var(--d) ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.08}50%{opacity:.4}}
 #app{width:100%;max-width:440px;z-index:1;transition:opacity .3s,transform .3s}
 #app.fade{opacity:0;transform:translateY(10px)}
-.card{background:rgba(255,255,255,.975);border-radius:26px;padding:26px 22px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.card{background:rgba(255,255,255,.94);border-radius:26px;padding:26px 22px;box-shadow:0 18px 50px rgba(80,105,155,.15)}
 
 /* 妖精 */
 .fairy{position:absolute;pointer-events:none;z-index:5;opacity:.92;filter:drop-shadow(0 4px 10px rgba(140,80,200,.22))}
-@keyframes fly1{
- 0%   {transform:translate(0,0) rotate(-4deg)}
- 20%  {transform:translate(-9px,-16px) rotate(3deg)}
- 45%  {transform:translate(6px,-26px) rotate(6deg)}
- 70%  {transform:translate(11px,-11px) rotate(-2deg)}
- 100% {transform:translate(0,0) rotate(-4deg)}
+/* ゆらゆら：ほぼ上下だけ。落ち着いた漂い */
+@keyframes sway{
+ 0%   {transform:translate(0,0) rotate(-2deg)}
+ 50%  {transform:translate(2px,-13px) rotate(2deg)}
+ 100% {transform:translate(0,0) rotate(-2deg)}
 }
-@keyframes fly2{
- 0%   {transform:translate(0,0) rotate(3deg) scale(1)}
- 30%  {transform:translate(13px,-19px) rotate(-5deg) scale(1.07)}
- 55%  {transform:translate(-8px,-30px) rotate(4deg) scale(.96)}
- 80%  {transform:translate(-4px,-8px) rotate(-2deg) scale(1.03)}
- 100% {transform:translate(0,0) rotate(3deg) scale(1)}
-}
-@keyframes fly3{
+/* すーっと横切る：左右に大きく、上下ひかえめ。飛んでる感 */
+@keyframes glide{
  0%   {transform:translate(0,0) rotate(0deg)}
- 25%  {transform:translate(16px,-9px) rotate(7deg)}
- 50%  {transform:translate(4px,-24px) rotate(-4deg)}
- 75%  {transform:translate(-12px,-13px) rotate(5deg)}
+ 25%  {transform:translate(-20px,-5px) rotate(-6deg)}
+ 50%  {transform:translate(0,-9px) rotate(0deg)}
+ 75%  {transform:translate(20px,-5px) rotate(6deg)}
  100% {transform:translate(0,0) rotate(0deg)}
+}
+/* ふわっと浮く：真上に浮いて、ゆっくり降りる。ぷかぷか */
+@keyframes lift{
+ 0%   {transform:translateY(0) scale(1)}
+ 40%  {transform:translateY(-26px) scale(1.05)}
+ 55%  {transform:translateY(-27px) scale(1.05)}
+ 100% {transform:translateY(0) scale(1)}
+}
+/* くるん：その場で軽くまわりながら小さく揺れる */
+@keyframes spinny{
+ 0%   {transform:translate(0,0) rotate(0deg)}
+ 30%  {transform:translate(3px,-8px) rotate(11deg)}
+ 60%  {transform:translate(-3px,-11px) rotate(-9deg)}
+ 100% {transform:translate(0,0) rotate(0deg)}
+}
+/* ぴょこぴょこ：小さく速く弾む。元気な子 */
+@keyframes hop{
+ 0%   {transform:translateY(0) rotate(-3deg)}
+ 20%  {transform:translateY(-14px) rotate(3deg)}
+ 40%  {transform:translateY(0) rotate(-2deg)}
+ 60%  {transform:translateY(-8px) rotate(2deg)}
+ 80%  {transform:translateY(0) rotate(-1deg)}
+ 100% {transform:translateY(0) rotate(-3deg)}
 }
 .fairy img{width:100%;height:auto;display:block}
 .wrap-rel{position:relative}
-/* 地図の吹き出し横に置く案内妖精 */
-.map-fairy{position:absolute;width:38px;left:5%;bottom:8%;z-index:3;pointer-events:none;filter:drop-shadow(0 3px 8px rgba(120,70,180,.28))}
-.map-fairy img{width:100%;display:block;animation:fly2 6s ease-in-out infinite}
+/* 「のぞきに行く」ボタンのとこにいる祈りの子（ワクワク） */
+.go-wrap{position:relative;padding-left:52px}
+.go-fairy{position:absolute;width:46px;left:0;bottom:2px;z-index:4;pointer-events:none;filter:drop-shadow(0 3px 9px rgba(110,130,180,.28))}
+.go-fairy img{width:100%;display:block;animation:lift 4.4s ease-in-out infinite}
 
 /* 表紙 */
 .brand{text-align:center;margin-bottom:14px}
-.brand-sub{color:#a888d0;font-size:.68rem;letter-spacing:.18em;margin-bottom:6px}
-h1{font-size:1.72rem;font-weight:800;color:#2a1050;line-height:1.25;text-align:center}
-h1 span{color:#7a32c0}
-.h1-en{color:#b89ad8;font-size:.66rem;letter-spacing:.22em;text-align:center;margin-top:4px;margin-bottom:16px}
-.mapbox{border-radius:18px;margin-bottom:18px;border:2px solid #e2d0f6;box-shadow:0 8px 24px rgba(90,40,150,.18);position:relative}
+.brand-sub{color:#9ab0cc;font-size:.68rem;letter-spacing:.18em;margin-bottom:6px}
+h1{font-size:1.72rem;font-weight:800;color:#2e3550;line-height:1.25;text-align:center}
+h1 span{color:#6a5aa8}
+.h1-en{color:#a8bcd4;font-size:.66rem;letter-spacing:.22em;text-align:center;margin-top:4px;margin-bottom:16px}
+.mapbox{border-radius:18px;margin-bottom:18px;border:2px solid #d6e4f2;box-shadow:0 8px 22px rgba(80,110,160,.16);position:relative}
 .mapbox img{width:100%;display:block;border-radius:16px}
-.intro{background:linear-gradient(140deg,#faf4ff,#fff2fa);border-radius:18px;padding:18px 18px;margin-bottom:20px;border:1.5px solid #ead9fa}
-.intro p{color:#5f4090;font-size:.85rem;line-height:2.05;margin-bottom:13px}
+.intro{background:linear-gradient(140deg,#f6fbff,#f2f0fb);border-radius:18px;padding:18px 18px;margin-bottom:20px;border:1.5px solid #dce8f4}
+.intro p{color:#4e5a76;font-size:.85rem;line-height:2.05;margin-bottom:13px}
 .intro p:last-child{margin-bottom:0}
-.intro .big{font-size:.95rem;font-weight:800;color:#6b2fae}
-.btn-main{width:100%;background:linear-gradient(135deg,#5320a0,#8c3fd0);color:#fff;border:none;border-radius:50px;padding:17px;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 26px rgba(85,30,160,.45);transition:transform .18s}
+.intro .big{font-size:.95rem;font-weight:800;color:#6a5aa8}
+.btn-main{width:100%;background:linear-gradient(135deg,#6a7ec8,#9a7ed0);color:#fff;border:none;border-radius:50px;padding:17px;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(106,126,200,.32);transition:transform .18s}
 .btn-main:active{transform:scale(.97)}
-.hint-note{color:#b0a0c4;font-size:.7rem;text-align:center;margin-top:12px}
+.hint-note{color:#9aa8bc;font-size:.7rem;text-align:center;margin-top:12px}
 
 /* 質問 */
-.bar-track{height:7px;background:#ece0f8;border-radius:5px;margin-bottom:20px;overflow:hidden}
-.bar-prog{height:100%;background:linear-gradient(90deg,#7a32c0,#b070e8);border-radius:5px;transition:width .35s ease}
-.q-num{color:#b49ad0;font-size:.72rem;text-align:center;margin-bottom:10px;letter-spacing:.08em}
-.q-text{font-size:1.16rem;font-weight:800;color:#1d0740;line-height:1.6;text-align:center;margin-bottom:22px;min-height:3.2em;display:flex;align-items:center;justify-content:center}
+.bar-track{height:7px;background:#e2ecf6;border-radius:5px;margin-bottom:20px;overflow:hidden}
+.bar-prog{height:100%;background:linear-gradient(90deg,#6a8ecc,#9a7ed0);border-radius:5px;transition:width .35s ease}
+.q-num{color:#9aacc4;font-size:.72rem;text-align:center;margin-bottom:10px;letter-spacing:.08em}
+.q-text{font-size:1.16rem;font-weight:800;color:#2a3048;line-height:1.6;text-align:center;margin-bottom:22px;min-height:3.2em;display:flex;align-items:center;justify-content:center}
 .opts{display:flex;flex-direction:column;gap:9px}
-.opt{background:linear-gradient(135deg,#fbf9ff,#f5eefd);border:2px solid #e6d8f8;border-radius:15px;padding:15px;text-align:center;font-size:.96rem;color:#3a1860;cursor:pointer;font-family:inherit;font-weight:700;transition:all .18s}
-.opt:active{background:linear-gradient(135deg,#eadcff,#e2d0ff);border-color:#a878e8;transform:scale(.98)}
+.opt{background:linear-gradient(135deg,#fbfdff,#f2f4fc);border:2px solid #dde6f2;border-radius:15px;padding:15px;text-align:center;font-size:.96rem;color:#3a1860;cursor:pointer;font-family:inherit;font-weight:700;transition:all .18s}
+.opt:active{background:linear-gradient(135deg,#e4edfa,#e6e2f6);border-color:#8fa8d8;transform:scale(.98)}
 
 /* 計算中 */
 .calc{font-size:46px;display:block;text-align:center;margin-bottom:14px;animation:spin 3s linear infinite}
@@ -74,8 +91,8 @@ h1 span{color:#7a32c0}
 
 /* 結果 */
 .r-head{text-align:center;margin-bottom:18px}
-.r-title{font-size:1.14rem;font-weight:800;color:#1d0740;line-height:1.45}
-.r-sub{color:#8f6bb8;font-size:.76rem;margin-top:6px;line-height:1.7}
+.r-title{font-size:1.14rem;font-weight:800;color:#2a3048;line-height:1.45}
+.r-sub{color:#7c8ca8;font-size:.76rem;margin-top:6px;line-height:1.7}
 .top-card{border-radius:20px;padding:16px 14px;margin-bottom:11px;position:relative;overflow:hidden}
 .top-badge{position:absolute;top:9px;right:9px;color:#fff;font-size:.66rem;padding:4px 11px;border-radius:11px;font-weight:800;z-index:2}
 .tribe-img{width:100%;border-radius:14px;overflow:hidden;margin-bottom:11px;background:#fff}
@@ -89,7 +106,7 @@ h1 span{color:#7a32c0}
 .btn-detail{width:100%;background:rgba(255,255,255,.9);border:1.5px dashed;border-radius:12px;padding:11px;font-size:.83rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .18s}
 .btn-detail:active{transform:scale(.98)}
 
-.rest-label{color:#8f6bb8;font-size:.74rem;font-weight:700;margin-bottom:8px;margin-top:4px}
+.rest-label{color:#7c8ca8;font-size:.74rem;font-weight:700;margin-bottom:8px;margin-top:4px}
 .rest-card{border-radius:15px;padding:12px;margin-bottom:9px}
 .rest-top{display:flex;align-items:center;gap:11px;margin-bottom:8px}
 .rest-thumb{width:62px;height:70px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#fff}
@@ -107,28 +124,28 @@ h1 span{color:#7a32c0}
 .d-tag{font-size:.78rem;font-style:italic;text-align:center;margin-bottom:13px;opacity:.75}
 .d-sec{margin-bottom:13px}
 .d-h{font-size:.83rem;font-weight:800;margin-bottom:5px}
-.d-p{font-size:.79rem;line-height:1.95;color:#4d3868}
+.d-p{font-size:.79rem;line-height:1.95;color:#4e5060}
 .d-list{list-style:none;padding:0}
-.d-list li{font-size:.79rem;line-height:1.9;color:#4d3868;padding-left:15px;position:relative}
+.d-list li{font-size:.79rem;line-height:1.9;color:#4e5060;padding-left:15px;position:relative}
 .d-list li:before{content:"・";position:absolute;left:0}
-.d-nou{border-radius:12px;padding:12px;font-size:.79rem;line-height:1.95;background:linear-gradient(135deg,#f6efff,#fff0fa);border:1.5px solid #e4d2f6;color:#5a3f8c}
+.d-nou{border-radius:12px;padding:12px;font-size:.79rem;line-height:1.95;background:linear-gradient(135deg,#f2f8fd,#f6f2fb);border:1.5px solid #d8e4f2;color:#4e5a76}
 .d-close{width:100%;background:none;border:none;color:#a892c0;font-size:.76rem;cursor:pointer;font-family:inherit;margin-top:10px;text-decoration:underline}
 
 /* 締め */
-.botan-msg{background:linear-gradient(140deg,#f3ebff,#ffeaf8);border-radius:18px;padding:16px;margin:18px 0;border:2px solid #ddbcf2}
+.botan-msg{background:linear-gradient(140deg,#f2f8fd,#f5f1fb);border-radius:18px;padding:16px;margin:18px 0;border:2px solid #d8e4f2}
 .botan-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
-.botan-face{width:42px;height:42px;border-radius:50%;overflow:hidden;border:2px solid #c99ae8;flex-shrink:0;background:#f6eeff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.botan-face{width:42px;height:42px;border-radius:50%;overflow:hidden;border:2px solid #a8c0dc;flex-shrink:0;background:#eef4fb;display:flex;align-items:center;justify-content:center;font-size:20px}
 .botan-face img{width:100%;height:100%;object-fit:cover}
-.botan-from{color:#6a34a6;font-size:.79rem;font-weight:800}
-.msg-text{color:#5f4090;font-size:.8rem;line-height:1.95}
-.msg-text b{color:#7a32c0}
-.msg-q{color:#8c3fd0;font-size:.92rem;font-weight:800;text-align:center;margin:12px 0;letter-spacing:.02em}
-.msg-ok{color:#6a34a6;font-size:.81rem;line-height:1.9;text-align:center;margin-top:10px}
+.botan-from{color:#5a6a98;font-size:.79rem;font-weight:800}
+.msg-text{color:#4e5a76;font-size:.8rem;line-height:1.95}
+.msg-text b{color:#6a5aa8}
+.msg-q{color:#6a5aa8;font-size:.92rem;font-weight:800;text-align:center;margin:12px 0;letter-spacing:.02em}
+.msg-ok{color:#5a6a98;font-size:.81rem;line-height:1.9;text-align:center;margin-top:10px}
 
 .btn-line{width:100%;background:linear-gradient(135deg,#06c755,#00a040);color:#fff;border:none;border-radius:50px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(6,199,85,.35);text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:9px}
 .btn-share{width:100%;background:linear-gradient(135deg,#c03878,#e06090);color:#fff;border:none;border-radius:50px;padding:14px;font-size:.94rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 18px rgba(180,40,100,.3);margin-bottom:9px}
-.btn-retry{width:100%;background:rgba(255,255,255,.1);color:#d4c4f0;border:1.5px solid rgba(200,180,255,.28);border-radius:50px;padding:13px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
-.ss-box{background:#fff8fc;border:1.5px solid #f2c6dc;border-radius:15px;padding:14px;margin-bottom:9px;font-size:.77rem;color:#5a3050;line-height:1.9;display:none}
+.btn-retry{width:100%;background:rgba(255,255,255,.82);color:#5a7098;border:1.5px solid rgba(130,160,200,.35);border-radius:50px;padding:13px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
+.ss-box{background:#f8fbfe;border:1.5px solid #d4e2f0;border-radius:15px;padding:14px;margin-bottom:9px;font-size:.77rem;color:#46566e;line-height:1.9;display:none}
 .ss-box.open{display:block}
 .ss-close{background:none;border:none;color:#a080b0;font-size:.74rem;cursor:pointer;font-family:inherit;margin-top:6px;text-decoration:underline}
 .hash{color:#9060a0;font-weight:700}
@@ -142,25 +159,25 @@ var LINE_URL = "https://x.gd/NZs7N";
 
 /* ===== 10族データ ===== */
 var TRIBES = [
-{id:"zubora",name:"ズボラ族",emoji:"🛋️",color:"#b8702f",bg:"#fff6ea",border:"#e8a860",catch:"ゆるくて、最強。",status:"本日：やる気スイッチ捜索中🤣",
+{id:"zubora",name:"ズボラ族",emoji:"🛋️",color:"#c08040",bg:"#fff8ee",border:"#eab880",catch:"ゆるくて、最強。",status:"本日：やる気スイッチ捜索中🤣",
  why:"動けへんのは怠けやのうて、脳が「今はエネルギー使いどころちゃう」って守ってるから。"},
-{id:"stoic",name:"ストイック族",emoji:"💪",color:"#3272ac",bg:"#eaf4fc",border:"#78b4dc",catch:"努力で、未来を切りひらく。",status:"本日：筋肉痛で喜んでる💪🤣",
+{id:"stoic",name:"ストイック族",emoji:"💪",color:"#3a7ab4",bg:"#eef6fd",border:"#8cc0e4",catch:"努力で、未来を切りひらく。",status:"本日：筋肉痛で喜んでる💪🤣",
  why:"頑張り続けられるのは強さ。でも脳が「止まっていい」の合図を出しにくくなってるかも。"},
-{id:"moso",name:"妄想族",emoji:"🌈",color:"#8236b8",bg:"#f7edfc",border:"#b884da",catch:"まだ起きてもないことで、忙しい。",status:"本日：脳内上映会、満員御礼🌈",
+{id:"moso",name:"妄想族",emoji:"🌈",color:"#8a6cc8",bg:"#f6f2fd",border:"#c0b0e8",catch:"まだ起きてもないことで、忙しい。",status:"本日：脳内上映会、満員御礼🌈",
  why:"あなたの脳は\u201c描く力\u201dが飛び抜けてる。動き出しが遅いのは力不足やのうて、完璧に見えすぎるから。"},
-{id:"ai",name:"AI使役族",emoji:"💜",color:"#5442a8",bg:"#eeebf9",border:"#9284d2",catch:"働くのは、AIでええやん。",status:"本日：深夜3時45分、まだ修正中💜",
+{id:"ai",name:"AI使役族",emoji:"💜",color:"#5a7ab0",bg:"#eef3f9",border:"#9cb4d4",catch:"働くのは、AIでええやん。",status:"本日：深夜3時45分、まだ修正中💜",
  why:"その集中力は才能。でも脳がずっとオンで、切り替えが苦手になってるサインかも。"},
-{id:"beki",name:"べき子族",emoji:"📚",color:"#7a6a3a",bg:"#faf6ea",border:"#c8b478",catch:"普通は、こうでしょ？",status:"本日：ちゃんとできてるか心配😶",
+{id:"beki",name:"べき子族",emoji:"📚",color:"#8a7a48",bg:"#fbf8ef",border:"#d2c088",catch:"普通は、こうでしょ？",status:"本日：ちゃんとできてるか心配😶",
  why:"「ちゃんと」は責任感の証。でもその我慢が、脳の力みになって溜まってることも。"},
-{id:"meguri",name:"巡り族",emoji:"🌿",color:"#7a4ec0",bg:"#f4eefc",border:"#b092e0",catch:"すべては、めぐってくる。",status:"本日：空気読みすぎて疲れた🌿",
+{id:"meguri",name:"巡り族",emoji:"🌿",color:"#3e9a94",bg:"#ecf8f6",border:"#84c8c0",catch:"すべては、めぐってくる。",status:"本日：空気読みすぎて疲れた🌿",
  why:"感覚のセンサーが繊細な人。周りを受け取りすぎて、脳が休みきれてないかも。"},
-{id:"bakuhatsu",name:"爆発族",emoji:"✨",color:"#b03878",bg:"#fdeef6",border:"#e88ab8",catch:"爆発したら、止まらへん。",status:"本日：急に人生変えたくなってる🌙",
+{id:"bakuhatsu",name:"爆発族",emoji:"✨",color:"#d4664e",bg:"#fff1ec",border:"#f0a68e",catch:"爆発したら、止まらへん。",status:"本日：急に人生変えたくなってる🌙",
  why:"エネルギーは本物。波があるのは、脳が一気に使って一気に切れてるから。"},
-{id:"kyomei",name:"共鳴族",emoji:"💗",color:"#8c4aa8",bg:"#f8f0fc",border:"#c092d8",catch:"受け取りすぎる、優しい心。",status:"本日：共感しすぎて瀕死🥺",
+{id:"kyomei",name:"共鳴族",emoji:"💗",color:"#c05c86",bg:"#fdf0f5",border:"#eaa0bc",catch:"受け取りすぎる、優しい心。",status:"本日：共感しすぎて瀕死🥺",
  why:"共感力はギフト。でも人の感情を受信しすぎて、脳が疲れやすくなってる。"},
-{id:"kangae",name:"考えすぎ族",emoji:"🌀",color:"#9a7830",bg:"#fdf8ec",border:"#d8b868",catch:"まだ起きてないことまで考える。",status:"本日：脳内会議24時間目、続行中🌀",
+{id:"kangae",name:"考えすぎ族",emoji:"🌀",color:"#a88a3c",bg:"#fdfaf0",border:"#e0c684",catch:"まだ起きてないことまで考える。",status:"本日：脳内会議24時間目、続行中🌀",
  why:"深掘り力は天才級。でも脳内会議が終わらへんと、脳疲労がじわっと溜まる。"},
-{id:"agent",name:"エージェント族",emoji:"🌙",color:"#5e3494",bg:"#f0ecfa",border:"#9c7cd0",catch:"作戦は、いつもおもしろい方を選ぶ。",status:"本日：世界の秘密に気づいてしまった🌙",
+{id:"agent",name:"エージェント族",emoji:"🌙",color:"#6a44a8",bg:"#f2eefb",border:"#a88cd8",catch:"作戦は、いつもおもしろい方を選ぶ。",status:"本日：世界の秘密に気づいてしまった🌙",
  why:"世界観で生きる人。頭の中がいつも豊かなぶん、脳もフル回転してるかも。"}
 ];
 
@@ -254,15 +271,13 @@ function T(id){for(var i=0;i<TRIBES.length;i++){if(TRIBES[i].id===id)return TRIB
 function renderIntro(){
 app.innerHTML=
 '<div class="card wrap-rel">'+
- '<div class="fairy" style="width:42px;top:12px;right:12px"><img src="IMG_9783.png" alt="" style="animation:fly2 6.4s ease-in-out infinite"></div>'+
+ '<div class="fairy" style="width:42px;top:12px;right:12px"><img src="IMG_9783.png" alt="" style="animation:sway 5.2s ease-in-out infinite"></div>'+
  '<div class="brand">'+
    '<p class="brand-sub">BOTAN 10 TRIBES</p>'+
    '<h1>マインドブレイン<br><span>診断</span></h1>'+
    '<p class="h1-en">〜 あなたは何族？ 〜</p>'+
  '</div>'+
- '<div class="mapbox wrap-rel"><img src="map.jpg" alt="脳内国の地図">'+
-   '<div class="map-fairy"><img src="fairy-point.png" alt=""></div>'+
- '</div>'+
+ '<div class="mapbox"><img src="map.jpg" alt="脳内国の地図"></div>'+
  '<div class="intro">'+
    '<p class="big">🌙 ようこそ、脳内国へ。</p>'+
    '<p>実はね——<br>あなたの脳の中には、<br>とっても広いひとつの国があるんよ。</p>'+
@@ -273,7 +288,10 @@ app.innerHTML=
    '<p>それとも——<br>まだ誰も気づいてへん、<br>意外な癖強種族がまえのめりになってるかもしれへん🌙</p>'+
    '<p class="big">さぁ、あなたの脳内国を、のぞきに行こ💜</p>'+
  '</div>'+
- '<button class="btn-main" onclick="startQuiz()">脳内国をのぞきに行く🌙</button>'+
+ '<div class="go-wrap">'+
+   '<div class="go-fairy"><img src="fairy-pray.png" alt=""></div>'+
+   '<button class="btn-main" onclick="startQuiz()">脳内国をのぞきに行く🌙</button>'+
+ '</div>'+
  '<p class="hint-note">全20問 · サクサク4択 · 1分ちょっと</p>'+
 '</div>';
 }
@@ -290,18 +308,17 @@ for(var i=0;i<CHOICES.length;i++){opts+='<button class="opt" onclick="answer('+i
    その幅の中でランダムに振る。だから毎回ちがうけど、破綻せえへん。
    ★向きのルール：右に置く子＝左向き画像／左に置く子＝右向き画像 */
 var FAIRIES = [
-  /* 飛ぶ子：軽やか。大きめでも重くない。高いとこも飛ぶ。出番多め */
-  {img:"fairy.png",     face:"R", min:42, max:54, botMin:14, botMax:64, weight:3},
-  {img:"IMG_9784.png",  face:"L", min:42, max:54, botMin:14, botMax:64, weight:3},
-  /* 祈りの子：静か。下のほうにちょこん。中くらい */
-  {img:"fairy-pray.png",face:"R", min:36, max:44, botMin:8,  botMax:30, weight:2},
-  /* ほんとなん？の子：考えこんでる。下のほう。中くらい */
-  {img:"IMG_9783.png",  face:"L", min:34, max:42, botMin:8,  botMax:34, weight:2},
-  /* 指さしの子：存在感つよい。小さめ・端に寄せる・出番少なめ */
-  {img:"fairy-point.png",face:"R",min:30, max:38, botMin:10, botMax:26, weight:1},
-  {img:"IMG_9775.png",  face:"L", min:30, max:38, botMin:10, botMax:26, weight:1}
+  /* 飛ぶ子：軽やか。すーっと横切る／ふわっと浮く。大きめ・高いとこも飛ぶ。出番多め */
+  {img:"fairy.png",     face:"R", min:42, max:54, botMin:14, botMax:64, weight:3, moves:["glide","lift"]},
+  {img:"IMG_9784.png",  face:"L", min:42, max:54, botMin:14, botMax:64, weight:3, moves:["glide","lift"]},
+  /* 祈りの子：静か。ゆらゆら／ふわっと。下のほうにちょこん */
+  {img:"fairy-pray.png",face:"R", min:36, max:44, botMin:8,  botMax:30, weight:2, moves:["sway","lift"]},
+  /* ほんとなん？の子：考えこんでる。ゆらゆら／くるん。下のほう */
+  {img:"IMG_9783.png",  face:"L", min:34, max:42, botMin:8,  botMax:34, weight:2, moves:["sway","spinny"]},
+  /* 指さしの子：元気。ぴょこぴょこ／くるん。小さめ・端に寄せる・出番少なめ */
+  {img:"fairy-point.png",face:"R",min:30, max:38, botMin:10, botMax:26, weight:1, moves:["hop","spinny"]},
+  {img:"IMG_9775.png",  face:"L", min:30, max:38, botMin:10, botMax:26, weight:1, moves:["hop","spinny"]}
 ];
-var ANIMS = ["fly1","fly2","fly3"];
 
 function randomFairy(seed){
   function r(n,m){ var x=Math.sin(seed*97.13+n*41.7)*10000; return (x-Math.floor(x))*m; }
@@ -316,7 +333,8 @@ function randomFairy(seed){
   var size = Math.round(f.min + r(2, f.max-f.min+1));
   var bot  = Math.round(f.botMin + r(3, f.botMax-f.botMin+1));
   var off  = Math.round(2 + r(4,11));
-  var anim = ANIMS[(seed + Math.floor(r(5,3))) % ANIMS.length];
+  /* その子に似合う動きの中から選ぶ */
+  var anim = f.moves[(seed + Math.floor(r(5,2))) % f.moves.length];
   var dur  = (4.6 + r(6,3.2)).toFixed(1);
   var dly  = (r(7,2.4)).toFixed(1);
   var op   = (0.84 + r(8,0.14)).toFixed(2);
@@ -342,7 +360,7 @@ if(qIdx<QUESTIONS.length-1){qIdx++;fade(renderQ);}
 else{
  fade(function(){
   app.innerHTML='<div class="card wrap-rel" style="text-align:center;padding:56px 22px">'+
-   '<div class="fairy" style="width:44px;bottom:16px;left:14px"><img src="fairy-pray.png" alt="" style="animation:fly1 5.6s ease-in-out infinite"></div>'+
+   '<div class="fairy" style="width:44px;bottom:16px;left:14px"><img src="fairy-pray.png" alt="" style="animation:sway 4.8s ease-in-out infinite"></div>'+
    '<span class="calc">🌙</span>'+
    '<p style="color:#6a34a6;font-size:1.02rem;font-weight:800">脳内国、集計中…🤣</p>'+
    '<p style="color:#b0a0c4;font-size:.79rem;margin-top:8px">今日の勢力図、確認してるわ✨</p></div>';
@@ -372,7 +390,7 @@ var subline=top3[0].t.name+' '+top3[0].pct+'% ／ '+top3[1].t.name+' '+top3[1].p
 /* トップ族カード */
 var html=
 '<div class="card wrap-rel">'+
- '<div class="fairy" style="width:48px;top:10px;right:10px"><img src="IMG_9784.png" alt="" style="animation:fly1 5.8s ease-in-out infinite"></div>'+
+ '<div class="fairy" style="width:48px;top:10px;right:10px"><img src="IMG_9784.png" alt="" style="animation:glide 6.2s ease-in-out infinite"></div>'+
  '<div class="r-head">'+
    '<p style="font-size:30px;margin-bottom:4px">🌙</p>'+
    '<p class="r-title">今日の脳内国、勢力図</p>'+
