@@ -19,36 +19,37 @@ body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); co
 .avatar-wrap { position:relative; width:68px; height:68px; border-radius:50%; overflow:hidden; border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,0.25); flex-shrink:0; }
 .avatar-slide { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; opacity:0; transition:opacity 1s ease; }
 .avatar-slide.active { opacity:1; }
-/* ── ヒーローの動き（キラキラ雫＋ふよふよぼたん） ── */
-.hero-fx { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+/* ── 会話の背景の動き（キラキラ雫＋ふよふよぼたん） ── */
+.chat-fx { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+.hero { z-index:3; }
+.chat-area { position:relative; z-index:1; }
+.quick-replies, .preview-bar, .mic-hint, .input-area { position:relative; z-index:3; }
+.message, .typing { position:relative; z-index:1; }
 .sparkle { position:absolute; border-radius:50%; opacity:0; will-change:transform,opacity;
-  background:radial-gradient(circle at 32% 30%, rgba(255,255,255,0.95), rgba(255,240,250,0.65) 42%, rgba(201,184,216,0) 72%);
-  box-shadow:0 0 6px rgba(255,255,255,0.75); }
+  background:radial-gradient(circle at 32% 30%, rgba(255,255,255,0.95), rgba(212,131,122,0.55) 38%, rgba(201,184,216,0) 74%);
+  box-shadow:0 0 7px rgba(201,184,216,0.7); }
 @keyframes floatUp {
-  0%   { transform:translate3d(0,10px,0) scale(0.5); opacity:0; }
-  18%  { opacity:0.95; }
-  70%  { opacity:0.75; }
-  100% { transform:translate3d(var(--dx,0px),-120px,0) scale(1.05); opacity:0; }
+  0%   { transform:translate3d(0,20px,0) scale(0.5); opacity:0; }
+  18%  { opacity:0.85; }
+  70%  { opacity:0.6; }
+  100% { transform:translate3d(var(--dx,0px),-230px,0) scale(1.05); opacity:0; }
 }
 .drop { position:absolute; opacity:0; will-change:transform,opacity;
-  width:7px; height:10px; border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
-  background:linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(201,184,216,0.5));
-  box-shadow:0 0 5px rgba(255,255,255,0.6); }
+  width:8px; height:12px; border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(201,184,216,0.75));
+  box-shadow:0 0 6px rgba(201,184,216,0.6); }
 @keyframes dropFall {
-  0%   { transform:translate3d(0,-14px,0) scale(0.7); opacity:0; }
-  20%  { opacity:0.9; }
-  100% { transform:translate3d(var(--dx,0px),140px,0) scale(1); opacity:0; }
+  0%   { transform:translate3d(0,-20px,0) scale(0.7); opacity:0; }
+  20%  { opacity:0.75; }
+  100% { transform:translate3d(var(--dx,0px),260px,0) scale(1); opacity:0; }
 }
-.fairy { position:absolute; width:74px; opacity:0; pointer-events:none;
-  filter:drop-shadow(0 3px 10px rgba(120,90,140,0.4)); will-change:transform,opacity; }
-@keyframes fairyCross {
-  0%   { opacity:0; transform:translate3d(0,0,0); }
-  12%  { opacity:0.92; }
-  88%  { opacity:0.92; }
-  100% { opacity:0; transform:translate3d(var(--fdx,120px),0,0); }
-}
-@keyframes fuyo { 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-11px) rotate(2deg);} }
-.fairy-inner { display:block; width:100%; animation:fuyo 2.6s ease-in-out infinite; }
+.message.user.with-fairy .bubble { max-width:62%; }
+.msg-fairy { width:46px; flex-shrink:0; align-self:flex-end; margin-bottom:2px;
+  opacity:0; animation:fairyPop 0.9s ease forwards;
+  filter:drop-shadow(0 2px 7px rgba(150,120,170,0.3)); }
+.msg-fairy img { display:block; width:100%; animation:fuyo 3s ease-in-out infinite; }
+@keyframes fairyPop { 0%{ opacity:0; transform:translateY(6px) scale(0.8);} 100%{ opacity:0.95; transform:translateY(0) scale(1);} }
+@keyframes fuyo { 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-6px) rotate(3deg);} }
 .hero-text h1 { font-family:'Shippori Mincho',serif; font-size:19px; font-weight:700; color:white; text-shadow:0 1px 6px rgba(0,0,0,0.4); }
 .hero-text p { font-size:11px; color:rgba(255,255,255,0.88); display:flex; align-items:center; gap:5px; margin-top:3px; }
 .dot-live { width:6px; height:6px; background:#7ec87e; border-radius:50%; animation:pulse 2s infinite; }
@@ -107,9 +108,6 @@ textarea::placeholder { color:#b8a8a8; }
          autoplay muted loop playsinline webkit-playsinline preload="auto"></video>
   <img class="hero-img" id="heroFallback" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6889.jpeg" alt="ぼたん" style="display:none">
   <div class="hero-overlay"></div>
-  <div class="hero-fx" id="heroFx">
-    <div class="fairy" id="fairy"><img class="fairy-inner" id="fairyImg" src="" alt=""></div>
-  </div>
   <div class="hero-content">
     <div class="avatar-wrap" id="avatarWrap"></div>
     <div class="hero-text">
@@ -118,6 +116,7 @@ textarea::placeholder { color:#b8a8a8; }
     </div>
   </div>
 </div>
+<div class="chat-fx" id="chatFx"></div>
 <div class="chat-area" id="chatArea">
   <div class="message botan-msg">
     <div class="msg-av"><img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="ぼたん"></div>
@@ -650,86 +649,95 @@ const MAX_PHOTOS = 5;
 const slides=document.querySelectorAll('.avatar-slide');
 setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
 
-// ── ヒーローの動き（キラキラ雫＋ふよふよぼたん） ──────────
-// 妖精の画像URL。上から順に試して、読めたやつを使う。全部ダメなら妖精は出えへん。
+// ── 会話の背景の動き（キラキラ雫）＋ 話を聞いてる小さい妖精 ──────
+// 妖精の画像。読めたやつを全部ためて、出るたびにランダムで選ぶ。
+// 使いたないポーズがあったら、その行を消すだけでOK。
 const FAIRY_CANDIDATES = [
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy.png',
-  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-point.png',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-pray.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-point.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-funn.png',
 ];
 
-const heroFx = document.getElementById('heroFx');
-const fairyEl = document.getElementById('fairy');
-const fairyImg = document.getElementById('fairyImg');
-let fairyReady = false;
+const fxLayer = document.getElementById('chatFx');
+let fairyPool = [];           // 読み込みに成功した画像
+let lastFairySrc = null;      // 直前に出したやつ（続けて同じのが出えへんように）
+let lastFairyTurn = -99;      // 前に出た回を覚えとく
 
-// 妖精画像を順番に試す
-(function loadFairy(i){
-  if(i >= FAIRY_CANDIDATES.length) return;      // 見つからんかったら諦める（何も出えへんだけ）
+// 候補を全部ためす。読めたやつだけプールに入る。
+FAIRY_CANDIDATES.forEach(url=>{
   const test = new Image();
-  test.onload = ()=>{ fairyImg.src = FAIRY_CANDIDATES[i]; fairyReady = true; scheduleFairy(4000); };
-  test.onerror = ()=> loadFairy(i+1);
-  test.src = FAIRY_CANDIDATES[i];
-})(0);
+  test.onload = ()=>{ fairyPool.push(url); };
+  test.onerror = ()=>{ /* 無い画像は無視 */ };
+  test.src = url;
+});
+
+// プールからランダムに1枚（直前と同じのは避ける）
+function pickFairy(){
+  if(fairyPool.length === 0) return null;
+  if(fairyPool.length === 1) return fairyPool[0];
+  let pick;
+  do { pick = fairyPool[Math.floor(Math.random()*fairyPool.length)]; }
+  while(pick === lastFairySrc);
+  lastFairySrc = pick;
+  return pick;
+}
+
+// 会話エリアの上下の位置（キラキラをそこだけに出すため）
+function chatBounds(){
+  const el = document.getElementById('chatArea');
+  const r = el.getBoundingClientRect();
+  return { top:r.top, bottom:r.bottom, height:r.height };
+}
 
 // キラキラ（下から昇る光の粒）
 function spawnSparkle(){
   if(document.hidden) return;
+  const b = chatBounds();
   const s = document.createElement('div');
   s.className = 'sparkle';
-  const size = 3 + Math.random()*5;
+  const size = 4 + Math.random()*6;
   s.style.width = size+'px';
   s.style.height = size+'px';
   s.style.left = (Math.random()*100)+'%';
-  s.style.top  = (55 + Math.random()*45)+'%';
-  s.style.setProperty('--dx', (Math.random()*40-20)+'px');
-  const dur = 3.4 + Math.random()*2.6;
+  s.style.top  = (b.top + b.height*0.45 + Math.random()*b.height*0.55)+'px';
+  s.style.setProperty('--dx', (Math.random()*50-25)+'px');
+  const dur = 5 + Math.random()*3.5;
   s.style.animation = 'floatUp '+dur+'s ease-out forwards';
-  heroFx.appendChild(s);
+  fxLayer.appendChild(s);
   setTimeout(()=>s.remove(), dur*1000+120);
 }
 
 // 雫（上から落ちる）
 function spawnDrop(){
   if(document.hidden) return;
+  const b = chatBounds();
   const d = document.createElement('div');
   d.className = 'drop';
   d.style.left = (Math.random()*100)+'%';
-  d.style.top  = (Math.random()*22)+'%';
-  d.style.setProperty('--dx', (Math.random()*24-12)+'px');
-  const dur = 3.2 + Math.random()*2.2;
+  d.style.top  = (b.top + Math.random()*b.height*0.25)+'px';
+  d.style.setProperty('--dx', (Math.random()*30-15)+'px');
+  const dur = 4.5 + Math.random()*3;
   d.style.animation = 'dropFall '+dur+'s ease-in forwards';
-  heroFx.appendChild(d);
+  fxLayer.appendChild(d);
   setTimeout(()=>d.remove(), dur*1000+120);
 }
 
 setInterval(spawnSparkle, 520);
 setInterval(spawnDrop, 1500);
 
-// ふよふよ妖精：たまに横切る
-function scheduleFairy(delay){
-  setTimeout(()=>{
-    playFairy();
-    scheduleFairy(16000 + Math.random()*14000); // 16〜30秒おき
-  }, delay);
-}
-function playFairy(){
-  if(!fairyReady || document.hidden) return;
-  const fromLeft = Math.random() < 0.5;
-  const dur = 11 + Math.random()*5;
-  fairyEl.style.top = (12 + Math.random()*38)+'%';
-  if(fromLeft){
-    fairyEl.style.left = '-90px'; fairyEl.style.right = 'auto';
-    fairyEl.style.setProperty('--fdx', (window.innerWidth + 120)+'px');
-    fairyImg.style.transform = 'scaleX(1)';
-  } else {
-    fairyEl.style.left = (window.innerWidth + 20)+'px'; fairyEl.style.right = 'auto';
-    fairyEl.style.setProperty('--fdx', '-'+(window.innerWidth + 140)+'px');
-    fairyImg.style.transform = 'scaleX(-1)';
-  }
-  fairyEl.style.animation = 'none';
-  void fairyEl.offsetWidth;                       // アニメをリセット
-  fairyEl.style.animation = 'fairyCross '+dur+'s linear forwards';
+// 相手が書いた吹き出しの横に、たまに小さい妖精が座って聞いてる
+let userMsgCount = 0;
+function maybeFairyTag(){
+  userMsgCount++;
+  if(fairyPool.length === 0) return '';           // 画像が読めてへん時は何も出さん
+  if(userMsgCount - lastFairyTurn < 3) return ''; // 連続では出えへん（3回は空ける）
+  if(Math.random() > 0.45) return '';             // たまーに出る
+  const src = pickFairy();
+  if(!src) return '';
+  lastFairyTurn = userMsgCount;
+  const flip = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
+  return '<div class="msg-fairy"><img src="'+src+'" style="transform:'+flip+'" alt=""></div>';
 }
 // ────────────────────────────────────────────
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
@@ -913,7 +921,9 @@ function addMsg(role,content,photoUrls){
         photoUrls.map(u=>'<img src="'+u+'" alt="送った写真">').join('') +
         '</div>';
     }
-    d.innerHTML='<div class="msg-av user">🌸</div><div class="bubble">'+inner+'</div>';
+    const fairyTag = maybeFairyTag();
+    if(fairyTag) d.className += ' with-fairy';
+    d.innerHTML='<div class="msg-av user">🌸</div><div class="bubble">'+inner+'</div>'+fairyTag;
   } else {
     d.className='message botan-msg';
     d.innerHTML=avTag()+'<div class="bubble">'+cleanText(content)+'</div>';
