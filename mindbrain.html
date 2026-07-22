@@ -16,12 +16,29 @@ body{min-height:100vh;background:linear-gradient(165deg,#0d0520 0%,#1e0f3e 30%,#
 
 /* 妖精 */
 .fairy{position:absolute;pointer-events:none;z-index:5;opacity:.95;filter:drop-shadow(0 4px 12px rgba(140,80,200,.25))}
-@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
-.fairy img{width:100%;height:auto;display:block;animation:floaty 4.5s ease-in-out infinite}
-.f-a{width:86px;top:-18px;right:-6px}
-.f-b{width:74px;bottom:-10px;left:-10px}
-.f-c{width:80px;top:40%;right:-14px}
+@keyframes floaty{
+ 0%   {transform:translate(0,0) rotate(-3deg)}
+ 25%  {transform:translate(-6px,-12px) rotate(2deg)}
+ 50%  {transform:translate(3px,-20px) rotate(4deg)}
+ 75%  {transform:translate(7px,-9px) rotate(-1deg)}
+ 100% {transform:translate(0,0) rotate(-3deg)}
+}
+@keyframes floaty2{
+ 0%   {transform:translate(0,0) rotate(2deg) scale(1)}
+ 30%  {transform:translate(8px,-14px) rotate(-3deg) scale(1.04)}
+ 60%  {transform:translate(-5px,-22px) rotate(3deg) scale(1)}
+ 100% {transform:translate(0,0) rotate(2deg) scale(1)}
+}
+.fairy img{width:100%;height:auto;display:block;animation:floaty 5s ease-in-out infinite}
+.fairy.alt img{animation:floaty2 6.2s ease-in-out infinite}
+/* 位置：下のほうに配置。質問文にかぶらんように */
+.f-a{width:62px;bottom:14px;right:8px}
+.f-b{width:56px;bottom:18px;left:8px}
+.f-c{width:58px;bottom:56px;right:4px}
 .wrap-rel{position:relative}
+/* 地図の吹き出し（右下）に重ねる指さし妖精 */
+.map-fairy{position:absolute;width:58px;right:4%;bottom:6%;z-index:3;pointer-events:none;filter:drop-shadow(0 3px 10px rgba(120,70,180,.3))}
+.map-fairy img{width:100%;display:block;animation:floaty2 5.5s ease-in-out infinite}
 
 /* 表紙 */
 .brand{text-align:center;margin-bottom:14px}
@@ -29,8 +46,8 @@ body{min-height:100vh;background:linear-gradient(165deg,#0d0520 0%,#1e0f3e 30%,#
 h1{font-size:1.72rem;font-weight:800;color:#2a1050;line-height:1.25;text-align:center}
 h1 span{color:#7a32c0}
 .h1-en{color:#b89ad8;font-size:.66rem;letter-spacing:.22em;text-align:center;margin-top:4px;margin-bottom:16px}
-.mapbox{border-radius:18px;overflow:hidden;margin-bottom:18px;border:2px solid #e2d0f6;box-shadow:0 8px 24px rgba(90,40,150,.18)}
-.mapbox img{width:100%;display:block}
+.mapbox{border-radius:18px;margin-bottom:18px;border:2px solid #e2d0f6;box-shadow:0 8px 24px rgba(90,40,150,.18);position:relative}
+.mapbox img{width:100%;display:block;border-radius:16px}
 .intro{background:linear-gradient(140deg,#faf4ff,#fff2fa);border-radius:18px;padding:18px 18px;margin-bottom:20px;border:1.5px solid #ead9fa}
 .intro p{color:#5f4090;font-size:.85rem;line-height:2.05;margin-bottom:13px}
 .intro p:last-child{margin-bottom:0}
@@ -234,13 +251,15 @@ function T(id){for(var i=0;i<TRIBES.length;i++){if(TRIBES[i].id===id)return TRIB
 function renderIntro(){
 app.innerHTML=
 '<div class="card wrap-rel">'+
- '<div class="fairy f-a"><img src="fairy.png" alt=""></div>'+
+ '<div class="fairy" style="width:50px;top:8px;right:8px"><img src="fairy.png" alt=""></div>'+
  '<div class="brand">'+
    '<p class="brand-sub">BOTAN 10 TRIBES</p>'+
    '<h1>マインドブレイン<br><span>診断</span></h1>'+
    '<p class="h1-en">〜 あなたは何族？ 〜</p>'+
  '</div>'+
- '<div class="mapbox"><img src="map.jpg" alt="脳内国の地図"></div>'+
+ '<div class="mapbox wrap-rel"><img src="map.jpg" alt="脳内国の地図">'+
+   '<div class="map-fairy"><img src="fairy-point.png" alt=""></div>'+
+ '</div>'+
  '<div class="intro">'+
    '<p class="big">🌙 ようこそ、脳内国へ。</p>'+
    '<p>実はね——<br>あなたの脳の中には、<br>とっても広いひとつの国があるんよ。</p>'+
@@ -267,17 +286,17 @@ var opts="";
 for(var i=0;i<CHOICES.length;i++){opts+='<button class="opt" onclick="answer('+i+')">'+CHOICES[i].l+'</button>';}
 /* 右側は通常向き / 左側は逆向きバージョンを使って内向きに */
 var FSET=[
- {pos:"f-a",img:"fairy-point.png"},
- {pos:"f-b",img:"IMG_9775.png"},
- {pos:"f-c",img:"fairy.png"},
- {pos:"f-a",img:"IMG_9784.png"},
- {pos:"f-b",img:"IMG_9783.png"},
- {pos:"f-c",img:"fairy-pray.png"}
+ {pos:"f-a",img:"fairy-point.png",alt:""},
+ {pos:"f-b",img:"IMG_9775.png",alt:" alt"},
+ {pos:"f-c",img:"fairy.png",alt:" alt"},
+ {pos:"f-a",img:"IMG_9784.png",alt:""},
+ {pos:"f-b",img:"IMG_9783.png",alt:" alt"},
+ {pos:"f-c",img:"fairy-pray.png",alt:""}
 ];
 var fs=FSET[qIdx%FSET.length];
-var fairy='<div class="fairy '+fs.pos+'"><img src="'+fs.img+'" alt=""></div>';
+var fairy='<div class="fairy '+fs.pos+fs.alt+'"><img src="'+fs.img+'" alt=""></div>';
 app.innerHTML=
-'<div class="card wrap-rel">'+fairy+
+'<div class="card wrap-rel" style="padding-bottom:74px">'+fairy+
  '<div class="bar-track"><div class="bar-prog" style="width:'+pct+'%"></div></div>'+
  '<p class="q-num">Q'+(qIdx+1)+' / '+QUESTIONS.length+'</p>'+
  '<p class="q-text">'+q.q+'</p>'+
@@ -322,7 +341,7 @@ var subline=top3[0].t.name+' '+top3[0].pct+'% ／ '+top3[1].t.name+' '+top3[1].p
 /* トップ族カード */
 var html=
 '<div class="card wrap-rel">'+
- '<div class="fairy f-a"><img src="fairy.png" alt=""></div>'+
+ '<div class="fairy" style="width:50px;top:8px;right:8px"><img src="fairy.png" alt=""></div>'+
  '<div class="r-head">'+
    '<p style="font-size:30px;margin-bottom:4px">🌙</p>'+
    '<p class="r-title">今日の脳内国、勢力図</p>'+
