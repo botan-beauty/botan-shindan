@@ -19,6 +19,36 @@ body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); co
 .avatar-wrap { position:relative; width:68px; height:68px; border-radius:50%; overflow:hidden; border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,0.25); flex-shrink:0; }
 .avatar-slide { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; opacity:0; transition:opacity 1s ease; }
 .avatar-slide.active { opacity:1; }
+/* ── ヒーローの動き（キラキラ雫＋ふよふよぼたん） ── */
+.hero-fx { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.sparkle { position:absolute; border-radius:50%; opacity:0; will-change:transform,opacity;
+  background:radial-gradient(circle at 32% 30%, rgba(255,255,255,0.95), rgba(255,240,250,0.65) 42%, rgba(201,184,216,0) 72%);
+  box-shadow:0 0 6px rgba(255,255,255,0.75); }
+@keyframes floatUp {
+  0%   { transform:translate3d(0,10px,0) scale(0.5); opacity:0; }
+  18%  { opacity:0.95; }
+  70%  { opacity:0.75; }
+  100% { transform:translate3d(var(--dx,0px),-120px,0) scale(1.05); opacity:0; }
+}
+.drop { position:absolute; opacity:0; will-change:transform,opacity;
+  width:7px; height:10px; border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(201,184,216,0.5));
+  box-shadow:0 0 5px rgba(255,255,255,0.6); }
+@keyframes dropFall {
+  0%   { transform:translate3d(0,-14px,0) scale(0.7); opacity:0; }
+  20%  { opacity:0.9; }
+  100% { transform:translate3d(var(--dx,0px),140px,0) scale(1); opacity:0; }
+}
+.fairy { position:absolute; width:74px; opacity:0; pointer-events:none;
+  filter:drop-shadow(0 3px 10px rgba(120,90,140,0.4)); will-change:transform,opacity; }
+@keyframes fairyCross {
+  0%   { opacity:0; transform:translate3d(0,0,0); }
+  12%  { opacity:0.92; }
+  88%  { opacity:0.92; }
+  100% { opacity:0; transform:translate3d(var(--fdx,120px),0,0); }
+}
+@keyframes fuyo { 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-11px) rotate(2deg);} }
+.fairy-inner { display:block; width:100%; animation:fuyo 2.6s ease-in-out infinite; }
 .hero-text h1 { font-family:'Shippori Mincho',serif; font-size:19px; font-weight:700; color:white; text-shadow:0 1px 6px rgba(0,0,0,0.4); }
 .hero-text p { font-size:11px; color:rgba(255,255,255,0.88); display:flex; align-items:center; gap:5px; margin-top:3px; }
 .dot-live { width:6px; height:6px; background:#7ec87e; border-radius:50%; animation:pulse 2s infinite; }
@@ -34,23 +64,34 @@ body { font-family:'Zen Kaku Gothic New',sans-serif; background:var(--cream); co
 .bubble { max-width:78%; padding:11px 15px; border-radius:18px; font-size:14px; line-height:1.75; }
 .botan-msg .bubble { background:white; border-bottom-left-radius:5px; box-shadow:0 2px 10px rgba(61,43,43,0.08); }
 .user .bubble { background:linear-gradient(135deg,#d4837a,#c97070); color:white; border-bottom-right-radius:5px; }
-.bubble img.sent-photo { max-width:180px; border-radius:12px; display:block; margin-top:4px; }
+.sent-photos { display:flex; flex-wrap:wrap; gap:5px; margin-top:5px; }
+.sent-photos img { width:84px; height:84px; object-fit:cover; border-radius:10px; display:block; }
+.sent-photos.single img { width:180px; height:auto; }
 .link-card { display:block; text-align:center; background:linear-gradient(135deg,#c9a96e,#b8944a); color:#fff!important; text-decoration:none; padding:12px 16px; border-radius:14px; font-size:14px; font-weight:500; margin-top:9px; box-shadow:0 4px 12px rgba(201,169,110,0.32); letter-spacing:.5px; }
 .link-card.line { background:#06C755; box-shadow:0 4px 12px rgba(6,199,85,0.3); }
 .quick-replies { display:flex; flex-wrap:wrap; gap:7px; padding:0 14px 8px; }
 .quick-btn { background:white; border:1.5px solid var(--blush); color:var(--rose); padding:7px 13px; border-radius:20px; font-size:12px; font-family:inherit; cursor:pointer; }
-.input-area { background:white; border-top:1px solid var(--warm); padding:11px 14px; padding-bottom:calc(11px + env(safe-area-inset-bottom)); display:flex; gap:9px; align-items:flex-end; }
+.input-area { background:white; border-top:1px solid var(--warm); padding:11px 14px; padding-bottom:calc(11px + env(safe-area-inset-bottom)); display:flex; gap:8px; align-items:flex-end; }
 .input-wrap { flex:1; background:var(--light); border:1.5px solid var(--warm); border-radius:22px; padding:9px 15px; }
 textarea { width:100%; background:none; border:none; outline:none; font-family:inherit; font-size:14px; color:var(--dark); resize:none; max-height:100px; line-height:1.5; }
 textarea::placeholder { color:#b8a8a8; }
-.photo-btn { width:43px; height:43px; border-radius:50%; background:var(--light); border:1.5px solid var(--warm); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+.photo-btn, .mic-btn { width:41px; height:41px; border-radius:50%; background:var(--light); border:1.5px solid var(--warm); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; position:relative; }
+.mic-btn.rec { background:linear-gradient(135deg,#d4837a,#c97070); border-color:#c97070; animation:micPulse 1.2s ease-in-out infinite; }
+@keyframes micPulse { 0%,100%{box-shadow:0 0 0 0 rgba(212,131,122,0.55);} 50%{box-shadow:0 0 0 9px rgba(212,131,122,0);} }
+.photo-count { position:absolute; top:-4px; right:-4px; background:var(--rose); color:white; font-size:10px; min-width:17px; height:17px; border-radius:9px; display:none; align-items:center; justify-content:center; padding:0 4px; }
+.photo-count.show { display:flex; }
 .send-btn { width:43px; height:43px; border-radius:50%; background:linear-gradient(135deg,#d4837a,#c97070); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; color:white; box-shadow:0 3px 12px rgba(212,131,122,0.4); flex-shrink:0; }
 .send-btn:disabled { opacity:0.5; cursor:not-allowed; }
 .preview-bar { padding:0 14px 8px; display:none; }
 .preview-bar.show { display:block; }
-.preview-chip { display:inline-flex; align-items:center; gap:8px; background:var(--light); border:1.5px solid var(--warm); border-radius:14px; padding:6px 8px; }
-.preview-chip img { width:40px; height:40px; border-radius:8px; object-fit:cover; }
-.preview-chip .rm { background:var(--rose); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; line-height:1; }
+.preview-head { font-size:11px; color:#8a7a7a; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.preview-head .clear-all { background:none; border:none; color:var(--rose); font-size:11px; text-decoration:underline; cursor:pointer; font-family:inherit; padding:0; }
+.preview-list { display:flex; gap:7px; flex-wrap:wrap; }
+.preview-chip { position:relative; }
+.preview-chip img { width:56px; height:56px; border-radius:10px; object-fit:cover; border:1.5px solid var(--warm); display:block; }
+.preview-chip .rm { position:absolute; top:-5px; right:-5px; background:var(--rose); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; line-height:1; padding:0; }
+.mic-hint { padding:0 14px 8px; font-size:11px; color:#a89898; display:none; }
+.mic-hint.show { display:block; }
 .typing { display:flex; gap:9px; align-items:flex-end; }
 .typing-bubble { background:white; border-radius:18px; border-bottom-left-radius:5px; padding:13px 17px; box-shadow:0 2px 10px rgba(61,43,43,0.08); display:flex; gap:5px; align-items:center; }
 .tdot { width:7px; height:7px; background:var(--blush); border-radius:50%; animation:bounce 1.2s ease-in-out infinite; }
@@ -60,15 +101,17 @@ textarea::placeholder { color:#b8a8a8; }
 </head>
 <body>
 <div class="hero">
-  <img class="hero-img" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6889.jpeg" alt="ぼたん">
+  <video class="hero-img" id="heroVideo"
+         src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/hero.mp4"
+         poster="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/hero-poster.jpg"
+         autoplay muted loop playsinline webkit-playsinline preload="auto"></video>
+  <img class="hero-img" id="heroFallback" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6889.jpeg" alt="ぼたん" style="display:none">
   <div class="hero-overlay"></div>
+  <div class="hero-fx" id="heroFx">
+    <div class="fairy" id="fairy"><img class="fairy-inner" id="fairyImg" src="" alt=""></div>
+  </div>
   <div class="hero-content">
-    <div class="avatar-wrap">
-      <img class="avatar-slide active" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="">
-      <img class="avatar-slide" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/C04DF61C-938F-4E51-A9BA-11B661F0B363.png" alt="">
-      <img class="avatar-slide" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6929.jpeg" alt="">
-      <img class="avatar-slide" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6760.jpeg" alt="">
-    </div>
+    <div class="avatar-wrap" id="avatarWrap"></div>
     <div class="hero-text">
       <h1>AIぼたん 🌙</h1>
       <p><span class="dot-live"></span>美容ナース歴15年・ズボラ代表</p>
@@ -78,7 +121,7 @@ textarea::placeholder { color:#b8a8a8; }
 <div class="chat-area" id="chatArea">
   <div class="message botan-msg">
     <div class="msg-av"><img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png" alt="ぼたん"></div>
-    <div class="bubble">こんにちは🌙<br><br>美容ナース歴15年、ぼたんやよ🤣<br><br>肌のこと、脳疲労のこと、なんでも話しかけてね💜<br><br>お顔やお手ての写真、手相やオラクルカードも見せてくれてええよ📷🌙<br><br>頑張らなくても、ちゃんと巡れるよ🌿</div>
+    <div class="bubble">こんにちは🌙<br><br>美容ナース歴15年、ぼたんやよ🤣<br><br>肌のこと、脳疲労のこと、なんでも話しかけてね💜<br><br>お顔やお手ての写真、手相やオラクルカードも見せてくれてええよ📷🌙<br>写真は5枚まで一緒に送れるよ🫶<br><br>打つのめんどくさい日は🎤で話しかけてもOK💜<br><br>頑張らなくても、ちゃんと巡れるよ🌿</div>
   </div>
 </div>
 <div class="quick-replies" id="quickReplies">
@@ -89,15 +132,17 @@ textarea::placeholder { color:#b8a8a8; }
   <button class="quick-btn" onclick="sendQ('セミナー教えて')">セミナー🌙</button>
 </div>
 <div class="preview-bar" id="previewBar">
-  <div class="preview-chip">
-    <img id="previewImg" src="" alt="">
-    <span style="font-size:12px;color:#8a7a7a;">この写真を送るよ🌙</span>
-    <button class="rm" onclick="clearPhoto()">×</button>
+  <div class="preview-head">
+    <span id="previewCount">この写真を送るよ🌙</span>
+    <button class="clear-all" onclick="clearPhotos()">全部消す</button>
   </div>
+  <div class="preview-list" id="previewList"></div>
 </div>
+<div class="mic-hint" id="micHint"></div>
 <div class="input-area">
-  <button class="photo-btn" onclick="document.getElementById('photoInput').click()">📷</button>
-  <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="onPhoto(event)">
+  <button class="photo-btn" onclick="document.getElementById('photoInput').click()">📷<span class="photo-count" id="photoCount">0</span></button>
+  <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="onPhoto(event)">
+  <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
   <div class="input-wrap">
     <textarea id="inp" placeholder="なんでも相談してね🌙" rows="1" oninput="resize(this)" onkeydown="hk(event)"></textarea>
   </div>
@@ -132,12 +177,37 @@ function sendLog(userMessage, botReply, lineClicked=false) {
 }
 // ─────────────────────────────────────────────────
 
+// ─── AIぼたんのアイコン ────────────────────────
+// 足したい時は、ここに1行足すだけでOK。
+//   file … GitHubのファイル名
+//   pos  … 丸に切り抜く時、画像のどこを中心にするか（横% 縦%）
+//          顔が上のほうにある写真 → '50% 20%'
+//          顔がまんなか          → '50% 50%'
+//          顔が右下              → '70% 60%'
+const REPO = 'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/';
 const AVATARS = [
-  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/F788843E-FDC3-4106-8ACC-F5732C44BCDD.png',
-  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/C04DF61C-938F-4E51-A9BA-11B661F0B363.png',
-  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6929.jpeg',
-  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_6760.jpeg',
+  { file:'F788843E-FDC3-4106-8ACC-F5732C44BCDD.png', pos:'50% 0%'   },
+  { file:'C04DF61C-938F-4E51-A9BA-11B661F0B363.png', pos:'50% 0%'   },
+  { file:'IMG_6929.jpeg',                            pos:'50% 0%'   },
+  { file:'IMG_6760.jpeg',                            pos:'50% 0%'   },
+  { file:'IMG_8528.jpeg',                            pos:'38% 55%'  }, // 月と王冠
+  { file:'D37B1454-8BBF-4F51-BE8D-0228536D1FAE.png', pos:'52% 48%'  }, // お花で片目
+  { file:'2EF32432-744F-4CCD-BCC8-87B1517734A8.png', pos:'72% 28%'  }, // リゾート
 ];
+function avUrl(a){ return REPO + a.file; }
+
+// ヒーローの丸アイコンを自動で並べる
+(function buildAvatars(){
+  const wrap = document.getElementById('avatarWrap');
+  AVATARS.forEach((a,i)=>{
+    const im = document.createElement('img');
+    im.className = 'avatar-slide' + (i===0 ? ' active' : '');
+    im.src = avUrl(a);
+    im.alt = '';
+    im.style.objectPosition = a.pos;
+    wrap.appendChild(im);
+  });
+})();
 const SYSTEM = `あなたは「ぼたん」です。
 
 【背景】
@@ -465,6 +535,13 @@ RAS
 相談者は、お顔・お手て・オラクルカードなどの写真を送ってくることがある。
 写真が届いたら、まず「見せてくれてありがとう🫶」と受け取る。
 
+◆複数枚の写真が届いたとき
+・相談者は複数の写真をまとめて送ってくることがある（顔全体とアップ、左右、ビフォーアフター、商品と成分表など）。
+・その場合は1枚ずつバラバラに評価せず、「全体を通して見えること」をやさしく伝える。
+・比べてほしそうな時（ビフォーアフター、左右など）は、変化や違いをやさしく拾う。良くなっているところを先に見つける。
+・「こっちが悪い」という言い方はしない。「こっちのほうが巡ってる感じするね🌙」のように、伸びしろの方向で伝える。
+・枚数が多くても焦らない。全部にコメントしようとせず、大事なところを2つ3つに絞ってやさしく返す。
+
 ◆お肌・お顔・お手ての写真のとき
 ・医療的な診断や病名は絶対に言わない。断定しない。
 ・「これは〇〇です」と決めつけない。あくまで「〜に見えるかな」「〜かもしれんね」とやわらかく。
@@ -538,14 +615,132 @@ AIぼたんは、会話や写真の内容に合わせて、必要なときに自
 セミナー詳細 https://botan-beauty.github.io/botan-shindan/detail_lp.html`;
 
 let msgs=[], cur=0, loading=false;
-let pendingPhoto=null; // { dataUrl, mediaType, base64 }
+let pendingPhotos=[]; // [{ dataUrl, mediaType, base64 }]
+const MAX_PHOTOS = 5;
+
+// ── トップ動画（自動再生・失敗したら写真に戻す） ──────────
+(function initHeroVideo(){
+  const v = document.getElementById('heroVideo');
+  const fb = document.getElementById('heroFallback');
+  if(!v) return;
+
+  function useFallback(){
+    v.style.display = 'none';
+    fb.style.display = 'block';
+  }
+  v.addEventListener('error', useFallback);
+
+  // iPhoneは省電力モードなどで自動再生が止められることがある
+  function tryPlay(){
+    const p = v.play();
+    if(p && p.catch) p.catch(()=>{ /* まだ再生できひんだけ。触ったら再挑戦する */ });
+  }
+  v.addEventListener('loadeddata', tryPlay);
+  tryPlay();
+
+  // 画面をさわった時にもう一回だけ再生を試す
+  const kick = ()=>{ tryPlay(); document.removeEventListener('touchstart', kick); document.removeEventListener('click', kick); };
+  document.addEventListener('touchstart', kick, { passive:true });
+  document.addEventListener('click', kick);
+
+  // タブに戻ってきたら再開
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) tryPlay(); });
+})();
 
 const slides=document.querySelectorAll('.avatar-slide');
 setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
+
+// ── ヒーローの動き（キラキラ雫＋ふよふよぼたん） ──────────
+// 妖精の画像URL。上から順に試して、読めたやつを使う。全部ダメなら妖精は出えへん。
+const FAIRY_CANDIDATES = [
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-point.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-pray.png',
+];
+
+const heroFx = document.getElementById('heroFx');
+const fairyEl = document.getElementById('fairy');
+const fairyImg = document.getElementById('fairyImg');
+let fairyReady = false;
+
+// 妖精画像を順番に試す
+(function loadFairy(i){
+  if(i >= FAIRY_CANDIDATES.length) return;      // 見つからんかったら諦める（何も出えへんだけ）
+  const test = new Image();
+  test.onload = ()=>{ fairyImg.src = FAIRY_CANDIDATES[i]; fairyReady = true; scheduleFairy(4000); };
+  test.onerror = ()=> loadFairy(i+1);
+  test.src = FAIRY_CANDIDATES[i];
+})(0);
+
+// キラキラ（下から昇る光の粒）
+function spawnSparkle(){
+  if(document.hidden) return;
+  const s = document.createElement('div');
+  s.className = 'sparkle';
+  const size = 3 + Math.random()*5;
+  s.style.width = size+'px';
+  s.style.height = size+'px';
+  s.style.left = (Math.random()*100)+'%';
+  s.style.top  = (55 + Math.random()*45)+'%';
+  s.style.setProperty('--dx', (Math.random()*40-20)+'px');
+  const dur = 3.4 + Math.random()*2.6;
+  s.style.animation = 'floatUp '+dur+'s ease-out forwards';
+  heroFx.appendChild(s);
+  setTimeout(()=>s.remove(), dur*1000+120);
+}
+
+// 雫（上から落ちる）
+function spawnDrop(){
+  if(document.hidden) return;
+  const d = document.createElement('div');
+  d.className = 'drop';
+  d.style.left = (Math.random()*100)+'%';
+  d.style.top  = (Math.random()*22)+'%';
+  d.style.setProperty('--dx', (Math.random()*24-12)+'px');
+  const dur = 3.2 + Math.random()*2.2;
+  d.style.animation = 'dropFall '+dur+'s ease-in forwards';
+  heroFx.appendChild(d);
+  setTimeout(()=>d.remove(), dur*1000+120);
+}
+
+setInterval(spawnSparkle, 520);
+setInterval(spawnDrop, 1500);
+
+// ふよふよ妖精：たまに横切る
+function scheduleFairy(delay){
+  setTimeout(()=>{
+    playFairy();
+    scheduleFairy(16000 + Math.random()*14000); // 16〜30秒おき
+  }, delay);
+}
+function playFairy(){
+  if(!fairyReady || document.hidden) return;
+  const fromLeft = Math.random() < 0.5;
+  const dur = 11 + Math.random()*5;
+  fairyEl.style.top = (12 + Math.random()*38)+'%';
+  if(fromLeft){
+    fairyEl.style.left = '-90px'; fairyEl.style.right = 'auto';
+    fairyEl.style.setProperty('--fdx', (window.innerWidth + 120)+'px');
+    fairyImg.style.transform = 'scaleX(1)';
+  } else {
+    fairyEl.style.left = (window.innerWidth + 20)+'px'; fairyEl.style.right = 'auto';
+    fairyEl.style.setProperty('--fdx', '-'+(window.innerWidth + 140)+'px');
+    fairyImg.style.transform = 'scaleX(-1)';
+  }
+  fairyEl.style.animation = 'none';
+  void fairyEl.offsetWidth;                       // アニメをリセット
+  fairyEl.style.animation = 'fairyCross '+dur+'s linear forwards';
+}
+// ────────────────────────────────────────────
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 function sendQ(t){document.getElementById('inp').value=t;send();}
-function getAv(){return AVATARS[cur];}
+function getAv(){ return avUrl(AVATARS[cur]); }
+// 吹き出し横の小さいアイコン（顔の位置を反映）
+function avTag(){
+  const a = AVATARS[cur];
+  return '<div class="msg-av"><img src="'+avUrl(a)+'" style="object-position:'+a.pos+'" alt="ぼたん"></div>';
+}
 function cleanText(t){
   let html = t.replace(/#{1,6}\s*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/---/g,'').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
   return linkify(html);
@@ -564,58 +759,164 @@ function linkify(html){
   return html;
 }
 
-// ── 写真まわり ──────────────────────────────
-function onPhoto(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  // HEIC等でもブラウザが対応してれば読める。サイズが大きい場合は縮小する。
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = new Image();
-    img.onload = () => {
-      // 長辺1024pxに縮小（通信・トークン節約）
-      const max = 1024;
-      let { width, height } = img;
-      if (width > max || height > max) {
-        if (width > height) { height = Math.round(height * max / width); width = max; }
-        else { width = Math.round(width * max / height); height = max; }
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = width; canvas.height = height;
-      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      pendingPhoto = {
-        dataUrl,
-        mediaType: 'image/jpeg',
-        base64: dataUrl.split(',')[1]
+// ── 写真まわり（複数枚対応・最大5枚） ──────────────
+function readAndShrink(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        // 長辺1024pxに縮小（通信・トークン節約）
+        const max = 1024;
+        let { width, height } = img;
+        if (width > max || height > max) {
+          if (width > height) { height = Math.round(height * max / width); width = max; }
+          else { width = Math.round(width * max / height); height = max; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        resolve({ dataUrl, mediaType:'image/jpeg', base64: dataUrl.split(',')[1] });
       };
-      document.getElementById('previewImg').src = dataUrl;
-      document.getElementById('previewBar').classList.add('show');
+      img.onerror = reject;
+      img.src = ev.target.result;
     };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-  e.target.value = ''; // 同じ写真を選び直せるように
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
-function clearPhoto(){
-  pendingPhoto = null;
-  document.getElementById('previewBar').classList.remove('show');
-  document.getElementById('photoInput').value='';
+
+async function onPhoto(e){
+  const files = Array.from(e.target.files || []);
+  e.target.value = ''; // 同じ写真を選び直せるように
+  if(!files.length) return;
+
+  const room = MAX_PHOTOS - pendingPhotos.length;
+  if(room <= 0){
+    showMicHint('写真は'+MAX_PHOTOS+'枚までやよ🌙 一回送ってから、また送ってね💜');
+    return;
+  }
+  const use = files.slice(0, room);
+  const over = files.length - use.length;
+
+  for(const f of use){
+    try{
+      const p = await readAndShrink(f);
+      pendingPhotos.push(p);
+    }catch(err){ /* 読めない画像はスキップ */ }
+  }
+  if(over > 0) showMicHint('一度に送れるのは'+MAX_PHOTOS+'枚までやよ🌙 あとの'+over+'枚は次に送ってね💜');
+  renderPreviews();
+}
+
+function renderPreviews(){
+  const bar = document.getElementById('previewBar');
+  const list = document.getElementById('previewList');
+  list.innerHTML = '';
+  pendingPhotos.forEach((p, i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'preview-chip';
+    chip.innerHTML = '<img src="'+p.dataUrl+'" alt=""><button class="rm" onclick="removePhoto('+i+')">×</button>';
+    list.appendChild(chip);
+  });
+  document.getElementById('previewCount').textContent =
+    pendingPhotos.length + '枚 送るよ🌙（' + MAX_PHOTOS + '枚まで）';
+  bar.classList.toggle('show', pendingPhotos.length > 0);
+
+  const badge = document.getElementById('photoCount');
+  badge.textContent = pendingPhotos.length;
+  badge.classList.toggle('show', pendingPhotos.length > 0);
+}
+function removePhoto(i){
+  pendingPhotos.splice(i,1);
+  renderPreviews();
+}
+function clearPhotos(){
+  pendingPhotos = [];
+  renderPreviews();
 }
 // ────────────────────────────────────────────
 
-function addMsg(role,content,photoUrl){
+// ── 音声入力 ────────────────────────────────
+let recog = null, recognizing = false;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function showMicHint(msg){
+  const h = document.getElementById('micHint');
+  h.textContent = msg;
+  h.classList.add('show');
+  clearTimeout(showMicHint._t);
+  showMicHint._t = setTimeout(()=>h.classList.remove('show'), 5000);
+}
+
+function toggleMic(){
+  if(!SR){
+    showMicHint('この端末やと🎤ボタンが使えへんみたい🌙 キーボードのマイクボタンで話しかけてもOKやよ💜');
+    document.getElementById('inp').focus();
+    return;
+  }
+  if(recognizing){ stopMic(); return; }
+  startMic();
+}
+
+function startMic(){
+  const inp = document.getElementById('inp');
+  const base = inp.value;
+  recog = new SR();
+  recog.lang = 'ja-JP';
+  recog.interimResults = true;
+  recog.continuous = false;
+
+  recog.onstart = ()=>{
+    recognizing = true;
+    document.getElementById('micBtn').classList.add('rec');
+    showMicHint('聞いてるよ🌙 話し終わったらもう一回🎤を押してね');
+  };
+  recog.onresult = (e)=>{
+    let txt = '';
+    for(let i=0;i<e.results.length;i++){ txt += e.results[i][0].transcript; }
+    inp.value = (base ? base + ' ' : '') + txt;
+    resize(inp);
+  };
+  recog.onerror = (e)=>{
+    stopMic();
+    if(e.error === 'not-allowed' || e.error === 'service-not-allowed'){
+      showMicHint('マイクの許可が要るみたい🌙 設定で許可するか、キーボードのマイクボタンでもOKやよ💜');
+    } else if(e.error !== 'aborted'){
+      showMicHint('うまく聞き取れんかった🌙 もう一回試してみてね💜');
+    }
+  };
+  recog.onend = ()=>{ stopMic(); };
+
+  try{ recog.start(); }
+  catch(err){ showMicHint('もう一回🎤押してみてね🌙'); }
+}
+
+function stopMic(){
+  recognizing = false;
+  document.getElementById('micBtn').classList.remove('rec');
+  if(recog){ try{ recog.stop(); }catch(e){} recog = null; }
+}
+// ────────────────────────────────────────────
+
+function addMsg(role,content,photoUrls){
   const c=document.getElementById('chatArea');
   const d=document.createElement('div');
   if(role==='user'){
     d.className='message user';
     let inner = '';
     if(content) inner += content.replace(/\n/g,'<br>');
-    if(photoUrl) inner += '<img class="sent-photo" src="'+photoUrl+'" alt="送った写真">';
+    if(photoUrls && photoUrls.length){
+      const cls = photoUrls.length === 1 ? 'sent-photos single' : 'sent-photos';
+      inner += '<div class="'+cls+'">' +
+        photoUrls.map(u=>'<img src="'+u+'" alt="送った写真">').join('') +
+        '</div>';
+    }
     d.innerHTML='<div class="msg-av user">🌸</div><div class="bubble">'+inner+'</div>';
   } else {
     d.className='message botan-msg';
-    d.innerHTML='<div class="msg-av"><img src="'+getAv()+'" alt="ぼたん"></div><div class="bubble">'+cleanText(content)+'</div>';
+    d.innerHTML=avTag()+'<div class="bubble">'+cleanText(content)+'</div>';
   }
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
@@ -623,38 +924,44 @@ function showTyping(){
   const c=document.getElementById('chatArea');
   const d=document.createElement('div');
   d.className='typing';d.id='typing';
-  d.innerHTML='<div class="msg-av"><img src="'+getAv()+'" alt="ぼたん"></div><div class="typing-bubble"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';
+  d.innerHTML=avTag()+'<div class="typing-bubble"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 function hideTyping(){const e=document.getElementById('typing');if(e)e.remove();}
 
 async function send(){
+  if(recognizing) stopMic();
   const inp=document.getElementById('inp');
   const t=inp.value.trim();
   // テキストも写真も無ければ何もしない
-  if((!t && !pendingPhoto) || loading) return;
+  if((!t && pendingPhotos.length===0) || loading) return;
   document.getElementById('quickReplies').style.display='none';
   inp.value='';inp.style.height='auto';
   loading=true;document.getElementById('sendBtn').disabled=true;
 
-  const photo = pendingPhoto; // 退避
+  const photos = pendingPhotos.slice(); // 退避
   // 画面に表示（写真があれば一緒に）
-  addMsg('user', t, photo ? photo.dataUrl : null);
+  addMsg('user', t, photos.map(p=>p.dataUrl));
 
   // APIに送るcontentを組み立て
   let userContent;
-  if(photo){
+  if(photos.length){
     userContent = [];
-    userContent.push({
-      type:'image',
-      source:{ type:'base64', media_type:photo.mediaType, data:photo.base64 }
+    photos.forEach(p=>{
+      userContent.push({
+        type:'image',
+        source:{ type:'base64', media_type:p.mediaType, data:p.base64 }
+      });
     });
-    userContent.push({ type:'text', text: t || 'この写真、見てくれる？🌙' });
+    const defaultText = photos.length > 1
+      ? 'この写真たち、見てくれる？🌙'
+      : 'この写真、見てくれる？🌙';
+    userContent.push({ type:'text', text: t || defaultText });
   } else {
     userContent = t;
   }
   msgs.push({ role:'user', content:userContent });
-  clearPhoto();
+  clearPhotos();
 
   showTyping();
   try{
@@ -668,8 +975,9 @@ async function send(){
     const reply=data.content?.[0]?.text||'ちょっと待ってな🌙';
     msgs.push({role:'assistant',content:reply});
     addMsg('assistant',reply);
-    // ── ログ送信（写真送信も分かるように） ──
-    sendLog(photo ? (t ? t+'（＋写真）' : '（写真）') : t, reply);
+    // ── ログ送信（写真枚数も分かるように） ──
+    const photoTag = photos.length ? '（＋写真'+photos.length+'枚）' : '';
+    sendLog(photos.length ? (t ? t+photoTag : '（写真'+photos.length+'枚）') : t, reply);
   }catch(e){
     hideTyping();
     addMsg('assistant','ごめん、もう一回話しかけてみてね🌙');
