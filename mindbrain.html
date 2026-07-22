@@ -15,30 +15,33 @@ body{min-height:100vh;background:linear-gradient(165deg,#0d0520 0%,#1e0f3e 30%,#
 .card{background:rgba(255,255,255,.975);border-radius:26px;padding:26px 22px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
 
 /* 妖精 */
-.fairy{position:absolute;pointer-events:none;z-index:5;opacity:.95;filter:drop-shadow(0 4px 12px rgba(140,80,200,.25))}
-@keyframes floaty{
- 0%   {transform:translate(0,0) rotate(-3deg)}
- 25%  {transform:translate(-6px,-12px) rotate(2deg)}
- 50%  {transform:translate(3px,-20px) rotate(4deg)}
- 75%  {transform:translate(7px,-9px) rotate(-1deg)}
- 100% {transform:translate(0,0) rotate(-3deg)}
+.fairy{position:absolute;pointer-events:none;z-index:5;opacity:.92;filter:drop-shadow(0 4px 10px rgba(140,80,200,.22))}
+@keyframes fly1{
+ 0%   {transform:translate(0,0) rotate(-4deg)}
+ 20%  {transform:translate(-9px,-16px) rotate(3deg)}
+ 45%  {transform:translate(6px,-26px) rotate(6deg)}
+ 70%  {transform:translate(11px,-11px) rotate(-2deg)}
+ 100% {transform:translate(0,0) rotate(-4deg)}
 }
-@keyframes floaty2{
- 0%   {transform:translate(0,0) rotate(2deg) scale(1)}
- 30%  {transform:translate(8px,-14px) rotate(-3deg) scale(1.04)}
- 60%  {transform:translate(-5px,-22px) rotate(3deg) scale(1)}
- 100% {transform:translate(0,0) rotate(2deg) scale(1)}
+@keyframes fly2{
+ 0%   {transform:translate(0,0) rotate(3deg) scale(1)}
+ 30%  {transform:translate(13px,-19px) rotate(-5deg) scale(1.07)}
+ 55%  {transform:translate(-8px,-30px) rotate(4deg) scale(.96)}
+ 80%  {transform:translate(-4px,-8px) rotate(-2deg) scale(1.03)}
+ 100% {transform:translate(0,0) rotate(3deg) scale(1)}
 }
-.fairy img{width:100%;height:auto;display:block;animation:floaty 5s ease-in-out infinite}
-.fairy.alt img{animation:floaty2 6.2s ease-in-out infinite}
-/* 位置：下のほうに配置。質問文にかぶらんように */
-.f-a{width:62px;bottom:14px;right:8px}
-.f-b{width:56px;bottom:18px;left:8px}
-.f-c{width:58px;bottom:56px;right:4px}
+@keyframes fly3{
+ 0%   {transform:translate(0,0) rotate(0deg)}
+ 25%  {transform:translate(16px,-9px) rotate(7deg)}
+ 50%  {transform:translate(4px,-24px) rotate(-4deg)}
+ 75%  {transform:translate(-12px,-13px) rotate(5deg)}
+ 100% {transform:translate(0,0) rotate(0deg)}
+}
+.fairy img{width:100%;height:auto;display:block}
 .wrap-rel{position:relative}
-/* 地図の吹き出し（右下）に重ねる指さし妖精 */
-.map-fairy{position:absolute;width:58px;right:4%;bottom:6%;z-index:3;pointer-events:none;filter:drop-shadow(0 3px 10px rgba(120,70,180,.3))}
-.map-fairy img{width:100%;display:block;animation:floaty2 5.5s ease-in-out infinite}
+/* 地図の吹き出し横に置く案内妖精 */
+.map-fairy{position:absolute;width:38px;left:5%;bottom:8%;z-index:3;pointer-events:none;filter:drop-shadow(0 3px 8px rgba(120,70,180,.28))}
+.map-fairy img{width:100%;display:block;animation:fly2 6s ease-in-out infinite}
 
 /* 表紙 */
 .brand{text-align:center;margin-bottom:14px}
@@ -251,7 +254,7 @@ function T(id){for(var i=0;i<TRIBES.length;i++){if(TRIBES[i].id===id)return TRIB
 function renderIntro(){
 app.innerHTML=
 '<div class="card wrap-rel">'+
- '<div class="fairy" style="width:50px;top:8px;right:8px"><img src="fairy.png" alt=""></div>'+
+ '<div class="fairy" style="width:42px;top:12px;right:12px"><img src="IMG_9783.png" alt="" style="animation:fly2 6.4s ease-in-out infinite"></div>'+
  '<div class="brand">'+
    '<p class="brand-sub">BOTAN 10 TRIBES</p>'+
    '<h1>マインドブレイン<br><span>診断</span></h1>'+
@@ -267,7 +270,6 @@ app.innerHTML=
    '<p>なかでも大きな勢力を持つ、10の種族。</p>'+
    '<p>でも、毎日同じ勢力とは限らへん。<br>日によって、急に前に出てくる種族も🤭。</p>'+
    '<p class="big">今日は、どの種族が元気なんやろ？</p>'+
-   '<p>気合いで突っ走る種族もいるかもしれへん。<br>人の気持ちを受け取りすぎる種族？<br>考え始めたら止まらへん種族？</p>'+
    '<p>それとも——<br>まだ誰も気づいてへん、<br>意外な癖強種族がまえのめりになってるかもしれへん🌙</p>'+
    '<p class="big">さぁ、あなたの脳内国を、のぞきに行こ💜</p>'+
  '</div>'+
@@ -284,17 +286,46 @@ var q=QUESTIONS[qIdx];
 var pct=Math.round(qIdx/QUESTIONS.length*100);
 var opts="";
 for(var i=0;i<CHOICES.length;i++){opts+='<button class="opt" onclick="answer('+i+')">'+CHOICES[i].l+'</button>';}
-/* 右側は通常向き / 左側は逆向きバージョンを使って内向きに */
-var FSET=[
- {pos:"f-a",img:"fairy-point.png",alt:""},
- {pos:"f-b",img:"IMG_9775.png",alt:" alt"},
- {pos:"f-c",img:"fairy.png",alt:" alt"},
- {pos:"f-a",img:"IMG_9784.png",alt:""},
- {pos:"f-b",img:"IMG_9783.png",alt:" alt"},
- {pos:"f-c",img:"fairy-pray.png",alt:""}
+/* 妖精：キャラごとに「その子らしいサイズと置き方の幅」を決めて、
+   その幅の中でランダムに振る。だから毎回ちがうけど、破綻せえへん。
+   ★向きのルール：右に置く子＝左向き画像／左に置く子＝右向き画像 */
+var FAIRIES = [
+  /* 飛ぶ子：軽やか。大きめでも重くない。高いとこも飛ぶ。出番多め */
+  {img:"fairy.png",     face:"R", min:42, max:54, botMin:14, botMax:64, weight:3},
+  {img:"IMG_9784.png",  face:"L", min:42, max:54, botMin:14, botMax:64, weight:3},
+  /* 祈りの子：静か。下のほうにちょこん。中くらい */
+  {img:"fairy-pray.png",face:"R", min:36, max:44, botMin:8,  botMax:30, weight:2},
+  /* ほんとなん？の子：考えこんでる。下のほう。中くらい */
+  {img:"IMG_9783.png",  face:"L", min:34, max:42, botMin:8,  botMax:34, weight:2},
+  /* 指さしの子：存在感つよい。小さめ・端に寄せる・出番少なめ */
+  {img:"fairy-point.png",face:"R",min:30, max:38, botMin:10, botMax:26, weight:1},
+  {img:"IMG_9775.png",  face:"L", min:30, max:38, botMin:10, botMax:26, weight:1}
 ];
-var fs=FSET[qIdx%FSET.length];
-var fairy='<div class="fairy '+fs.pos+fs.alt+'"><img src="'+fs.img+'" alt=""></div>';
+var ANIMS = ["fly1","fly2","fly3"];
+
+function randomFairy(seed){
+  function r(n,m){ var x=Math.sin(seed*97.13+n*41.7)*10000; return (x-Math.floor(x))*m; }
+  /* 出番の多さ(weight)を踏まえて子を選ぶ */
+  var bag=[];
+  for(var i=0;i<FAIRIES.length;i++){
+    for(var w=0;w<FAIRIES[i].weight;w++){ bag.push(FAIRIES[i]); }
+  }
+  var f = bag[Math.floor(r(1,bag.length))];
+  /* 左向き画像は右側へ／右向き画像は左側へ（内を向く） */
+  var side = (f.face==="L") ? "right" : "left";
+  var size = Math.round(f.min + r(2, f.max-f.min+1));
+  var bot  = Math.round(f.botMin + r(3, f.botMax-f.botMin+1));
+  var off  = Math.round(2 + r(4,11));
+  var anim = ANIMS[(seed + Math.floor(r(5,3))) % ANIMS.length];
+  var dur  = (4.6 + r(6,3.2)).toFixed(1);
+  var dly  = (r(7,2.4)).toFixed(1);
+  var op   = (0.84 + r(8,0.14)).toFixed(2);
+  return '<div class="fairy" style="width:'+size+'px;'+side+':'+off+'px;bottom:'+bot+'px;opacity:'+op+'">'+
+         '<img src="'+f.img+'" alt="" style="animation:'+anim+' '+dur+'s ease-in-out '+dly+'s infinite">'+
+         '</div>';
+}
+
+var fairy = randomFairy(qIdx+1);
 app.innerHTML=
 '<div class="card wrap-rel" style="padding-bottom:74px">'+fairy+
  '<div class="bar-track"><div class="bar-prog" style="width:'+pct+'%"></div></div>'+
@@ -311,7 +342,7 @@ if(qIdx<QUESTIONS.length-1){qIdx++;fade(renderQ);}
 else{
  fade(function(){
   app.innerHTML='<div class="card wrap-rel" style="text-align:center;padding:56px 22px">'+
-   '<div class="fairy f-b"><img src="fairy-pray.png" alt=""></div>'+
+   '<div class="fairy" style="width:44px;bottom:16px;left:14px"><img src="fairy-pray.png" alt="" style="animation:fly1 5.6s ease-in-out infinite"></div>'+
    '<span class="calc">🌙</span>'+
    '<p style="color:#6a34a6;font-size:1.02rem;font-weight:800">脳内国、集計中…🤣</p>'+
    '<p style="color:#b0a0c4;font-size:.79rem;margin-top:8px">今日の勢力図、確認してるわ✨</p></div>';
@@ -341,7 +372,7 @@ var subline=top3[0].t.name+' '+top3[0].pct+'% ／ '+top3[1].t.name+' '+top3[1].p
 /* トップ族カード */
 var html=
 '<div class="card wrap-rel">'+
- '<div class="fairy" style="width:50px;top:8px;right:8px"><img src="fairy.png" alt=""></div>'+
+ '<div class="fairy" style="width:48px;top:10px;right:10px"><img src="IMG_9784.png" alt="" style="animation:fly1 5.8s ease-in-out infinite"></div>'+
  '<div class="r-head">'+
    '<p style="font-size:30px;margin-bottom:4px">🌙</p>'+
    '<p class="r-title">今日の脳内国、勢力図</p>'+
