@@ -265,9 +265,17 @@ var q=QUESTIONS[qIdx];
 var pct=Math.round(qIdx/QUESTIONS.length*100);
 var opts="";
 for(var i=0;i<CHOICES.length;i++){opts+='<button class="opt" onclick="answer('+i+')">'+CHOICES[i].l+'</button>';}
-var fairy = (qIdx%3===0) ? '<div class="fairy f-a"><img src="fairy-point.png" alt=""></div>'
-          : (qIdx%3===1) ? '<div class="fairy f-b"><img src="fairy.png" alt=""></div>'
-          : '<div class="fairy f-c"><img src="fairy-pray.png" alt=""></div>';
+/* 右側は通常向き / 左側は逆向きバージョンを使って内向きに */
+var FSET=[
+ {pos:"f-a",img:"fairy-point.png"},
+ {pos:"f-b",img:"IMG_9775.png"},
+ {pos:"f-c",img:"fairy.png"},
+ {pos:"f-a",img:"IMG_9784.png"},
+ {pos:"f-b",img:"IMG_9783.png"},
+ {pos:"f-c",img:"fairy-pray.png"}
+];
+var fs=FSET[qIdx%FSET.length];
+var fairy='<div class="fairy '+fs.pos+'"><img src="'+fs.img+'" alt=""></div>';
 app.innerHTML=
 '<div class="card wrap-rel">'+fairy+
  '<div class="bar-track"><div class="bar-prog" style="width:'+pct+'%"></div></div>'+
@@ -358,7 +366,7 @@ for(var k=1;k<3;k++){
 html+=
  '<div class="botan-msg">'+
    '<div class="botan-head">'+
-     '<div class="botan-face"><img src="botan.jpg" alt="" onerror="this.parentNode.innerHTML=\'🌙\'"></div>'+
+     '<div class="botan-face"><img src="botan-profile.jpg" alt="" onerror="this.parentNode.innerHTML=\'🌙\'"></div>'+
      '<p class="botan-from">ぼたんより🌙</p>'+
    '</div>'+
    '<p class="msg-text">どの族が出ても、それ全部あなたの中にあるもの🥺<br>そして——どの族の奥にも、共通してあるのが<b>"脳の力み"</b>。<br><br>頑張れへんのやない。<b>脳が、ちょっと疲れてるだけ</b>かもしれん🌙</p>'+
