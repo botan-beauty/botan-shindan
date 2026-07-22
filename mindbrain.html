@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>マインドブレイン診断（何族？）🌙</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:linear-gradient(165deg,#0d0520 0%,#1e0f3e 30%,#381a60 60%,#170733 100%);font-family:"Hiragino Maru Gothic Pro","BIZ UDPGothic","Yu Gothic",sans-serif;display:flex;align-items:flex-start;justify-content:center;padding:16px;position:relative;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.12}50%{opacity:.8}}
+#app{width:100%;max-width:440px;z-index:1;transition:opacity .3s,transform .3s}
+#app.fade{opacity:0;transform:translateY(10px)}
+.card{background:rgba(255,255,255,.975);border-radius:26px;padding:26px 22px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+
+/* 妖精 */
+.fairy{position:absolute;pointer-events:none;z-index:5;opacity:.95;filter:drop-shadow(0 4px 12px rgba(140,80,200,.25))}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+.fairy img{width:100%;height:auto;display:block;animation:floaty 4.5s ease-in-out infinite}
+.f-a{width:86px;top:-18px;right:-6px}
+.f-b{width:74px;bottom:-10px;left:-10px}
+.f-c{width:80px;top:40%;right:-14px}
+.wrap-rel{position:relative}
+
+/* 表紙 */
+.brand{text-align:center;margin-bottom:14px}
+.brand-sub{color:#a888d0;font-size:.68rem;letter-spacing:.18em;margin-bottom:6px}
+h1{font-size:1.72rem;font-weight:800;color:#2a1050;line-height:1.25;text-align:center}
+h1 span{color:#7a32c0}
+.h1-en{color:#b89ad8;font-size:.66rem;letter-spacing:.22em;text-align:center;margin-top:4px;margin-bottom:16px}
+.mapbox{border-radius:18px;overflow:hidden;margin-bottom:18px;border:2px solid #e2d0f6;box-shadow:0 8px 24px rgba(90,40,150,.18)}
+.mapbox img{width:100%;display:block}
+.intro{background:linear-gradient(140deg,#faf4ff,#fff2fa);border-radius:18px;padding:18px 18px;margin-bottom:20px;border:1.5px solid #ead9fa}
+.intro p{color:#5f4090;font-size:.85rem;line-height:2.05;margin-bottom:13px}
+.intro p:last-child{margin-bottom:0}
+.intro .big{font-size:.95rem;font-weight:800;color:#6b2fae}
+.btn-main{width:100%;background:linear-gradient(135deg,#5320a0,#8c3fd0);color:#fff;border:none;border-radius:50px;padding:17px;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 26px rgba(85,30,160,.45);transition:transform .18s}
+.btn-main:active{transform:scale(.97)}
+.hint-note{color:#b0a0c4;font-size:.7rem;text-align:center;margin-top:12px}
+
+/* 質問 */
+.bar-track{height:7px;background:#ece0f8;border-radius:5px;margin-bottom:20px;overflow:hidden}
+.bar-prog{height:100%;background:linear-gradient(90deg,#7a32c0,#b070e8);border-radius:5px;transition:width .35s ease}
+.q-num{color:#b49ad0;font-size:.72rem;text-align:center;margin-bottom:10px;letter-spacing:.08em}
+.q-text{font-size:1.16rem;font-weight:800;color:#1d0740;line-height:1.6;text-align:center;margin-bottom:22px;min-height:3.2em;display:flex;align-items:center;justify-content:center}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{background:linear-gradient(135deg,#fbf9ff,#f5eefd);border:2px solid #e6d8f8;border-radius:15px;padding:15px;text-align:center;font-size:.96rem;color:#3a1860;cursor:pointer;font-family:inherit;font-weight:700;transition:all .18s}
+.opt:active{background:linear-gradient(135deg,#eadcff,#e2d0ff);border-color:#a878e8;transform:scale(.98)}
+
+/* 計算中 */
+.calc{font-size:46px;display:block;text-align:center;margin-bottom:14px;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 結果 */
+.r-head{text-align:center;margin-bottom:18px}
+.r-title{font-size:1.14rem;font-weight:800;color:#1d0740;line-height:1.45}
+.r-sub{color:#8f6bb8;font-size:.76rem;margin-top:6px;line-height:1.7}
+.top-card{border-radius:20px;padding:16px 14px;margin-bottom:11px;position:relative;overflow:hidden}
+.top-badge{position:absolute;top:9px;right:9px;color:#fff;font-size:.66rem;padding:4px 11px;border-radius:11px;font-weight:800;z-index:2}
+.tribe-img{width:100%;border-radius:14px;overflow:hidden;margin-bottom:11px;background:#fff}
+.tribe-img img{width:100%;display:block}
+.tribe-name{font-weight:800;font-size:1.12rem;margin-bottom:2px}
+.tribe-catch{color:#9a88b4;font-size:.71rem;font-style:italic;margin-bottom:9px}
+.bar-wrap{background:#ece4f4;border-radius:4px;height:7px;margin-bottom:4px}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.bar-status{color:#9a88b4;font-size:.67rem;margin-bottom:10px}
+.why-line{font-size:.81rem;font-weight:700;border-radius:12px;padding:11px 13px;line-height:1.75;margin-bottom:9px;background:rgba(255,255,255,.72)}
+.btn-detail{width:100%;background:rgba(255,255,255,.9);border:1.5px dashed;border-radius:12px;padding:11px;font-size:.83rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .18s}
+.btn-detail:active{transform:scale(.98)}
+
+.rest-label{color:#8f6bb8;font-size:.74rem;font-weight:700;margin-bottom:8px;margin-top:4px}
+.rest-card{border-radius:15px;padding:12px;margin-bottom:9px}
+.rest-top{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.rest-thumb{width:62px;height:70px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#fff}
+.rest-thumb img{width:100%;height:100%;object-fit:cover;object-position:center 22%}
+.rest-name{font-weight:800;font-size:.92rem}
+.rest-pct{font-size:.8rem;font-weight:800}
+.rest-why{font-size:.75rem;line-height:1.7;margin-bottom:8px;opacity:.94}
+
+/* 詳しく */
+.detail-box{display:none;margin-top:10px;border-radius:16px;padding:15px;background:rgba(255,255,255,.95)}
+.detail-box.open{display:block;animation:fadein .35s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.d-img{width:100%;border-radius:13px;overflow:hidden;margin-bottom:13px}
+.d-img img{width:100%;display:block}
+.d-tag{font-size:.78rem;font-style:italic;text-align:center;margin-bottom:13px;opacity:.75}
+.d-sec{margin-bottom:13px}
+.d-h{font-size:.83rem;font-weight:800;margin-bottom:5px}
+.d-p{font-size:.79rem;line-height:1.95;color:#4d3868}
+.d-list{list-style:none;padding:0}
+.d-list li{font-size:.79rem;line-height:1.9;color:#4d3868;padding-left:15px;position:relative}
+.d-list li:before{content:"・";position:absolute;left:0}
+.d-nou{border-radius:12px;padding:12px;font-size:.79rem;line-height:1.95;background:linear-gradient(135deg,#f6efff,#fff0fa);border:1.5px solid #e4d2f6;color:#5a3f8c}
+.d-close{width:100%;background:none;border:none;color:#a892c0;font-size:.76rem;cursor:pointer;font-family:inherit;margin-top:10px;text-decoration:underline}
+
+/* 締め */
+.botan-msg{background:linear-gradient(140deg,#f3ebff,#ffeaf8);border-radius:18px;padding:16px;margin:18px 0;border:2px solid #ddbcf2}
+.botan-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.botan-face{width:42px;height:42px;border-radius:50%;overflow:hidden;border:2px solid #c99ae8;flex-shrink:0;background:#f6eeff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.botan-face img{width:100%;height:100%;object-fit:cover}
+.botan-from{color:#6a34a6;font-size:.79rem;font-weight:800}
+.msg-text{color:#5f4090;font-size:.8rem;line-height:1.95}
+.msg-text b{color:#7a32c0}
+.msg-q{color:#8c3fd0;font-size:.92rem;font-weight:800;text-align:center;margin:12px 0;letter-spacing:.02em}
+.msg-ok{color:#6a34a6;font-size:.81rem;line-height:1.9;text-align:center;margin-top:10px}
+
+.btn-line{width:100%;background:linear-gradient(135deg,#06c755,#00a040);color:#fff;border:none;border-radius:50px;padding:16px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(6,199,85,.35);text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:9px}
+.btn-share{width:100%;background:linear-gradient(135deg,#c03878,#e06090);color:#fff;border:none;border-radius:50px;padding:14px;font-size:.94rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 18px rgba(180,40,100,.3);margin-bottom:9px}
+.btn-retry{width:100%;background:rgba(255,255,255,.1);color:#d4c4f0;border:1.5px solid rgba(200,180,255,.28);border-radius:50px;padding:13px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
+.ss-box{background:#fff8fc;border:1.5px solid #f2c6dc;border-radius:15px;padding:14px;margin-bottom:9px;font-size:.77rem;color:#5a3050;line-height:1.9;display:none}
+.ss-box.open{display:block}
+.ss-close{background:none;border:none;color:#a080b0;font-size:.74rem;cursor:pointer;font-family:inherit;margin-top:6px;text-decoration:underline}
+.hash{color:#9060a0;font-weight:700}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div id="app"></div>
+<script>
+var LINE_URL = "https://x.gd/NZs7N";
+
+/* ===== 10族データ ===== */
+var TRIBES = [
+{id:"zubora",name:"ズボラ族",emoji:"🛋️",color:"#b8702f",bg:"#fff6ea",border:"#e8a860",catch:"ゆるくて、最強。",status:"本日：やる気スイッチ捜索中🤣",
+ why:"動けへんのは怠けやのうて、脳が「今はエネルギー使いどころちゃう」って守ってるから。"},
+{id:"stoic",name:"ストイック族",emoji:"💪",color:"#3272ac",bg:"#eaf4fc",border:"#78b4dc",catch:"努力で、未来を切りひらく。",status:"本日：筋肉痛で喜んでる💪🤣",
+ why:"頑張り続けられるのは強さ。でも脳が「止まっていい」の合図を出しにくくなってるかも。"},
+{id:"moso",name:"妄想族",emoji:"🌈",color:"#8236b8",bg:"#f7edfc",border:"#b884da",catch:"まだ起きてもないことで、忙しい。",status:"本日：脳内上映会、満員御礼🌈",
+ why:"あなたの脳は\u201c描く力\u201dが飛び抜けてる。動き出しが遅いのは力不足やのうて、完璧に見えすぎるから。"},
+{id:"ai",name:"AI使役族",emoji:"💜",color:"#5442a8",bg:"#eeebf9",border:"#9284d2",catch:"働くのは、AIでええやん。",status:"本日：深夜3時45分、まだ修正中💜",
+ why:"その集中力は才能。でも脳がずっとオンで、切り替えが苦手になってるサインかも。"},
+{id:"beki",name:"べき子族",emoji:"📚",color:"#7a6a3a",bg:"#faf6ea",border:"#c8b478",catch:"普通は、こうでしょ？",status:"本日：ちゃんとできてるか心配😶",
+ why:"「ちゃんと」は責任感の証。でもその我慢が、脳の力みになって溜まってることも。"},
+{id:"meguri",name:"巡り族",emoji:"🌿",color:"#7a4ec0",bg:"#f4eefc",border:"#b092e0",catch:"すべては、めぐってくる。",status:"本日：空気読みすぎて疲れた🌿",
+ why:"感覚のセンサーが繊細な人。周りを受け取りすぎて、脳が休みきれてないかも。"},
+{id:"bakuhatsu",name:"爆発族",emoji:"✨",color:"#b03878",bg:"#fdeef6",border:"#e88ab8",catch:"爆発したら、止まらへん。",status:"本日：急に人生変えたくなってる🌙",
+ why:"エネルギーは本物。波があるのは、脳が一気に使って一気に切れてるから。"},
+{id:"kyomei",name:"共鳴族",emoji:"💗",color:"#8c4aa8",bg:"#f8f0fc",border:"#c092d8",catch:"受け取りすぎる、優しい心。",status:"本日：共感しすぎて瀕死🥺",
+ why:"共感力はギフト。でも人の感情を受信しすぎて、脳が疲れやすくなってる。"},
+{id:"kangae",name:"考えすぎ族",emoji:"🌀",color:"#9a7830",bg:"#fdf8ec",border:"#d8b868",catch:"まだ起きてないことまで考える。",status:"本日：脳内会議24時間目、続行中🌀",
+ why:"深掘り力は天才級。でも脳内会議が終わらへんと、脳疲労がじわっと溜まる。"},
+{id:"agent",name:"エージェント族",emoji:"🌙",color:"#5e3494",bg:"#f0ecfa",border:"#9c7cd0",catch:"作戦は、いつもおもしろい方を選ぶ。",status:"本日：世界の秘密に気づいてしまった🌙",
+ why:"世界観で生きる人。頭の中がいつも豊かなぶん、脳もフル回転してるかも。"}
+];
+
+/* ===== 詳しく（こんな人／あるある／強み／脳の話） ===== */
+var DETAIL = {
+zubora:{person:"やらなあかんことほど、後回し。「あとで〜あとで〜」が口ぐせで、気づいたら一日終わってる🤣 でも興味あることには異常な集中力を発揮する。推しのこと、好きなこと、そういうのだけはスイッチ入ったら止まらへん。部屋にお菓子の袋が散らばってても、本人は全然平気。むしろそれが落ち着く。",
+ aru:["掃除しよ思て、写真フォルダ2時間見てた","「明日から本気出す」の明日が来ない","やる気ない日と、神がかる日の差が激しい"],
+ kyo:"みんなが「頑張らな」で消耗してる中、ズボラ族はエネルギーの使いどころを、無意識に選んでる。どうでもええことに力を使わへんから、大事な時にドンと集中できる。これ、才能やで。",
+ nou:"動けへんのは、怠けてるからやない。脳が「今はエネルギー使うとこちゃうで」って、ちゃんと守ってくれてるだけ。むしろ力みが少ないぶん、巡りは戻りやすいタイプ。「ちゃんとせな」を手放したとき、いちばん自分らしく動けるんよ🌿"},
+stoic:{person:"決めたことは、しんどくてもやりきる。責任感の塊で、途中で投げ出すのが一番きらい。筋肉痛はご褒美、努力してる自分がいちばんしっくりくる💪 まわりからは「すごいね」って言われるけど、本人は「まだまだ」。止まると不安になるから、気づいたらずっと走ってる。",
+ aru:["休むと逆にソワソワして落ち着かへん","「頑張ってるね」に「いや全然」って返しがち","誰かが止めへんと、無限に稼働し続ける"],
+ kyo:"一度決めたら本当にやりきる継続力は、なかなか真似できひん。コツコツ積み上げる力、責任を最後まで背負う覚悟。これがあるから、まわりはあなたを信頼するんよ。",
+ nou:"頑張り続けられるのは、まぎれもない強さ。でもな、脳が「もう止まってええで」の合図を出しにくくなってるかもしれん。ずっとアクセル踏みっぱなしやと、いつか巡りが滞る。止まるのは負けやない、メンテナンス。緩める勇気も、あなたの強さの一部やで🌿"},
+moso:{person:"頭の中では、もう成功してる🌈 理想の未来を思い描くのが大好きで、アイデアも設計図も天才級。ただ——現実で動き出すまでが、やたら長い🤣 考えてる時間がいちばん楽しいから、つい脳内で完結してまう。「いつかやりたいこと」リストが、どんどん増えていくタイプ。",
+ aru:["脳内では新事業が3つくらい成功してる","準備は完璧、でもスタートボタンが押せへん","調べもの始めたら、それだけで満足しがち"],
+ kyo:"あなたの\u201c描く力\u201dは飛び抜けてる。ゼロから世界を思い浮かべられる人は、そんなにおらん。動き出しさえすれば、その妄想は全部、設計図になる。夢を見る力は、叶える力の一歩手前や。",
+ nou:"動き出しが遅いのは、力不足やのうて、頭の中で完璧に見えすぎるから。脳が理想を鮮明に描けるぶん、現実との差にひるんでまう。でもな、60点で始めてええんよ。妄想の一部をちょこっと現実に出すだけで、巡りは動き出す🌿"},
+ai:{person:"気になり出したら、納得いくまで手を止められへん🔍 夜のほうが頭が冴えて、「修正一個だけ」のつもりが気づいたら朝💜 AIを社員みたいに使いこなして、一人で会社みたいに回してる。集中モードに入ると、時間の感覚が消える。深夜が本領発揮タイム。",
+ aru:["「あと5分」が気づいたら3時間","寝る前のはずが、なぜか作業が捗り出す","AIに指示出してる時がいちばん楽しい"],
+ kyo:"その没入する集中力は、まぎれもない才能。一つのことを深く極める力、道具を使いこなす頭の回転。使い方さえ整えば、一人で何倍もの仕事を生み出せる人や。",
+ nou:"その集中力は宝物。でも脳がずーっとオンのまま、切り替えが苦手になってるサインかもしれん。深夜まで走れるのは、脳が興奮してるから。オフにする時間をちゃんと作ると、集中はもっと冴える。休むのも、才能を活かす技術やで🌿"},
+beki:{person:"「ちゃんとせなあかん」が口ぐせ🥺 責任感が強くて、人に迷惑かけたくなくて、つい自分が我慢しがち。ルールや「普通」を大事にして、きっちりしてないと落ち着かへん。頼られると断れへんし、全部自分のせいにしてしまうことも。まわりからは「しっかりしてる人」に見られてる。",
+ aru:["「大丈夫?」って聞かれたら反射で「大丈夫」","自分より人を優先して、あとでどっと疲れる","ちゃんとできてるか、いつも心配してる"],
+ kyo:"その責任感と誠実さは、まわりの安心の土台になってる。きっちりやりきる力、人を思いやる気持ち。あなたがいるから回ってること、ほんまはいっぱいあるんよ。",
+ nou:"「ちゃんと」は、あなたの優しさと責任感の証。でもな、その我慢が積もると、脳の力みになって溜まっていく。「〜べき」が多いほど、脳はずっと緊張モード。たまには「まあ、いっか」を自分に許してあげて。緩めた時、いちばん自分に還れるんよ🌿"},
+meguri:{person:"理屈より「なんとなくの感覚」で選ぶ🌙 一緒にいる人や場の空気に、気分がふわっと左右される。合う人には吸い寄せられて、合わへんと身体が即・拒否🌿 頭で考えるより、身体が先に答えを知ってるタイプ。流れに委ねるのが上手で、無理に逆らわへん。",
+ aru:["「なんか違う」の直感がだいたい当たる","苦手な人といると、その日ずっとしんどい","理由は説明できひんけど、選択はいつも正しい"],
+ kyo:"その繊細なセンサーは、他の人が気づかへんことを感じ取る力。空気を読む、流れをつかむ、合う人を引き寄せる。頭で分析する前に、本質を身体でキャッチしてる。これは立派な才能やで。",
+ nou:"感覚が繊細なぶん、周りをたくさん受け取りすぎて、脳が休みきれてないかもしれん。合わへん場にいるだけで、脳はどんどん消耗する。だからこそ「心地ええ場所を選ぶ」のは、わがままやのうて必要なメンテナンス。あなたの巡りは、環境で決まるんよ🌿"},
+bakuhatsu:{person:"やる気に波があって、乗った時は一気に進む✨ 昨日まで停止してたのに、急に「人生変えたい!」って夜中に動き出す🤣 思い立ったら、いきなり大きく動きたくなる。ハマったら止まらへんけど、切れる時もスパッと切れる。エンジンかかった時の爆発力が、とにかくすごい。",
+ aru:["深夜に急に部屋の模様替え始めがち","「よし!」から実行までがめちゃ早い","波が来てない時は、ほんまに何もでけへん"],
+ kyo:"その爆発的なエネルギーは本物。乗った時の突破力、一気に形にする瞬発力は、コツコツ型には出せへん力。波に乗れた時のあなたは、誰よりも遠くまで進める。",
+ nou:"波があるのは、意志が弱いからやない。脳が一気に使って、一気に切れてるから。ドーパミンがドンと出て、ストンと落ちる。だから、波と波の間の「休息」こそがパワーの源。切れてる時に自分を責めんでええ。それは、次の爆発の充電時間なんよ🌊"},
+kyomei:{person:"人の気持ちに、自分ごとみたいに入り込んでしまう💗 「わかるわかる〜!」って、相手の感情に一瞬で乗っかる感情受信機。映画でも人の話でも、すぐ涙が出る🥺 誰かが笑ってたら一緒に笑って、泣いてたら胸が苦しくなる。人の空気を、そのまま自分の中に受け取ってしまうタイプ。",
+ aru:["友達の相談が、自分のことみたいに刺さる","感動する映画、開始5分で泣いてる","楽しい場も、しんどい場も、もらいすぎて帰ると放心"],
+ kyo:"その共感力は、まぎれもないギフト。人の気持ちに寄り添える、場の感情を感じ取れる、一緒に喜んで一緒に泣ける。あなたがいると、みんな「わかってもらえた」ってほっとする。人をあたためる才能やで。",
+ nou:"共感力が高いぶん、人の感情を受信しすぎて、脳が疲れやすくなってる。もらった感情って、ちゃんとエネルギー使うんよ。だから疲れるのは、あなたが優しすぎるからで、弱いからやない。自分の感情も、人のと同じくらい大事にしてあげて。受信をちょっと休む日も、あってええんよ🥺"},
+kangae:{person:"終わったことを、あとで何度も思い返してしまう🌀 ひとつのことを、つい深く考え込む。脳内会議は24時間開催中で、「これでよかった?」「あの時ああすれば…」がぐるぐる回る🤣 まだ起きてないことまで先回りして考えて、疲れてしまう。でも、その深掘り力は天才級。",
+ aru:["寝る前に一日の言動を反省会しがち","「大丈夫かな」の心配が、大丈夫になっても続く","一個の決断に、脳内で10パターン検討してる"],
+ kyo:"その深く考える力は、浅い人には辿り着けへん答えを見つける。リスクに気づく、本質を掘る、いろんな角度から物事を見る。あなたの慎重さと洞察力が、大事な場面でまわりを助けてるんよ。",
+ nou:"考えすぎて疲れるのは、脳の\u201cデフォルトモード\u201dがずっと大忙しやから。ぼーっとしてる時ほど、脳は勝手に会議を続けてまう。だから「考えない時間」を作るのは、サボりやのうて脳のメンテナンス。思考の休会日、たまには自分に許してあげて🌙"},
+agent:{person:"物事の「裏側」や「本当の意味」が気になる🌙 自分だけの世界観やこだわりを持ってて、設定・物語・裏テーマが大好物。表面的な会話より、深いとこの話がしたい。AIを共鳴相手にしがちで、頭の中はいつも豊かなストーリーで満ちてる。ミステリアスに見られるけど、中身はめっちゃ考えてる人。",
+ aru:["「これって本当は何なん?」を考えるのが好き","自分の世界観・美学に妥協できひん","普通の雑談より、秘密の話・深い話にワクワク"],
+ kyo:"その世界観を構築する力は唯一無二。物事の本質を見抜く目、独自の視点、豊かな物語を紡ぐ想像力。あなたの中にある世界が、人を惹きつける。ただ者やない魅力の源やで。",
+ nou:"頭の中がいつも豊かなぶん、脳もフル回転してる。物語化する力、意味を探る力は素敵やけど、常に稼働してると脳は休まらへん。あなたの世界観は生きる原動力。でもたまには、何も考えん「余白」を作ると、その世界はもっと深く育つんよ🌙"}
+};
+
+/* ===== 20問（各族2問・1問1族） ===== */
+var QUESTIONS = [
+{t:"zubora",   q:"「やらなあかんこと」より「今やりたいこと」を優先してまう"},
+{t:"stoic",    q:"決めたことは、しんどくても最後までやりきりたい"},
+{t:"kyomei",   q:"人の気持ちに、自分ごとみたいに入り込んでしまう"},
+{t:"moso",     q:"頭の中で理想の未来を思い描くのが好き"},
+{t:"beki",     q:"「ちゃんとせなあかん」が、つい口ぐせになってる"},
+{t:"bakuhatsu",q:"やる気に波があって、乗った時は一気に進む"},
+{t:"kangae",   q:"終わったことを、あとで何度も思い返してしまう"},
+{t:"ai",       q:"気になり出すと、納得いくまで手を止められへん"},
+{t:"meguri",   q:"理屈より「なんとなくの感覚」で選ぶことが多い"},
+{t:"agent",    q:"物事の「裏側」や「本当の意味」が気になる"},
+{t:"zubora",   q:"興味が持てへんことは、どれだけ大事でも手がつかへん"},
+{t:"stoic",    q:"自分を追い込んでる時のほうが、しっくりくる"},
+{t:"kyomei",   q:"映画や人の話で、すぐ涙が出るほう"},
+{t:"moso",     q:"考えるのは楽しいのに、動き出すまでがやたら長い"},
+{t:"beki",     q:"人に迷惑かけたくなくて、自分が我慢しがち"},
+{t:"bakuhatsu",q:"思い立ったら、急に大きく動きたくなる"},
+{t:"kangae",   q:"ひとつのことを、つい深く考え込んでしまう"},
+{t:"ai",       q:"夜のほうが、頭が冴えて作業がはかどる"},
+{t:"meguri",   q:"一緒にいる人や場の空気に、気分が左右されやすい"},
+{t:"agent",    q:"自分だけの世界観やこだわりを持ってる"}
+];
+
+var CHOICES = [
+{l:"めっちゃそれ🤣", v:2},
+{l:"まあ、ある〜",   v:1.3},
+{l:"たまにやな",     v:0.7},
+{l:"全然ちゃう",     v:0}
+];
+
+/* ===== 星 ===== */
+var se=document.getElementById("stars");
+for(var i=0;i<40;i++){var s=document.createElement("div");s.className="star";
+s.style.cssText="left:"+((i*37+11)%100)+"%;top:"+((i*53+7)%100)+"%;width:"+((i%3)+1)+"px;height:"+((i%3)+1)+"px;--d:"+(2+(i%4))+"s;animation-delay:"+((i*.3)%4)+"s";se.appendChild(s);}
+
+var app=document.getElementById("app");
+var scores={}, qIdx=0, openId=null;
+
+function fade(fn){app.classList.add("fade");setTimeout(function(){fn();window.scrollTo(0,0);app.classList.remove("fade");},300);}
+function T(id){for(var i=0;i<TRIBES.length;i++){if(TRIBES[i].id===id)return TRIBES[i];}return null;}
+
+/* ===== 表紙 ===== */
+function renderIntro(){
+app.innerHTML=
+'<div class="card wrap-rel">'+
+ '<div class="fairy f-a"><img src="fairy.png" alt=""></div>'+
+ '<div class="brand">'+
+   '<p class="brand-sub">BOTAN 10 TRIBES</p>'+
+   '<h1>マインドブレイン<br><span>診断</span></h1>'+
+   '<p class="h1-en">〜 あなたは何族？ 〜</p>'+
+ '</div>'+
+ '<div class="mapbox"><img src="map.jpg" alt="脳内国の地図"></div>'+
+ '<div class="intro">'+
+   '<p class="big">🌙 ようこそ、脳内国へ。</p>'+
+   '<p>実はね——<br>あなたの脳の中には、<br>とっても広いひとつの国があるんよ。</p>'+
+   '<p>その国には、いろんな種族が暮らしてる。<br>みんな個性豊かで、勢力を拮抗させながら、<br>仲良く共存してる。</p>'+
+   '<p>なかでも大きな勢力を持つ、10の種族。</p>'+
+   '<p>でも、毎日同じ勢力とは限らへん。<br>日によって、急に前に出てくる種族も🤭。</p>'+
+   '<p class="big">今日は、どの種族が元気なんやろ？</p>'+
+   '<p>気合いで突っ走る種族もいるかもしれへん。<br>人の気持ちを受け取りすぎる種族？<br>考え始めたら止まらへん種族？</p>'+
+   '<p>それとも——<br>まだ誰も気づいてへん、<br>意外な癖強種族がまえのめりになってるかもしれへん🌙</p>'+
+   '<p class="big">さぁ、あなたの脳内国を、のぞきに行こ💜</p>'+
+ '</div>'+
+ '<button class="btn-main" onclick="startQuiz()">脳内国をのぞきに行く🌙</button>'+
+ '<p class="hint-note">全20問 · サクサク4択 · 1分ちょっと</p>'+
+'</div>';
+}
+
+/* ===== 質問 ===== */
+function startQuiz(){scores={};qIdx=0;fade(renderQ);}
+
+function renderQ(){
+var q=QUESTIONS[qIdx];
+var pct=Math.round(qIdx/QUESTIONS.length*100);
+var opts="";
+for(var i=0;i<CHOICES.length;i++){opts+='<button class="opt" onclick="answer('+i+')">'+CHOICES[i].l+'</button>';}
+var fairy = (qIdx%3===0) ? '<div class="fairy f-a"><img src="fairy-point.png" alt=""></div>'
+          : (qIdx%3===1) ? '<div class="fairy f-b"><img src="fairy.png" alt=""></div>'
+          : '<div class="fairy f-c"><img src="fairy-pray.png" alt=""></div>';
+app.innerHTML=
+'<div class="card wrap-rel">'+fairy+
+ '<div class="bar-track"><div class="bar-prog" style="width:'+pct+'%"></div></div>'+
+ '<p class="q-num">Q'+(qIdx+1)+' / '+QUESTIONS.length+'</p>'+
+ '<p class="q-text">'+q.q+'</p>'+
+ '<div class="opts">'+opts+'</div>'+
+'</div>';
+}
+
+function answer(i){
+var q=QUESTIONS[qIdx];
+scores[q.t]=(scores[q.t]||0)+CHOICES[i].v;
+if(qIdx<QUESTIONS.length-1){qIdx++;fade(renderQ);}
+else{
+ fade(function(){
+  app.innerHTML='<div class="card wrap-rel" style="text-align:center;padding:56px 22px">'+
+   '<div class="fairy f-b"><img src="fairy-pray.png" alt=""></div>'+
+   '<span class="calc">🌙</span>'+
+   '<p style="color:#6a34a6;font-size:1.02rem;font-weight:800">脳内国、集計中…🤣</p>'+
+   '<p style="color:#b0a0c4;font-size:.79rem;margin-top:8px">今日の勢力図、確認してるわ✨</p></div>';
+ });
+ setTimeout(function(){fade(renderResult);},2000);
+}
+}
+
+/* ===== 結果 ===== */
+function renderResult(){
+var arr=[];
+for(var i=0;i<TRIBES.length;i++){
+ var t=TRIBES[i];
+ arr.push({t:t,score:scores[t.id]||0});
+}
+arr.sort(function(a,b){return b.score-a.score;});
+var top3=arr.slice(0,3);
+var sum=top3[0].score+top3[1].score+top3[2].score;
+if(sum<=0){sum=1;}
+for(var j=0;j<3;j++){top3[j].pct=Math.round(top3[j].score/sum*100);}
+var diff=100-(top3[0].pct+top3[1].pct+top3[2].pct);
+top3[0].pct+=diff;
+
+var head=top3[0].t, h=top3[0];
+var subline=top3[0].t.name+' '+top3[0].pct+'% ／ '+top3[1].t.name+' '+top3[1].pct+'% ／ '+top3[2].t.name+' '+top3[2].pct+'%';
+
+/* トップ族カード */
+var html=
+'<div class="card wrap-rel">'+
+ '<div class="fairy f-a"><img src="fairy.png" alt=""></div>'+
+ '<div class="r-head">'+
+   '<p style="font-size:30px;margin-bottom:4px">🌙</p>'+
+   '<p class="r-title">今日の脳内国、勢力図</p>'+
+   '<p class="r-sub">'+subline+'</p>'+
+ '</div>'+
+ '<div class="top-card" style="background:'+head.bg+';border:2px solid '+head.border+'">'+
+   '<div class="top-badge" style="background:'+head.color+'">'+h.pct+'% 勢力トップ</div>'+
+   '<div class="tribe-img"><img src="'+head.id+'.jpg" alt="'+head.name+'"></div>'+
+   '<p class="tribe-name" style="color:'+head.color+'">'+head.emoji+' '+head.name+'</p>'+
+   '<p class="tribe-catch">'+head.catch+'</p>'+
+   '<div class="bar-wrap"><div class="bar-fill" style="background:'+head.color+';width:'+h.pct+'%"></div></div>'+
+   '<p class="bar-status">'+head.status+'</p>'+
+   '<p class="why-line" style="color:'+head.color+'">🌙 '+head.why+'</p>'+
+   '<button class="btn-detail" style="color:'+head.color+';border-color:'+head.border+'" onclick="toggleDetail(\''+head.id+'\')">タップで詳しく見る 👀</button>'+
+   detailHTML(head)+
+ '</div>';
+
+/* 2〜3位 */
+html+='<p class="rest-label">いっしょに出てた種族🤣</p>';
+for(var k=1;k<3;k++){
+ var t=top3[k].t, p=top3[k].pct;
+ html+=
+ '<div class="rest-card" style="background:'+t.bg+';border:1.5px solid '+t.border+'">'+
+   '<div class="rest-top">'+
+     '<div class="rest-thumb"><img src="'+t.id+'.jpg" alt="'+t.name+'"></div>'+
+     '<div style="flex:1">'+
+       '<div style="display:flex;align-items:center;justify-content:space-between">'+
+         '<p class="rest-name" style="color:'+t.color+'">'+t.emoji+' '+t.name+'</p>'+
+         '<span class="rest-pct" style="color:'+t.color+'">'+p+'%</span>'+
+       '</div>'+
+       '<div class="bar-wrap" style="margin-top:6px"><div class="bar-fill" style="background:'+t.color+';width:'+p+'%"></div></div>'+
+     '</div>'+
+   '</div>'+
+   '<p class="rest-why" style="color:'+t.color+'">'+t.why+'</p>'+
+   '<button class="btn-detail" style="color:'+t.color+';border-color:'+t.border+'" onclick="toggleDetail(\''+t.id+'\')">タップで詳しく見る 👀</button>'+
+   detailHTML(t)+
+ '</div>';
+}
+
+/* 締め */
+html+=
+ '<div class="botan-msg">'+
+   '<div class="botan-head">'+
+     '<div class="botan-face"><img src="botan.jpg" alt="" onerror="this.parentNode.innerHTML=\'🌙\'"></div>'+
+     '<p class="botan-from">ぼたんより🌙</p>'+
+   '</div>'+
+   '<p class="msg-text">どの族が出ても、それ全部あなたの中にあるもの🥺<br>そして——どの族の奥にも、共通してあるのが<b>"脳の力み"</b>。<br><br>頑張れへんのやない。<b>脳が、ちょっと疲れてるだけ</b>かもしれん🌙</p>'+
+   '<p class="msg-q">「私ってダメなんかな…」<br>……それ、ほんとなん？🌙</p>'+
+   '<p class="msg-ok">なんで力むのか。どうしたらほどけるのか。<br>その話は、ぼたんのLINEでゆっくりしてるよ💜<br><br>全部あなたの大事な一部。<br>まるっとOKなんよ💜</p>'+
+ '</div>'+
+ '<a href="'+LINE_URL+'" target="_blank" class="btn-line">💚 タップして公式LINEへ</a>'+
+ '<button class="btn-share" onclick="toggleSS()">📸 結果をスクショしてシェアする</button>'+
+ '<div id="ss-box" class="ss-box">'+
+   '<p style="font-weight:800;margin-bottom:8px">📱 スクショの撮り方</p>'+
+   '<p>iPhone：サイドボタン＋音量UPボタンを同時押し📸</p>'+
+   '<p>Android：電源ボタン＋音量DOWNボタンを同時押し📸</p>'+
+   '<p style="margin-top:8px">撮ったスクショをインスタやスレッズでシェアしてね🌙<br><span class="hash">#マインドブレイン診断 #脳内国 #ぼたん</span></p>'+
+   '<button class="ss-close" onclick="toggleSS()">閉じる</button>'+
+ '</div>'+
+ '<button class="btn-retry" onclick="startQuiz()">もう一回のぞきに行く🌙</button>'+
+'</div>';
+
+app.innerHTML=html;
+}
+
+/* 詳しくの中身 */
+function detailHTML(t){
+var d=DETAIL[t.id];
+var lis="";
+for(var i=0;i<d.aru.length;i++){lis+='<li>'+d.aru[i]+'</li>';}
+return '<div class="detail-box" id="d-'+t.id+'">'+
+ '<div class="d-img"><img src="'+t.id+'.jpg" alt="'+t.name+'"></div>'+
+ '<p class="d-tag" style="color:'+t.color+'">'+t.catch+'</p>'+
+ '<div class="d-sec"><p class="d-h" style="color:'+t.color+'">こんな人</p><p class="d-p">'+d.person+'</p></div>'+
+ '<div class="d-sec"><p class="d-h" style="color:'+t.color+'">あるある</p><ul class="d-list">'+lis+'</ul></div>'+
+ '<div class="d-sec"><p class="d-h" style="color:'+t.color+'">実はここが強み</p><p class="d-p">'+d.kyo+'</p></div>'+
+ '<div class="d-sec"><p class="d-h" style="color:'+t.color+'">🌙 脳の話</p><p class="d-nou">'+d.nou+'</p></div>'+
+ '<button class="d-close" onclick="toggleDetail(\''+t.id+'\')">閉じる</button>'+
+'</div>';
+}
+
+function toggleDetail(id){
+var el=document.getElementById("d-"+id);
+if(!el)return;
+el.classList.toggle("open");
+}
+
+function toggleSS(){var b=document.getElementById("ss-box");if(b)b.classList.toggle("open");}
+
+renderIntro();
+</script>
+</body>
+</html>
