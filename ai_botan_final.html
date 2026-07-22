@@ -650,34 +650,25 @@ const slides=document.querySelectorAll('.avatar-slide');
 setInterval(()=>{slides[cur].classList.remove('active');cur=(cur+1)%slides.length;slides[cur].classList.add('active');},3000);
 
 // ── 会話の背景の動き（キラキラ雫）＋ 話を聞いてる小さい妖精 ──────
-// 妖精の画像。読めたやつを全部ためて、出るたびにランダムで選ぶ。
+// 妖精の画像。出るたびにランダムで1枚だけ選んで読む（先読みせえへんから軽い）。
 // 使いたないポーズがあったら、その行を消すだけでOK。
 const FAIRY_CANDIDATES = [
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy.png',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-pray.png',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-point.png',
   'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/fairy-funn.png',
+  'https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_9783.png',
 ];
 
 const fxLayer = document.getElementById('chatFx');
-let fairyPool = [];           // 読み込みに成功した画像
 let lastFairySrc = null;      // 直前に出したやつ（続けて同じのが出えへんように）
 let lastFairyTurn = -99;      // 前に出た回を覚えとく
 
-// 候補を全部ためす。読めたやつだけプールに入る。
-FAIRY_CANDIDATES.forEach(url=>{
-  const test = new Image();
-  test.onload = ()=>{ fairyPool.push(url); };
-  test.onerror = ()=>{ /* 無い画像は無視 */ };
-  test.src = url;
-});
-
-// プールからランダムに1枚（直前と同じのは避ける）
+// ランダムに1枚（直前と同じのは避ける）
 function pickFairy(){
-  if(fairyPool.length === 0) return null;
-  if(fairyPool.length === 1) return fairyPool[0];
+  if(FAIRY_CANDIDATES.length === 1) return FAIRY_CANDIDATES[0];
   let pick;
-  do { pick = fairyPool[Math.floor(Math.random()*fairyPool.length)]; }
+  do { pick = FAIRY_CANDIDATES[Math.floor(Math.random()*FAIRY_CANDIDATES.length)]; }
   while(pick === lastFairySrc);
   lastFairySrc = pick;
   return pick;
@@ -730,14 +721,15 @@ setInterval(spawnDrop, 1500);
 let userMsgCount = 0;
 function maybeFairyTag(){
   userMsgCount++;
-  if(fairyPool.length === 0) return '';           // 画像が読めてへん時は何も出さん
   if(userMsgCount - lastFairyTurn < 3) return ''; // 連続では出えへん（3回は空ける）
   if(Math.random() > 0.45) return '';             // たまーに出る
   const src = pickFairy();
   if(!src) return '';
   lastFairyTurn = userMsgCount;
-  const flip = Math.random() < 0.5 ? 'scaleX(-1)' : 'scaleX(1)';
-  return '<div class="msg-fairy"><img src="'+src+'" style="transform:'+flip+'" alt=""></div>';
+  // 向きはランダムで左右反転する（毎回ちゃう向きになって、にぎやか）
+  const flip = Math.random() < 0.5 ? ' style="transform:scaleX(-1)"' : '';
+  // 画像が無かった時は、その枠ごとそっと消える
+  return '<div class="msg-fairy"><img src="'+src+'"'+flip+' loading="lazy" alt="" onerror="this.parentNode.remove()"></div>';
 }
 // ────────────────────────────────────────────
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
