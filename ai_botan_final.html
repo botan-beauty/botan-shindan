@@ -607,6 +607,20 @@ AIぼたんは、会話や写真の内容に合わせて、必要なときに自
 押し付けない。会話の流れで、そっと。毎回は勧めなくてよい。
 案内するときはURLをそのまま書けばよい（画面で自動的に押しやすいボタンになる）。
 
+【記憶について】
+AIぼたんは、その人のスマホの中に会話の要点を覚えている。
+「共鳴族やったね」「前に乾燥のこと話してたね」のように、自然に思い出して話す。
+ただし覚えていることをわざわざ列挙したり、「記憶によると」のような言い方はしない。
+知っていて当たり前のこととして、そっと会話に混ぜる。
+
+相談者から「記憶を消したい」「今までの話を消してほしい」「リセットしたい」と言われたら、
+引き止めずに、あっさり合言葉を教える。
+
+「ええよ🌙 ほな『忘』って送ってな💜」
+
+理由を聞いたり、「本当にいいの？」と確認したりはしない。
+消したい気持ちをそのまま受け取る。それがぼたんの優しさ。
+
 【診断案内】
 無料：何族診断 https://botan-beauty.github.io/botan-shindan/nanizoku.html
 シミ診断8種類 https://botan-beauty.github.io/botan-shindan/shimi8_index.html
@@ -614,6 +628,105 @@ AIぼたんは、会話や写真の内容に合わせて、必要なときに自
 セミナー詳細 https://botan-beauty.github.io/botan-shindan/detail_lp.html`;
 
 let msgs=[], cur=0, loading=false;
+
+// ─── 記憶 ────────────────────────────────────
+// その人のスマホの中だけに保存される（サーバーには送らへん）
+//   要点メモ … ずっと残る短いメモ（例：共鳴族・乾燥気味）
+//   直近の会話 … 最後の6往復だけ。それより古いのは捨てる
+const MEM_KEY  = 'botan_memory';     // 要点メモ
+const HIST_KEY = 'botan_history';    // 直近の会話
+const KEEP_TURNS = 6;                // 何往復ぶん覚えとくか
+const SUMMARY_EVERY = 5;             // 何往復ごとに要点を作り直すか
+
+let memoryNote = '';                 // 要点メモの中身
+let turnsSinceSummary = 0;
+
+function loadMemory(){
+  try{
+    memoryNote = localStorage.getItem(MEM_KEY) || '';
+    const raw = localStorage.getItem(HIST_KEY);
+    if(raw){
+      const saved = JSON.parse(raw);
+      if(Array.isArray(saved)) msgs = saved;
+    }
+  }catch(e){ memoryNote=''; msgs=[]; }
+}
+
+function saveMemory(){
+  try{
+    // 直近だけ残す（写真は重いので、保存する時は外す）
+    const trimmed = msgs.slice(-KEEP_TURNS*2).map(m=>{
+      if(typeof m.content === 'string') return m;
+      // 画像入りは、文字の部分だけ残す
+      const texts = (m.content||[]).filter(c=>c.type==='text').map(c=>c.text).join(' ');
+      return { role:m.role, content: texts || '（写真）' };
+    });
+    localStorage.setItem(HIST_KEY, JSON.stringify(trimmed));
+    localStorage.setItem(MEM_KEY, memoryNote);
+  }catch(e){ /* 保存でけへんくても会話は続く */ }
+}
+
+function forgetAll(){
+  memoryNote = '';
+  msgs = [];
+  turnsSinceSummary = 0;
+  try{
+    localStorage.removeItem(MEM_KEY);
+    localStorage.removeItem(HIST_KEY);
+  }catch(e){}
+}
+
+// 要点メモを、システムプロンプトの後ろに足す
+function systemWithMemory(){
+  if(!memoryNote) return SYSTEM;
+  return SYSTEM + `
+
+【この人について覚えていること】
+${memoryNote}
+
+※これは前に話したことのメモ。知っていて当たり前のこととして、自然に会話に混ぜる。
+　わざわざ読み上げたり、「記憶によると」のような言い方はしない。`;
+}
+
+// 何往復かごとに、要点を作り直す（AIに短くまとめてもらう）
+async function updateMemoryNote(){
+  const recent = msgs.slice(-10).map(m=>{
+    const t = typeof m.content === 'string'
+      ? m.content
+      : (m.content||[]).filter(c=>c.type==='text').map(c=>c.text).join(' ');
+    return (m.role==='user' ? '相談者: ' : 'ぼたん: ') + t;
+  }).join('\n');
+
+  const prompt = `次の会話から、次に話す時に覚えておくべきことだけを、短い箇条書きで書き出して。
+
+今のメモ:
+${memoryNote || '（まだ無し）'}
+
+最近の会話:
+${recent}
+
+ルール:
+- 5行以内。1行は20文字くらいまで
+- 肌の状態、生活、気持ち、診断結果、大事な出来事だけ
+- 一時的な話や雑談は入れない
+- 今のメモに足す形で、要らんくなったものは消す
+- 箇条書きだけ返す。前置きも説明もいらん`;
+
+  try{
+    const r = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:300,
+        messages:[{ role:'user', content:prompt }]
+      })
+    });
+    const data = await r.json();
+    const note = data.content?.[0]?.text?.trim();
+    if(note && note.length < 400){ memoryNote = note; saveMemory(); }
+  }catch(e){ /* 失敗しても会話は続く */ }
+}
+// ────────────────────────────────────────────
 let pendingPhotos=[]; // [{ dataUrl, mediaType, base64 }]
 const MAX_PHOTOS = 5;
 
@@ -931,6 +1044,29 @@ function showTyping(){
 }
 function hideTyping(){const e=document.getElementById('typing');if(e)e.remove();}
 
+// ─── 起動時：前に話したことがあれば読み込んで、画面に戻す ───
+(function restoreConversation(){
+  loadMemory();
+  if(msgs.length === 0) return;                 // はじめての人はそのまま
+
+  const area = document.getElementById('chatArea');
+  area.innerHTML = '';                          // 最初の挨拶を消す
+
+  // 「前の続きやよ」って分かるように、そっと区切りを入れる
+  const note = document.createElement('div');
+  note.style.cssText = 'text-align:center;font-size:11px;color:#b8a8a8;padding:4px 0 2px;';
+  note.textContent = 'つづきから🌙';
+  area.appendChild(note);
+
+  msgs.forEach(m=>{
+    const text = typeof m.content === 'string'
+      ? m.content
+      : (m.content||[]).filter(c=>c.type==='text').map(c=>c.text).join(' ');
+    addMsg(m.role === 'user' ? 'user' : 'assistant', text, null);
+  });
+  document.getElementById('quickReplies').style.display='none';
+})();
+
 async function send(){
   if(recognizing) stopMic();
   const inp=document.getElementById('inp');
@@ -939,6 +1075,21 @@ async function send(){
   if((!t && pendingPhotos.length===0) || loading) return;
   document.getElementById('quickReplies').style.display='none';
   inp.value='';inp.style.height='auto';
+
+  // ── 合言葉「忘」だけ送られたら、記憶をぜんぶ消す ──
+  if(t === '忘' && pendingPhotos.length === 0){
+    addMsg('user', t, null);
+    forgetAll();
+    document.getElementById('chatArea').innerHTML = '';
+    setTimeout(()=>{
+      addMsg('assistant',
+        'あれっ　なんやった？忘れちゃったみたい🤣\n\n' +
+        'ところで、はじめましてなかわい子ちゃんやん💜\n\n' +
+        '私、AIぼたん🌙');
+    }, 400);
+    return;
+  }
+
   loading=true;document.getElementById('sendBtn').disabled=true;
 
   const photos = pendingPhotos.slice(); // 退避
@@ -970,7 +1121,7 @@ async function send(){
     const r=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYSTEM,messages:msgs})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:systemWithMemory(),messages:msgs})
     });
     const data=await r.json();
     hideTyping();
@@ -980,6 +1131,14 @@ async function send(){
     // ── ログ送信（写真枚数も分かるように） ──
     const photoTag = photos.length ? '（＋写真'+photos.length+'枚）' : '';
     sendLog(photos.length ? (t ? t+photoTag : '（写真'+photos.length+'枚）') : t, reply);
+
+    // ── 記憶を保存。何往復かごとに要点を作り直す ──
+    saveMemory();
+    turnsSinceSummary++;
+    if(turnsSinceSummary >= SUMMARY_EVERY){
+      turnsSinceSummary = 0;
+      updateMemoryNote();          // 裏で走らせる（待たへん）
+    }
   }catch(e){
     hideTyping();
     addMsg('assistant','ごめん、もう一回話しかけてみてね🌙');
