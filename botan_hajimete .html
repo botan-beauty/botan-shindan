@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人生がめぐる秘密｜ぼたん</title>
+<meta name="description" content="美容ナース15年。頑張るのをやめたら、勝手に巡りはじめました。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══ 色とサイズ ══════════════════════════ */
+:root{
+  --ink:#4A3D53;        /* 本文の墨 */
+  --ink-soft:#8B7C97;   /* 補助の文字 */
+  --gold:#B89258;       /* 金 */
+  --gold-pale:#E3D3AE;  /* 金の細線 */
+  --lav:#A86BB4;        /* 紫（大事な一行） */
+  --lav-mist:#F3EBF4;   /* 淡い紫の面 */
+  --paper:#FCFAF8;      /* 紙 */
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  background:linear-gradient(178deg,#FCFAF8 0%,#F6EEF5 46%,#FBF7F2 100%);
+  color:var(--ink);
+  font-family:'Shippori Mincho',serif;
+  font-weight:400;
+  line-height:2.15;
+  font-size:15.5px;
+  letter-spacing:.02em;
+  padding:0 22px 72px;
+}
+.wrap{max-width:600px;margin:0 auto;}
+
+/* ══ 表紙（写真） ══════════════════════════ */
+.cover{
+  position:relative;height:340px;overflow:hidden;
+  margin:0 -22px 0;   /* 端まで写真を出す */
+}
+.cover img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;}
+.cover .veil{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,
+    rgba(74,61,83,.04) 0%,
+    rgba(74,61,83,.16) 46%,
+    rgba(74,61,83,.62) 100%);
+}
+.cover .seam{
+  position:absolute;left:22px;right:22px;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-pale),transparent);
+}
+.cover .plate{position:absolute;left:26px;right:26px;bottom:26px;color:#fff;}
+.cover .mark{font-size:11px;letter-spacing:.42em;opacity:.82;margin-bottom:9px;}
+.cover h1{
+  font-size:28px;font-weight:600;line-height:1.6;letter-spacing:.14em;
+  text-shadow:0 2px 14px rgba(53,42,60,.42);
+}
+.cover .role{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:11.5px;font-weight:400;letter-spacing:.12em;
+  opacity:.86;margin-top:10px;
+}
+
+/* ══ 物語の本文 ══════════════════════════ */
+.story{padding-top:44px;}
+.story p{margin:0 0 1.5em;}
+.story p:last-child{margin-bottom:0;}
+
+/* つかみの一行（このページで一番大きい文字） */
+.story .hook{
+  font-size:23px;font-weight:600;line-height:1.85;
+  letter-spacing:.04em;margin:0 0 1.3em;
+}
+/* 物語の中の、大事な一行 */
+.story .line{
+  display:block;font-size:19px;font-weight:600;line-height:1.9;
+  letter-spacing:.03em;margin:1.9em 0;
+}
+.story .line.lav{color:var(--lav);}
+/* かぎかっこの独白 */
+.story .quote{
+  font-size:17px;font-weight:500;line-height:1.95;
+  padding-left:15px;border-left:2px solid var(--gold-pale);
+  margin:1.7em 0;color:var(--ink);
+}
+strong{font-weight:600;color:var(--lav);}
+
+/* ══ 章の見出し（小さく・控えめに） ══════════ */
+.eyebrow{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:11px;font-weight:500;line-height:1.8;
+  letter-spacing:.22em;color:var(--gold);
+  margin:0 0 1.6em;
+}
+
+/* ══ 章の区切り ══════════════════════════ */
+.sep{display:flex;align-items:center;gap:14px;margin:52px 0;}
+.sep::before,.sep::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-pale),transparent);
+}
+.sep span{color:var(--gold-pale);font-size:9px;}
+
+/* ══ 肩の山（このページの署名） ══════════════ */
+.shoulder{margin:34px 0 6px;text-align:center;}
+.shoulder svg{width:186px;height:44px;overflow:visible;}
+.shoulder path{
+  fill:none;stroke:var(--gold);stroke-width:1.6;
+  stroke-linecap:round;
+  stroke-dasharray:260;stroke-dashoffset:260;
+  transition:stroke-dashoffset 1.9s cubic-bezier(.22,.7,.28,1);
+}
+.shoulder.on path{stroke-dashoffset:0;}
+
+/* ══ 秘密の面（このページで唯一の塗り） ══════ */
+.secret{
+  background:var(--lav-mist);
+  border-top:1px solid var(--gold-pale);
+  border-bottom:1px solid var(--gold-pale);
+  padding:34px 26px;margin:46px -4px;text-align:center;
+}
+.secret .label{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:10.5px;letter-spacing:.26em;color:var(--gold);margin-bottom:18px;
+}
+.secret .body{
+  font-size:19px;font-weight:600;line-height:2.1;letter-spacing:.03em;
+  color:var(--ink);
+}
+
+/* ══ 3つの声 ══════════════════════════════ */
+.voices{list-style:none;margin:1.7em 0;}
+.voices li{
+  position:relative;padding-left:19px;margin-bottom:.85em;
+  font-size:15.5px;font-weight:500;line-height:1.95;
+}
+.voices li::before{
+  content:"";position:absolute;left:0;top:.92em;
+  width:7px;height:7px;border-radius:50%;
+  border:1px solid var(--gold);
+}
+.voices li.true::before{background:var(--gold);}
+.voices li small{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:12px;font-weight:400;color:var(--ink-soft);letter-spacing:.02em;
+}
+
+/* ══ 署名 ══════════════════════════════ */
+.sign{
+  margin-top:56px;padding-top:32px;
+  border-top:1px solid var(--gold-pale);text-align:center;
+}
+.story .pet{margin:34px 0 4px;text-align:center;}
+.story .pet img{
+  width:104px;height:104px;border-radius:50%;object-fit:cover;
+  object-position:50% 40%;display:block;margin:0 auto;
+  border:1px solid var(--gold-pale);
+  box-shadow:0 6px 22px rgba(74,61,83,.10);
+}
+.story .pet figcaption{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:11px;letter-spacing:.18em;color:var(--ink-soft);margin-top:11px;
+}
+.sign .face{
+  width:74px;height:74px;border-radius:50%;object-fit:cover;
+  object-position:50% 38%;display:block;margin:0 auto 16px;
+  border:1px solid var(--gold-pale);
+}
+.sign .role{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:11.5px;letter-spacing:.14em;color:var(--ink-soft);
+}
+.sign .name{
+  font-size:25px;font-weight:600;letter-spacing:.3em;
+  color:var(--ink);margin:9px 0 22px;
+}
+.sign p{font-size:14.5px;line-height:2.05;margin:0 0 .9em;}
+
+/* ══ 追伸 ══════════════════════════════ */
+.ps{
+  margin-top:44px;padding:24px 22px;
+  border:1px solid var(--gold-pale);border-radius:3px;
+  background:rgba(255,255,255,.5);
+}
+.ps .label{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:10.5px;letter-spacing:.24em;color:var(--gold);margin-bottom:14px;
+}
+.ps p{font-size:14.5px;line-height:2.05;margin:0 0 .9em;}
+.ps p:last-child{margin-bottom:0;}
+
+/* ══ 読みながら、そっと浮かぶ ══════════════ */
+.rise{opacity:0;transform:translateY(14px);
+  transition:opacity .9s ease,transform .9s cubic-bezier(.22,.7,.28,1);}
+.rise.on{opacity:1;transform:none;}
+
+@media (min-width:600px){
+  body{font-size:16.5px;padding:0 30px 90px;}
+  .cover h1{font-size:31px;}
+  .story .hook{font-size:26px;}
+  .story .line{font-size:21px;}
+  .secret .body{font-size:21px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .rise{opacity:1;transform:none;transition:none;}
+  .shoulder path{stroke-dashoffset:0;transition:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ══ 表紙（写真は差し替え可） ══ -->
+  <header class="cover">
+    <img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/2EF32432-744F-4CCD-BCC8-87B1517734A8.png" alt="ぼたん">
+    <div class="veil"></div>
+    <div class="plate">
+      <p class="mark">🌙</p>
+      <h1>人生がめぐる秘密</h1>
+      <p class="role">美容ナース15年 / めぐる人生ナビゲーター</p>
+    </div>
+    <div class="seam"></div>
+  </header>
+
+  <main class="story">
+
+    <!-- ══ つかみ：エレベーター ══ -->
+    <section class="rise">
+      <p class="hook">大の大人が、エレベーターの中で漏らしました。</p>
+      <p>なんとそう、私がっ。</p>
+      <p>仕事帰りの夜。あと数メートルやったのに、どうしても間に合わへんかった。</p>
+      <p>一度出はじめたら、止まらへん。もう、ジョージョーです。</p>
+      <p>服も靴もびしょびしょ。エレベーターの中は、完全に惨劇。</p>
+      <p>情けないを通り越して、逆に笑えてきました。</p>
+      <p>でもあの時、はっきり思ったんです。</p>
+      <p class="line lav">「私、自分のトイレすら、<br>行かせてあげてなかったんやな」</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ 私は強いから大丈夫 ══ -->
+    <section class="rise">
+      <p class="eyebrow">「私は強いから大丈夫」</p>
+      <p>長いあいだ、私はそう言って生きてきました。</p>
+      <p>長女で、看護師で。<br>人が困ってるのを、放っておけへん。</p>
+      <p>誰かが傷つくのを見るくらいなら、自分が引き受けたほうがいい。<br>自分が頑張ったほうがいい。</p>
+      <p>トイレに行くのも忘れて、昼休憩はいつも最後。<br>それが普通やと思っていました。</p>
+      <p>しんどいって感じることすら、忘れてしまっていたんです。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ 15年の問い ══ -->
+    <section class="rise">
+      <p class="eyebrow">ずっと引っかかっていたこと</p>
+      <p>美容ナースとして15年。<br>たくさんのお肌、悩み、オペを、見せていただきました。</p>
+      <p>そのなかで、答えの出ない問いがありました。</p>
+      <p>同じケアをしていても、変わる人と、変わらない人がいる。</p>
+      <p>綺麗になっていってるのに、「まだ足りへん」と自分を責め続けてしまう人がいる。</p>
+      <p>その違いは、なんやろう。</p>
+      <p>ずっと探していました。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ 妹のこと ══ -->
+    <section class="rise">
+      <p class="eyebrow">そんな私を、強制的に止めた出来事</p>
+      <p>妹が突然入院して、翌日に旅立ちました。</p>
+      <p>家族のなかで医療の知識があるのは、私だけでした。<br>最後の判断を、私がすることになりました。</p>
+      <p>あの日から、私の時計は止まりました。</p>
+      <p>葬儀のあと、親戚に言われました。</p>
+      <p class="quote">「お母さんを支えられるのは、あんただけやからね」</p>
+      <p>ほんまは、母のように崩れて倒れ込みたかった。</p>
+      <p>何も考えられんくらい、泣き叫びたかった。</p>
+      <p>「もう無理」って、誰かにしがみつきたかった。</p>
+      <p>でも、倒れられませんでした。</p>
+      <p>家に帰って、ひとりで泣いた夜。</p>
+      <p>その涙を、愛犬の「ぼたん」だけが、一生懸命なめてくれました。</p>
+
+      <!-- 愛犬ぼたんさん -->
+      <figure class="pet">
+        <img src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_2087.jpeg" alt="愛犬のぼたんさん">
+        <figcaption>ぼたんさん</figcaption>
+      </figure>
+
+      <p class="line">そう。私の名前は、<br>この子からもらいました。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ 2人分・肩の山 ══ -->
+    <section class="rise">
+      <p class="eyebrow">「私は、幸せになってはいけない」</p>
+      <p>いつのまにか、そんなルールを自分に作っていました。</p>
+      <p>妹がおらんのに、私だけ笑ってはいけない。<br>私だけ、前に進んではいけない。</p>
+      <p>そして、こう決めたんです。</p>
+      <p class="line lav">「妹の分まで、2人分生きる」</p>
+      <p>この決意は、私に大きな力をくれました。</p>
+      <p>暗闇の中で前を向かせてくれたのは、まちがいなく、この言葉です。</p>
+      <p>ただ——</p>
+      <p>その決意が、いつのまにか「もっと頑張らなあかん」に変わっていきました。</p>
+      <p>頑張るほど、望んでる方向とは反対へ進んでいく。</p>
+      <p>そして気づけば——</p>
+
+      <!-- 肩の山：ここで線が盛り上がる -->
+      <figure class="shoulder" id="peaks">
+        <svg viewBox="0 0 186 44" aria-hidden="true">
+          <path d="M4 34 C 26 34, 30 8, 52 8 C 74 8, 78 34, 93 34 C 108 34, 112 8, 134 8 C 156 8, 160 34, 182 34"/>
+        </svg>
+      </figure>
+
+      <p class="line">肩に「山」が2つ、<br>できていました。</p>
+      <p>触ってみて、すぐ分かりました。</p>
+      <p>これ、脂肪やない。<strong>筋肉や。</strong></p>
+      <p>美容外科の現場に長くいると、触っただけで皮膚なのか、脂肪なのか、筋肉なのかが分かるようになります。</p>
+      <p>毎日積み重ねてきた力みが、肩に、そのまま出ていたんです。</p>
+      <p class="line">体は、ちゃんと<br>教えてくれていました。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ それ、ほんとなん？ ══ -->
+    <section class="rise">
+      <p class="eyebrow">「……えっ、それ、ほんとなん？」</p>
+      <p>そこで初めて、自分に聞きました。</p>
+      <p>私が2人分頑張らなあかんって、ほんとなん？</p>
+      <p>私が幸せになってはいけへんって、ほんとなん？</p>
+      <p>そう問うてみて、分かったんです。</p>
+      <p class="line lav">そのルール、<br>誰も決めてへんかった。</p>
+      <p>長女やから。ちゃんとせなあかん。強くないと愛されへん。</p>
+      <p>ぜんぶ、いつかどこかで拾ってきた「世間の当たり前」でした。</p>
+      <p>自分で選んで生きてるつもりが、ほんまはずっと、<strong>受け身</strong>やったんです。</p>
+    </section>
+
+    <!-- ══ 秘密（唯一の塗り面） ══ -->
+    <section class="secret rise">
+      <div class="label">私が見つけた、ほんとうの秘密</div>
+      <div class="body">
+        自分の声が聞こえて、<br>
+        その声を信じられるようになると、<br>
+        人生は、勝手に巡りはじめます。
+      </div>
+    </section>
+
+    <section class="rise">
+      <p>「それ、ほんとなん？」</p>
+      <p>これは、答えを探すための質問やのうて、<strong>自分の声を思い出すための扉</strong>でした。</p>
+      <p>思い込みがふっとゆるむと、自分の声は、ちゃんと聞こえてきます。</p>
+      <p>でもその声、3種類あるんです。</p>
+      <ul class="voices">
+        <li class="true">ほんとうの私の声</li>
+        <li>「もっと頑張れ」「まだ足りへん」って囁く声</li>
+        <li>人の声　<small>（誰かの期待、世間の声）</small></li>
+      </ul>
+      <p>これがぜんぶ、自分の声みたいに聞こえてる。</p>
+      <p>やから最初にすることは、聞き分けられるようになること。</p>
+      <p>そして、ほんとうの声のほうを、<strong>信じる</strong>こと。</p>
+      <p>信じられるようになると、こうなります。</p>
+      <p class="line">望みに、素直に、<br>素早く手が伸びる。</p>
+      <p>考えて選ぶんやのうて、「あ、こっち」って分かる。</p>
+      <p>直感が、ちゃんと届くようになるんです。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ 15年の問いの答え ══ -->
+    <section class="rise">
+      <p class="eyebrow">15年の問いの、答え</p>
+      <p>今なら、分かります。</p>
+      <p>肌の状態と、その人の悩み方を見れば、脳がどうなってるかまで、だいたい見えてきます。</p>
+      <p>同じケアで変わる人と、変わらへん人。</p>
+      <p>その違いは、肌やのうて、<strong>脳のほう</strong>にありました。</p>
+      <p class="line lav">肌と脳は、<br>双子やったんです。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ 肩の山が消えた ══ -->
+    <section class="rise">
+      <p class="eyebrow">肩の山は、なくなりました</p>
+      <p>力みがふっとゆるんだとき。</p>
+
+      <!-- 肩の山：ここで線が平らになる -->
+      <figure class="shoulder" id="flat">
+        <svg viewBox="0 0 186 44" aria-hidden="true">
+          <path d="M4 30 C 48 30, 48 30, 93 30 C 138 30, 138 30, 182 30"/>
+        </svg>
+      </figure>
+
+      <p>あれだけ頑固やった肩の山が、消えていました。</p>
+      <p>お肌も。仕事も。人間関係も。</p>
+      <p>何も頑張ってへんのに、勝手にめぐりはじめました。</p>
+      <p class="line lav">足すより、引く。</p>
+      <p>これが、私が自分の体で知った秘密の1つ🧸🗝</p>
+      <p>新しい自分になる必要は、なかった。</p>
+      <p class="line">元々、最高やったんです。</p>
+      <p>それを、思い出すだけでよかった。</p>
+    </section>
+
+    <div class="sep"><span>◈</span></div>
+
+    <!-- ══ だから、ここは ══ -->
+    <section class="rise">
+      <p class="eyebrow">だから、ここは</p>
+      <p>「もっと頑張らなきゃ」と思う場所ではありません。</p>
+      <p class="line lav">「あ、私、<br>そのままでも大丈夫なんや」</p>
+      <p>そう、ふっと思い出せる場所です。</p>
+      <p>診断も、ワークも、AIぼたんも。</p>
+      <p>ぜんぶ、<strong>あなたがあなたに戻るため</strong>の、遊びながらひらける🗝⟡.· を、たくさん置いてあります。<br>（これからも増やしていきますね🫶💖）</p>
+      <p>頑張ってるあなたは、何も間違ってません。</p>
+      <p>ただ、ちょっと力が入りすぎてるだけかもしれません。</p>
+      <p class="line">どうぞ、力を抜きに<br>きてくださいね💜</p>
+    </section>
+
+    <!-- ══ 署名 ══ -->
+    <footer class="sign rise">
+      <img class="face" src="https://raw.githubusercontent.com/botan-beauty/botan-shindan/main/IMG_8528.jpeg" alt="ぼたん">
+      <div class="role">美容ナース15年 / めぐる人生ナビゲーター</div>
+      <div class="name">ぼたん</div>
+      <p>ぼたん本人に相談したいときは、<br>いつでも気軽にメッセージしてください😊</p>
+      <p>あなたとお話しできる日を、<br>楽しみにしています🌿</p>
+    </footer>
+
+    <!-- ══ 追伸 ══ -->
+    <aside class="ps rise">
+      <div class="label">追伸</div>
+      <p>冒頭の「ジョージョー」。</p>
+      <p>あれ、今はぜんぜん違う意味で使ってます。</p>
+      <p>めぐりの話をするときに、いちばん大事な言葉になりました。</p>
+      <p>それはまた、いつか🌙</p>
+    </aside>
+
+  </main>
+</div>
+
+<script>
+// 読みながら、そっと浮かび上がる／肩の線が描かれる
+(function(){
+  var targets = document.querySelectorAll('.rise, .shoulder');
+  if(!('IntersectionObserver' in window)){
+    targets.forEach(function(el){ el.classList.add('on'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+    });
+  }, { threshold:0.14, rootMargin:'0px 0px -8% 0px' });
+  targets.forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
