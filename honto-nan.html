@@ -256,6 +256,9 @@
       <a class="btn" id="consultBtn" href="#">LINEでぼたんに相談する</a>
     </div>
 
+    <!-- 🏮 夏祭り本部へ戻る -->
+    <a class="btn" id="toMatome" href="matome.html" style="border-color:#B89258;color:#B89258;">🏮 ぼたんの夏祭り本部へ戻る</a>
+
     <div class="bridge">
       <p>また頭や体がﾌﾝｯとしてきたら、<br>力みチェックに戻ってみてね。</p>
       <a class="btn ghost" href="funn-check.html">力みチェックに戻る</a>
@@ -409,10 +412,13 @@ document.getElementById("toResult").addEventListener("click", ()=>{
   });
   const newSetting = (state.answers[5]||"").trim();
   document.getElementById("cardNew").textContent = newSetting ? "「"+newSetting+"」" : "（Q6に、今日のひとことを書いてね）";
+  try{ localStorage.setItem('botan_honto', newSetting ? state.belief+' → '+newSetting : state.belief); }catch(e){}
   show("result");
 });
 document.getElementById("again").addEventListener("click", ()=>{
-  store.del(KEY); state = { belief:"", example:"", answers:new Array(6).fill("") };
+  store.del(KEY);
+  try{ localStorage.removeItem('botan_honto'); }catch(e){}
+  state = { belief:"", example:"", answers:new Array(6).fill("") };
   customInput.value=""; customGo.disabled=true; show("cover");
 });
 
