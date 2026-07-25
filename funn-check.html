@@ -175,6 +175,9 @@
       <p class="botan-msg">今日気づけたことって、めっちゃ最高やね。<br>根っこまで一緒に巡らせたい人は、<br>ぼたんに話しかけてね💜</p>
     </div>
 
+    <!-- 🏮 夏祭り本部へ戻る -->
+    <a class="btn" id="toMatome" href="matome.html" style="border-color:#B89258;color:#B89258;">🏮 ぼたんの夏祭り本部へ戻る</a>
+
     <a class="btn plain" id="backLine1" href="#">LINEに戻る</a>
     <img id="fxPray" class="fairy fairy-mini" alt="" aria-hidden="true">
     <p class="note">結果はこの端末に保存されます。<br>また疲れたとき、見に来てね。</p>
@@ -309,6 +312,7 @@ document.getElementById("toResult").addEventListener("click", ()=>{
 });
 document.getElementById("reset").addEventListener("click", ()=>{
   store.del(KEY);
+  try{ localStorage.removeItem('botan_rikimi'); }catch(e){}
   document.querySelectorAll(".item.on").forEach(el=>{el.classList.remove("on"); el.setAttribute("aria-checked","false");});
   show("cover");
 });
@@ -316,6 +320,7 @@ document.getElementById("reset").addEventListener("click", ()=>{
 function renderResult(chosen){
   const n = chosen.length;
   const tier = TIERS.find(t=> n>=t.min && n<=t.max);
+  try{ localStorage.setItem('botan_rikimi', 'ﾌﾝｯ度 ' + n + ' / 19'); }catch(e){}
   document.getElementById("countLine").textContent = "当てはまった数　" + n + " / 19";
   document.getElementById("verdict").innerHTML = tier.verdict;
   document.getElementById("verdictBody").innerHTML =
