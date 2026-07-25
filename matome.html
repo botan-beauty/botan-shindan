@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夏祭り 本部｜ぼたん</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#4A3D53; --ink-soft:#8B7C97;
+  --gold:#B89258; --gold-pale:#E3D3AE;
+  --lav:#A86BB4; --lav-mist:#F3EBF4;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  background:linear-gradient(178deg,#FCFAF8 0%,#F4EBF5 50%,#FBF6F1 100%);
+  color:var(--ink);font-family:'Shippori Mincho',serif;
+  line-height:1.95;font-size:15px;min-height:100vh;padding:0 20px 60px;
+}
+.wrap{max-width:560px;margin:0 auto;}
+
+/* 表紙 */
+.head{text-align:center;padding:48px 0 30px;}
+.head .mark{font-size:12px;letter-spacing:.42em;color:var(--gold);margin-bottom:14px;}
+.head h1{font-size:24px;font-weight:600;letter-spacing:.12em;line-height:1.6;}
+.head .sub{font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;color:var(--ink-soft);letter-spacing:.06em;margin-top:12px;}
+.rule{width:52px;height:1px;margin:20px auto 0;background:linear-gradient(90deg,transparent,var(--gold-pale),transparent);}
+
+/* 進み具合 */
+.progress{display:flex;align-items:center;gap:11px;justify-content:center;margin:26px 0 34px;}
+.dot{width:9px;height:9px;border-radius:50%;border:1px solid var(--gold);transition:all .4s;}
+.dot.on{background:var(--gold);box-shadow:0 0 9px rgba(184,146,88,.5);}
+.pcount{font-family:'Zen Kaku Gothic New',sans-serif;font-size:11.5px;letter-spacing:.14em;color:var(--ink-soft);margin-left:6px;}
+
+/* 屋台のカード */
+.stall{
+  border:1px solid var(--gold-pale);border-radius:4px;
+  padding:20px 20px;margin-bottom:13px;background:rgba(255,255,255,.62);
+  transition:all .5s;
+}
+.stall.empty{background:transparent;border-style:dashed;border-color:#DCD2E0;}
+.stall .top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.stall .name{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:11.5px;letter-spacing:.2em;color:var(--gold);
+}
+.stall.empty .name{color:#B5A9BD;}
+.stall .state{font-family:'Zen Kaku Gothic New',sans-serif;font-size:10.5px;color:var(--ink-soft);letter-spacing:.1em;}
+.stall .result{font-size:20px;font-weight:600;letter-spacing:.04em;margin-top:12px;color:var(--ink);line-height:1.6;}
+.stall .memo{font-size:14px;color:var(--ink-soft);margin-top:8px;line-height:1.9;}
+.stall a.go{
+  display:inline-block;margin-top:13px;
+  font-family:'Zen Kaku Gothic New',sans-serif;font-size:12.5px;letter-spacing:.08em;
+  color:var(--lav);text-decoration:none;border-bottom:1px solid var(--lav);padding-bottom:2px;
+}
+.stall a.go:focus-visible{outline:2px solid var(--lav);outline-offset:3px;}
+
+/* 見えたこと */
+.insight{
+  background:var(--lav-mist);border-top:1px solid var(--gold-pale);border-bottom:1px solid var(--gold-pale);
+  padding:26px 22px;margin:30px -2px;text-align:center;
+}
+.insight .label{font-family:'Zen Kaku Gothic New',sans-serif;font-size:10.5px;letter-spacing:.24em;color:var(--gold);margin-bottom:14px;}
+.insight p{font-size:16px;font-weight:500;line-height:2.1;}
+
+/* ボタン */
+.btn{
+  display:block;width:100%;text-align:center;text-decoration:none;
+  font-family:'Shippori Mincho',serif;font-size:15.5px;letter-spacing:.1em;
+  padding:16px 0;border-radius:999px;border:none;cursor:pointer;margin-bottom:12px;
+  transition:opacity .3s,transform .15s;
+}
+.btn:active{transform:scale(.99);}
+.btn:focus-visible{outline:2px solid var(--lav);outline-offset:3px;}
+.btn-ai{background:linear-gradient(135deg,#D8BE86,#E0C9E4);color:#4A3D53;box-shadow:0 7px 22px rgba(184,127,192,.26);}
+.btn-send{background:#06C755;color:#fff;box-shadow:0 7px 20px rgba(6,199,85,.24);}
+.btn[disabled]{opacity:.34;cursor:not-allowed;box-shadow:none;}
+.note{
+  font-family:'Zen Kaku Gothic New',sans-serif;font-size:11.5px;line-height:1.95;
+  color:var(--ink-soft);text-align:center;margin:6px 0 24px;
+}
+.sect-label{font-family:'Zen Kaku Gothic New',sans-serif;font-size:10.5px;letter-spacing:.24em;color:var(--gold);text-align:center;margin:34px 0 16px;}
+
+/* 送信の結果 */
+.flash{
+  display:none;text-align:center;font-size:14.5px;line-height:2;
+  background:rgba(255,255,255,.8);border:1px solid var(--gold-pale);
+  border-radius:4px;padding:18px;margin-bottom:16px;
+}
+.flash.show{display:block;}
+
+.reset{
+  display:block;margin:26px auto 0;background:none;border:none;
+  font-family:'Zen Kaku Gothic New',sans-serif;font-size:11.5px;color:var(--ink-soft);
+  text-decoration:underline;cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <p class="mark">🏮</p>
+    <h1>夏祭り 本部</h1>
+    <p class="sub">回ってきたもの、ここに集まります</p>
+    <div class="rule"></div>
+  </header>
+
+  <div class="progress" id="progress"></div>
+
+  <div id="stalls"></div>
+
+  <div class="insight" id="insight" style="display:none">
+    <div class="label">見えたこと</div>
+    <p id="insightText"></p>
+  </div>
+
+  <p class="sect-label">ここから</p>
+
+  <div class="flash" id="flash"></div>
+
+  <a class="btn btn-ai" id="btnAi" href="#">🌙　AIぼたんに持っていく</a>
+  <button class="btn btn-send" id="btnSend">💚　ぼたんに送る</button>
+
+  <p class="note">
+    「ぼたんに送る」を押すと、上の結果が<br>ぼたん本人に届きます🌙<br>
+    お名前は入りません。結果だけです。
+  </p>
+
+  <button class="reset" id="btnReset">集めたものを消す</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   ここだけ書き換えたら動きます
+   ══════════════════════════════════════════ */
+
+// ① 各屋台のページ（開ける順番に並べてある）
+var BASE = 'https://botan-beauty.github.io/botan-shindan/';
+var ALL_STALLS = [
+  { key:'botan_shimi',  name:'鏡の館',            url:BASE+'true_mirror.html' },
+  { key:'botan_rikimi', name:'力みチェック',       url:BASE+'funn-check.html'  },
+  { key:'botan_honto',  name:'それ、ほんとなん？',  url:BASE+'honto-nan.html'   },
+  { key:'botan_zoku',   name:'マインドブレイン',    url:BASE+'mindbrain.html'   }
+];
+
+// ★ 今なんこ開けた？ ここの数字だけ変える（1 → 2 → 3 → 4）
+//   1 = 鏡の館だけ／2 = 力みチェックまで／3 = ほんとなん？まで／4 = ぜんぶ
+var OPEN = 1;
+
+var STALLS = ALL_STALLS.slice(0, OPEN);
+
+// ② AIぼたんのURL
+var AI_URL = 'https://botan-shindan.pages.dev/ai_botan_final.html';
+
+// ③ ぼたんに送る先（GASのデプロイURL）
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzS7TEBilzsksJcR-crVzI6i3PViRta03NsJKTGYSJ9Y8eU-BJAqLwOyYw1b2Tdt2YC/exec';
+
+/* ══════════════════════════════════════════ */
+
+function read(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }
+
+function uid(){
+  try{
+    var u = localStorage.getItem('botan_uid');
+    if(!u){ u = 'u_' + Math.random().toString(36).slice(2,10); localStorage.setItem('botan_uid', u); }
+    return u;
+  }catch(e){ return 'u_unknown'; }
+}
+
+var done = 0;
+
+// 屋台を並べる
+function build(){
+  var box = document.getElementById('stalls');
+  box.innerHTML = '';
+  done = 0;
+
+  STALLS.forEach(function(s){
+    var val = read(s.key);
+    var el = document.createElement('div');
+    el.className = 'stall' + (val ? '' : ' empty');
+
+    var html = '<div class="top"><span class="name">'+s.name+'</span>'
+             + '<span class="state">'+(val ? '✓ 回った' : 'まだ')+'</span></div>';
+
+    if(val){
+      done++;
+      html += '<div class="result">'+esc(val)+'</div>';
+    }else{
+      html += '<a class="go" href="'+s.url+'">行ってみる →</a>';
+    }
+    el.innerHTML = html;
+    box.appendChild(el);
+  });
+
+  // 進み具合
+  var pg = document.getElementById('progress');
+  pg.innerHTML = '';
+  STALLS.forEach(function(s,i){
+    var d = document.createElement('span');
+    d.className = 'dot' + (read(s.key) ? ' on' : '');
+    pg.appendChild(d);
+  });
+  var c = document.createElement('span');
+  c.className = 'pcount';
+  c.textContent = done + ' / ' + STALLS.length;
+  pg.appendChild(c);
+
+  showInsight();
+  setButtons();
+}
+
+function esc(t){
+  return String(t).replace(/[&<>"]/g, function(m){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];
+  });
+}
+
+// 肌と脳、両方そろったら一言
+function showInsight(){
+  var shimi = read('botan_shimi'), zoku = read('botan_zoku');
+  var box = document.getElementById('insight');
+  var zokuOpen = OPEN >= 4;
+  if(shimi && zoku && zokuOpen){
+    document.getElementById('insightText').innerHTML =
+      'お肌は「'+esc(shimi)+'」<br>脳は「'+esc(zoku)+'」<br><br>'
+      + 'この2つ、つながってるかもしれません。<br>AIぼたんに聞いてみて🌙';
+    box.style.display = 'block';
+  }else{
+    box.style.display = 'none';
+  }
+}
+
+// 結果をまとめた文
+function summary(){
+  var lines = [];
+  STALLS.forEach(function(s){
+    var v = read(s.key);
+    if(v) lines.push(s.name + '：' + v);
+  });
+  return lines.join('\n');
+}
+
+function setButtons(){
+  var ai = document.getElementById('btnAi');
+  var send = document.getElementById('btnSend');
+
+  // AIぼたんは最終日（4つ全部そろう＝OPEN>=4）まで隠す＝最終日の目玉
+  ai.style.display = (OPEN < 4) ? 'none' : '';
+
+  if(done === 0){
+    ai.removeAttribute('href'); ai.setAttribute('aria-disabled','true'); ai.style.opacity='.34';
+    send.disabled = true;
+    return;
+  }
+  ai.style.opacity=''; ai.removeAttribute('aria-disabled');
+  send.disabled = false;
+
+  // AIぼたんへ、結果を持っていく
+  var q = [];
+  STALLS.forEach(function(s){
+    var v = read(s.key);
+    if(v) q.push(encodeURIComponent(s.key) + '=' + encodeURIComponent(v));
+  });
+  ai.href = AI_URL + (AI_URL.indexOf('?') >= 0 ? '&' : '?') + q.join('&');
+}
+
+// ぼたんに送る
+document.getElementById('btnSend').addEventListener('click', function(){
+  var flash = document.getElementById('flash');
+  var btn = this;
+
+  if(!GAS_URL){
+    flash.className = 'flash show';
+    flash.textContent = '送り先がまだ設定されてへんよ🌙';
+    return;
+  }
+
+  btn.disabled = true;
+  flash.className = 'flash show';
+  flash.textContent = '送ってるところ…🌙';
+
+  fetch(GAS_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain'},   // GASはこれが通りやすい
+    body: JSON.stringify({
+      userId: uid(),
+      shimi:  read('botan_shimi'),
+      rikimi: read('botan_rikimi'),
+      honto:  read('botan_honto'),
+      zoku:   read('botan_zoku'),
+      summary: summary()
+    })
+  }).then(function(){
+    flash.innerHTML = '届いたよ🌙<br>ぼたんが見てくれます💜';
+  }).catch(function(){
+    flash.innerHTML = 'うまく送れんかったみたい🌙<br>もう一回押してみてね';
+    btn.disabled = false;
+  });
+});
+
+// 消す
+document.getElementById('btnReset').addEventListener('click', function(){
+  if(!confirm('集めたもの、ぜんぶ消すよ？')) return;
+  ALL_STALLS.forEach(function(s){ try{ localStorage.removeItem(s.key); }catch(e){} });
+  document.getElementById('flash').className = 'flash';
+  build();
+});
+
+build();
+</script>
+</body>
+</html>
