@@ -50,6 +50,7 @@ const C = {
 // ── リンク（ここだけ直せば全部つながる）──────────────
 const LINE_URL = "https://x.gd/NZs7N";
 const LITE_URL = "https://botan-beauty.github.io/botan-shindan/true_mirror_lite.html"; // シェアで配る簡易版
+const MATOME_URL = "https://botan-beauty.github.io/botan-shindan/matome.html"; // 夏祭り本部
 
 // 全56問（タイプが隣り合わないようバラバラ）／t = 裏で加点（画面に出さない）
 const Q = [
@@ -388,6 +389,7 @@ function App(){
       const order=["A","B","C","D","E","F","G","H"];
       let best=order[0], bv=-1;
       order.forEach(k=>{ const v=ns[k]||0; if(v>bv){bv=v;best=k;} });
+      try{ localStorage.setItem('botan_shimi', R[best].animal+' '+R[best].name); }catch(e){}
       setScore(ns); setWinner(best); setScreen("reveal");
     }else{ setScore(ns); setI(i+1); }
   };
@@ -610,6 +612,12 @@ function App(){
           <b style={{color:C.gold}}>ぼたんに、聞いてな</b>💕
         </p>
       </div>
+
+      {/* 🏮 夏祭り本部へ戻る */}
+      <a href={MATOME_URL} style={{display:"block",padding:"15px 0",borderRadius:999,
+        background:"linear-gradient(135deg,#B89258,#D8BE86)",color:"#fff",
+        textDecoration:"none",fontSize:15,fontWeight:700,marginBottom:12,
+        boxShadow:"0 8px 22px rgba(184,146,88,.28)"}}>🏮 ぼたんの夏祭り本部へ戻る</a>
 
       {/* 締めの一枚（ドン） */}
       <div style={{width:"100%",borderRadius:20,marginBottom:16,border:`1px solid ${C.line}`,
