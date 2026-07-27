@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五感でゆるむワーク</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf8fc;
+    --card:#ffffff;
+    --lavender:#f0ebf7;
+    --lavender-line:#e4dcf0;
+    --gold:#c9a86a;
+    --gold-soft:#e8d9bd;
+    --ink:#4a4453;
+    --ink-soft:#7a7385;
+    --shadow:0 8px 30px rgba(120,100,150,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    font-family:"Zen Kaku Gothic New",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.9;
+    font-size:16px;
+    letter-spacing:0.02em;
+    padding:0 0 60px;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 20px;}
+
+  /* ---- hero ---- */
+  header{
+    text-align:center;
+    padding:56px 20px 40px;
+    background:linear-gradient(180deg,var(--lavender) 0%,var(--bg) 100%);
+  }
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:0.25em;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:"Shippori Mincho",serif;
+    font-weight:700;
+    font-size:28px;
+    line-height:1.5;
+    letter-spacing:0.04em;
+  }
+  h1 .leaf{display:block;font-size:22px;margin-bottom:6px;}
+  .lead{
+    margin-top:20px;
+    font-size:15px;
+    color:var(--ink-soft);
+    line-height:2;
+  }
+
+  /* ---- section headings ---- */
+  section{margin-top:40px;}
+  h2{
+    font-family:"Shippori Mincho",serif;
+    font-weight:600;
+    font-size:20px;
+    letter-spacing:0.05em;
+    margin-bottom:14px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--lavender-line);
+  }
+  h2 .emoji{margin-right:6px;}
+  .why{
+    background:var(--card);
+    border-radius:18px;
+    padding:26px 22px;
+    box-shadow:var(--shadow);
+    font-size:15px;
+    line-height:2.1;
+  }
+  .why p+p{margin-top:14px;}
+  .why .safe{
+    display:block;
+    text-align:center;
+    font-family:"Shippori Mincho",serif;
+    font-size:18px;
+    color:var(--gold);
+    margin:16px 0;
+  }
+
+  /* ---- sense cards ---- */
+  .sense{
+    background:var(--card);
+    border-radius:18px;
+    padding:24px 22px;
+    box-shadow:var(--shadow);
+    margin-top:20px;
+  }
+  .sense .intro{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+    line-height:2;
+  }
+  .sense .ex{
+    font-size:12px;
+    letter-spacing:0.15em;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  ul{list-style:none;}
+  ul li{
+    position:relative;
+    padding:7px 0 7px 22px;
+    font-size:15px;
+    border-bottom:1px dashed var(--lavender-line);
+  }
+  ul li:last-child{border-bottom:none;}
+  ul li::before{
+    content:"";
+    position:absolute;
+    left:4px;top:16px;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--gold-soft);
+  }
+
+  /* ---- steps (3つ選ぶ / ゆるめる) ---- */
+  .step{
+    background:var(--lavender);
+    border-radius:18px;
+    padding:26px 22px;
+    text-align:center;
+    margin-top:20px;
+  }
+  .step .num{
+    font-family:"Shippori Mincho",serif;
+    font-size:15px;
+    letter-spacing:0.2em;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .step .big{
+    font-family:"Shippori Mincho",serif;
+    font-size:21px;
+    line-height:1.6;
+    letter-spacing:0.03em;
+  }
+  .step .sub{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-top:12px;
+    line-height:2;
+  }
+  .step .feel{
+    font-family:"Shippori Mincho",serif;
+    font-size:18px;
+    color:var(--gold);
+    margin-top:14px;
+  }
+
+  /* ---- closing ---- */
+  .closing{
+    text-align:center;
+    margin-top:40px;
+    padding:30px 22px;
+  }
+  .closing p{font-size:15px;line-height:2.1;}
+  .closing .zubora{
+    font-family:"Shippori Mincho",serif;
+    font-size:22px;
+    margin:18px 0;
+    letter-spacing:0.03em;
+  }
+
+  /* ---- CTA button ---- */
+  .cta-area{margin-top:44px;text-align:center;}
+  .cta-lead{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .cta-q{
+    font-family:"Shippori Mincho",serif;
+    font-size:20px;
+    margin-bottom:20px;
+    letter-spacing:0.04em;
+  }
+  .btn{
+    display:inline-block;
+    width:100%;
+    max-width:340px;
+    padding:18px 24px;
+    border-radius:40px;
+    background:linear-gradient(135deg,var(--gold) 0%,var(--gold-soft) 100%);
+    color:#fff;
+    font-family:"Shippori Mincho",serif;
+    font-size:17px;
+    letter-spacing:0.06em;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(201,168,106,0.35);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:translateY(2px);box-shadow:0 4px 14px rgba(201,168,106,0.3);}
+  .btn .arrow{margin-left:8px;}
+
+  .foot{
+    text-align:center;
+    margin-top:40px;
+    font-size:13px;
+    color:var(--ink-soft);
+    letter-spacing:0.1em;
+  }
+
+  @media (max-width:380px){
+    h1{font-size:24px;}
+    .step .big{font-size:19px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">MEGURU</div>
+  <h1><span class="leaf">🌿</span>五感でゆるむワーク</h1>
+  <p class="lead">問いかける前に、まず身体をゆるめよう。</p>
+</header>
+
+<div class="wrap">
+
+  <!-- なぜ五感が大切なの？ -->
+  <section>
+    <h2>なぜ五感が大切なの？</h2>
+    <div class="why">
+      <p>「それ、ほんとなん？」と問いかけても、身体がガチガチに力んだままだと、頭だけで答えを探してしまいます。</p>
+      <p>だから、まずは五感を使って身体に</p>
+      <span class="safe">「もう安全やで😊」</span>
+      <p>と伝えてあげること。</p>
+      <p>すると心地よさを感じやすくなり、そのあとに「それ、ほんとなん？」と問いかけることで、本音に気づきやすくなります。</p>
+    </div>
+  </section>
+
+  <!-- 触覚 -->
+  <section>
+    <h2><span class="emoji">🖐️</span>触覚（触れる）</h2>
+    <div class="sense">
+      <p class="intro">皮膚は脳と深く関わっているため、「触れること」は安心感につながりやすい感覚です。</p>
+      <p class="ex">例えば…</p>
+      <ul>
+        <li>わんちゃんや猫をなでる🐶</li>
+        <li>ぬいぐるみを抱きしめる</li>
+        <li>毛布やブランケットにくるまる</li>
+        <li>ハンドクリームをゆっくり塗る</li>
+        <li>自分の頬をやさしく包む</li>
+        <li>湯船や足湯に浸かる</li>
+        <li>マッサージを受ける</li>
+        <li>芝生を裸足で歩く</li>
+        <li>柔らかい服を着る</li>
+        <li>全身を5秒ギューッと力ませて、一気に力を抜く</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 嗅覚 -->
+  <section>
+    <h2><span class="emoji">👃</span>嗅覚（香り）</h2>
+    <div class="sense">
+      <p class="intro">香りは一瞬で気分が変わることがあります。</p>
+      <p class="ex">例えば…</p>
+      <ul>
+        <li>アロマ</li>
+        <li>ハンドクリーム</li>
+        <li>コーヒー</li>
+        <li>ハーブティー</li>
+        <li>木の香り</li>
+        <li>お風呂の入浴剤</li>
+        <li>焼きたてパン</li>
+        <li>雨上がりの匂い</li>
+        <li>お日様の匂いがするタオル</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 聴覚 -->
+  <section>
+    <h2><span class="emoji">👂</span>聴覚（聞く）</h2>
+    <div class="sense">
+      <p class="intro">耳から入る音も、リラックスするきっかけになります。</p>
+      <p class="ex">例えば…</p>
+      <ul>
+        <li>波の音</li>
+        <li>雨の音</li>
+        <li>川のせせらぎ</li>
+        <li>鳥の声</li>
+        <li>好きな音楽</li>
+        <li>オルゴール</li>
+        <li>静かな時間をつくる</li>
+        <li>深呼吸の音に耳を澄ます</li>
+        <li>「大丈夫😊」と自分に声をかける</li>
+        <li>わんちゃんの寝息を聞く</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 視覚 -->
+  <section>
+    <h2><span class="emoji">👀</span>視覚（見る）</h2>
+    <div class="sense">
+      <p class="intro">目に入る景色も、心地よさを届けてくれます。</p>
+      <p class="ex">例えば…</p>
+      <ul>
+        <li>空を見る</li>
+        <li>雲を見る</li>
+        <li>海を見る</li>
+        <li>緑を見る</li>
+        <li>花を飾る</li>
+        <li>キャンドルの炎を見る</li>
+        <li>間接照明にする</li>
+        <li>観葉植物を見る</li>
+        <li>好きな写真を見る</li>
+        <li>わんちゃんの寝顔を見る</li>
+        <li>ホットアイマスクで目を休ませる</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 味覚 -->
+  <section>
+    <h2><span class="emoji">👅</span>味覚（味わう）</h2>
+    <div class="sense">
+      <p class="intro">味わうと、脳が“今”に戻ってきます。</p>
+      <p class="ex">例えば…</p>
+      <ul>
+        <li>白湯</li>
+        <li>温かいお茶</li>
+        <li>ハーブティー</li>
+        <li>好きなスープ</li>
+        <li>お味噌汁</li>
+        <li>出汁をゆっくり味わう</li>
+        <li>フルーツ</li>
+        <li>チョコを一粒ゆっくり溶かす</li>
+        <li>ご飯をゆっくり噛んで味わう</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 五感を全部使うズボラ時間 -->
+  <section>
+    <h2><span class="emoji">💜</span>五感を全部使うズボラ時間</h2>
+    <div class="sense">
+      <ul>
+        <li>森を散歩する</li>
+        <li>海へ行く</li>
+        <li>温泉に入る</li>
+        <li>公園で寝転ぶ</li>
+        <li>ペットと遊ぶ</li>
+        <li>ガーデニング</li>
+        <li>キャンプ</li>
+        <li>焚き火を見る</li>
+        <li>好きなカフェでぼーっとする</li>
+        <li>ベランダで風を感じながらお茶を飲む</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3つ選ぶ -->
+  <div class="step">
+    <div class="num">STEP 1</div>
+    <p class="big">この中から3つ選ぶ</p>
+    <p class="sub">どれが正解ではありません。<br>あなたの身体が「あ〜気持ちいい😊」と<br>感じたものが、今のあなたに必要な答えです。</p>
+  </div>
+
+  <!-- ゆるめる -->
+  <div class="step">
+    <div class="num">STEP 2</div>
+    <p class="big">5〜10分だけ身体をゆるめる</p>
+    <p class="sub">身体が「あ〜気持ちいい😊」と<br>感じ始めたら、そのタイミングで──</p>
+    <p class="feel">「それ、ほんとなん？」</p>
+  </div>
+
+  <!-- 締めの言葉 -->
+  <div class="closing">
+    <p>ズボラは「何もしないこと」じゃない。</p>
+    <p class="zubora">ズボラでええねん🤣</p>
+    <p>身体が心地いい方を選んであげること。<br>その積み重ねが、脳をゆるめ、身体をゆるめ、<br>巡りを取り戻していく。</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-area">
+    <p class="cta-lead">身体がゆるんだら、いよいよ</p>
+    <p class="cta-q">「それ、ほんとなん？」</p>
+    <a class="btn" href="honto-nan.html">それ、ほんとなん？へ進む<span class="arrow">→</span></a>
+  </div>
+
+  <p class="foot">めぐる — ぼたんのズボラ美容</p>
+
+</div>
+
+</body>
+</html>
