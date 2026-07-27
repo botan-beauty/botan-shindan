@@ -159,6 +159,12 @@
   .choko.c4 img{ animation-delay:3.2s; animation-duration:7.5s; }
   @keyframes float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);} }
   @media (prefers-reduced-motion: reduce){ .choko img{ animation:none; } }
+
+  /* まず身体をゆるめよう（五感ワークへの案内） */
+  .yurumu-lead{ margin:0 0 8px; padding:26px 24px; border:1px solid var(--gold-soft); border-radius:2px; background:var(--mist); }
+  .yurumu-lead .yl-title{ font-family:var(--mincho); font-weight:600; font-size:1.06rem; letter-spacing:.04em; color:var(--ink); margin:0 0 12px; line-height:1.7; }
+  .yurumu-lead .yl-sub{ font-family:var(--gothic); font-weight:300; font-size:.86rem; line-height:1.95; color:var(--ink-soft); margin:0 0 20px; }
+  .yurumu-lead .btn{ margin-top:0; }
 </style>
 </head>
 <body>
@@ -180,6 +186,12 @@
     <p class="lead">私はこういう人。<br>人生とはこういうもの。<br>お金とは、仕事とは、美容とは<br>こういうもの。</p>
     <p class="lead soft">ずっと当たり前だと思っていたそれは、<br>本当のあなたではなく、<br>過去の出来事や、誰かの言葉から<br>作られた脳の設定かもしれません。</p>
     <p class="lead soft">無理に変えなくていい。<br>前向きにならなくてもいい。</p>
+    <div class="rule"></div>
+    <div class="yurumu-lead">
+      <p class="yl-title">問いかける前に、まず身体をゆるめよう</p>
+      <p class="yl-sub">身体がガチガチのままだと、<br>頭だけで答えを探してしまいます。</p>
+      <a class="btn" href="gokan-yurumu.html">🌿 五感でゆるむ</a>
+    </div>
     <div class="rule"></div>
     <p class="lead">まずは一回だけ、聞いてみよう。</p>
     <p class="ask-big">それ、ほんとなん？</p>
