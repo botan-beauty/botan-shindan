@@ -249,18 +249,41 @@ function markCarried(){
   try{ localStorage.setItem(CARRIED_KEY, '1'); }catch(e){}
 }
 
-// 診断結果を、ぼたんに"こっそり"下地として教えておく（画面には出さない・保存もしない）
-function seedShindanContext(){
-  if(carriedShindan.length === 0) return;
+// 診断結果を、ぼたんに渡す下地メッセージを1本作る（画面には出さない）
+// ※どう気づきを渡すかは chat.js の人格に任せる。ここは結果を伝えるだけ。
+function buildShindanSeed(isRepeat){
   const lines = carriedShindan.map(s => '・' + s.label + '：' + s.value).join('\n');
-  msgs.push({
-    role:'user', hidden:true,
-    content:'（夏祭りの診断結果を持ってきました。以下がわたしの結果です。これを踏まえて話してください。長くなりすぎず、余白を残して）\n' + lines
-  });
-  msgs.push({
-    role:'assistant', hidden:true,
-    content:'（診断結果を受け取りました。この人の肌タイプ・脳タイプを踏まえて、これ以降ずっと話します）'
-  });
+  const head = isRepeat
+    ? '（また夏祭りの診断を持ってきました。今回の結果です）'
+    : '（夏祭りをぜんぶ回って、診断結果を持ってきました。わたしの結果です）';
+  return head + '\n' + lines;
+}
+
+// 起動時に、AIぼたん本人（chat.js）に結果を渡して、最初のひとことを喋ってもらう
+async function greetWithShindan(isRepeat){
+  const seedText = buildShindanSeed(isRepeat);
+  // 下地メッセージ（画面には出さない・保存もしない）
+  msgs.push({ role:'user', hidden:true, content: seedText });
+
+  showTyping();
+  try{
+    const r = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, memoryNote:memoryNote, messages:msgs })
+    });
+    const data = await r.json();
+    hideTyping();
+    const reply = data.content?.[0]?.text || 'よう来たね🌙 ちょっと待ってな💜';
+    msgs.push({ role:'assistant', content: reply });
+    addMsg('assistant', reply);
+    saveMemory();
+  }catch(e){
+    hideTyping();
+    // 通信が失敗しても、結果だけは出しておく（最低限）
+    const resultLines = carriedShindan.map(s => '🔸 ' + s.label + '：' + s.value).join('\n');
+    addMsg('assistant', 'よう来たね🌙 夏祭り回ってきてくれてありがとう💜\n\n' + resultLines + '\n\nもう一回話しかけてくれる？🌙');
+  }
 }
 // ═══════════════════════════════════════════════════
 
@@ -624,6 +647,7 @@ function forgetAll(){
   try{
     localStorage.removeItem(MEM_KEY);
     localStorage.removeItem(HIST_KEY);
+    localStorage.removeItem(CARRIED_KEY);   // 「診断を持ってきた印」も消す＝初回に戻る
   }catch(e){}
 }
 
@@ -669,17 +693,17 @@ ${recent}
 // ────────────────────────────────────────────
 
 // ═══════════════════════════════════════════════════
-//  起動時の分岐（ぼたんルール）
-//  軸は「夏祭りのまとめを持ってきたか」。相手が新人か常連かは、
-//  持ってきた時の"受け取りメッセージ"には関係なく一貫させる。
+//  起動時の分岐
+//  軸は「夏祭りのまとめを持ってきたか」。
+//  ★大事：まとめを持ってきたら、固定文で終わらせず、
+//    AIぼたん本人（chat.js の人格）に結果を渡して喋ってもらう。
+//    → 「肌と脳のつながり＝気づき」を、その人だけの言葉で返してくれる。
 //
-//   A. まとめ持ち込み・初回
-//       - AIぼたん初対面 → はじめましての挨拶（そのまま）＋ 受け取りメッセージ（2つ出る）
-//       - AIぼたん常連   → つづきから（過去の会話を復元）＋ 受け取りメッセージ
-//   B. まとめ持ち込み・2回目以降 → 「おかえり🌙 また診断やってきてくれたんやね」＋ 今回の結果
-//   C. まとめ無し → 初対面＝通常挨拶／続き＝つづきから（今まで通り）
+//   A. まとめ持ち込み・初回 … AIぼたんが結果を読んで、双子の気づきを渡す
+//   B. まとめ持ち込み・2回目以降 … 同上（人格が"また来たね"を汲んで返す）
+//   C. まとめ無し … 初対面＝通常挨拶／続き＝つづきから（今まで通り）
 // ═══════════════════════════════════════════════════
-(function restoreConversation(){
+(async function restoreConversation(){
   loadMemory();
 
   const hasHistory = msgs.length > 0;   // AIぼたんと前に話したことがある人か
@@ -702,44 +726,20 @@ ${recent}
     });
   }
 
-  const resultLines = carriedShindan
-    .map(s => '🔸 ' + s.label + '：<b>' + s.value + '</b>').join('<br>');
-
   // ── まとめを持ってきた場合 ──────────────────
   if(carriedShindan.length > 0){
     const isRepeat = hasCarriedBefore();   // 前にも診断を持ってきたことがあるか
 
-    // 常連（会話履歴あり）は、過去の会話をまず戻す。新人はHTMLの挨拶をそのまま残す。
+    // 常連（会話履歴あり）は、過去の会話をまず戻す。新人はHTMLの最初の挨拶をそのまま残す。
     if(hasHistory){
       paintHistory();
     }
-
-    // ぼたんに結果を下地として渡す
-    seedShindanContext();
-
-    if(isRepeat){
-      // B. 2回目以降 → おかえり＋今回の結果
-      addMsg('assistant',
-        'おかえり🌙 また診断やってきてくれたんやね💜\n\n' +
-        '今回はこれやね👇\n\n' + resultLines + '\n\n' +
-        '肌と脳、やっぱりちゃーんと繋がってるんよ🌸\n\n' +
-        '今日はどんな感じ？きかせてな🌙'
-      );
-    }else{
-      // A. 初回の持ち込み → 受け取りメッセージ（新人は上に挨拶、常連は上につづき）
-      addMsg('assistant',
-        'わぁ、夏祭り回ってきてくれたん？🌙 ありがとう💜\n\n' +
-        'ちゃんと見せてもらったよ👇\n\n' + resultLines + '\n\n' +
-        'この結果な、肌と脳、ちゃーんと繋がってるんよ🌸\n\n' +
-        (hasHistory
-          ? '続きで、この結果のことも一緒に見ていこな🌙'
-          : 'ここからは、あなただけの話をしよ。\n\nそや、なんて呼んだらええ？🌙')
-      );
-    }
-
-    markCarried();       // 「一度持ってきた」と記録（次からはB＝おかえり）
-    saveMemory();
     qr.style.display='none';
+
+    // ★AIぼたん本人に、結果を渡して喋ってもらう（固定文にしない）
+    await greetWithShindan(isRepeat);
+
+    markCarried();       // 「一度持ってきた」と記録
     return;
   }
 
