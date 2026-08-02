@@ -240,6 +240,11 @@ function readShindanFromURL(){
 }
 const carriedShindan = readShindanFromURL();
 
+// 一度読んだらURLから結果を消す（リロードしても2回目のあいさつが走らないように）
+if(carriedShindan.length > 0){
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+}
+
 // 前に一度でも診断を持ち込んだことがあるか（＝2回目以降の判定に使う）
 const CARRIED_KEY = 'botan_carried_once';
 function hasCarriedBefore(){
@@ -259,30 +264,57 @@ function buildShindanSeed(isRepeat){
   return head + '\n' + lines;
 }
 
+// APIに送る前に messages を整える（先頭は必ず user・hidden等の余分キーを外す）
+function sanitizeForApi(list){
+  const clean = list.map(m => ({ role: m.role, content: m.content }));
+  // 先頭が assistant なら、それを落として user から始まるようにする
+  while(clean.length && clean[0].role !== 'user'){ clean.shift(); }
+  return clean;
+}
+
 // 起動時に、AIぼたん本人（chat.js）に結果を渡して、最初のひとことを喋ってもらう
 async function greetWithShindan(isRepeat){
   const seedText = buildShindanSeed(isRepeat);
   // 下地メッセージ（画面には出さない・保存もしない）
   msgs.push({ role:'user', hidden:true, content: seedText });
 
+  const resultLines = carriedShindan.map(s => '🔸 ' + s.label + '：' + s.value).join('\n');
+
   showTyping();
   try{
     const r = await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, memoryNote:memoryNote, messages:msgs })
+      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, memoryNote:memoryNote, messages: sanitizeForApi(msgs) })
     });
     const data = await r.json();
     hideTyping();
-    const reply = data.content?.[0]?.text || 'よう来たね🌙 ちょっと待ってな💜';
-    msgs.push({ role:'assistant', content: reply });
-    addMsg('assistant', reply);
-    saveMemory();
+
+    const reply = data.content?.[0]?.text;
+    if(reply){
+      // 成功：AIぼたん本人が結果を読んで気づきを返してくれた
+      msgs.push({ role:'assistant', content: reply });
+      addMsg('assistant', reply);
+      saveMemory();
+    }else{
+      // サーバーは返したが中身が空 or エラーJSON → 結果は必ず見せる＋やさしく促す
+      addMsg('assistant',
+        'よう来たね🌙 夏祭り回ってきてくれてありがとう💜\n\n' +
+        resultLines + '\n\n' +
+        'この肌と脳、ちゃんと繋がってるんよ🌸\n' +
+        'どこから話そっか？気になるとこ、教えてな🌙'
+      );
+      saveMemory();
+    }
   }catch(e){
     hideTyping();
-    // 通信が失敗しても、結果だけは出しておく（最低限）
-    const resultLines = carriedShindan.map(s => '🔸 ' + s.label + '：' + s.value).join('\n');
-    addMsg('assistant', 'よう来たね🌙 夏祭り回ってきてくれてありがとう💜\n\n' + resultLines + '\n\nもう一回話しかけてくれる？🌙');
+    // 通信そのものが失敗 → 結果だけは必ず出す
+    addMsg('assistant',
+      'よう来たね🌙 夏祭り回ってきてくれてありがとう💜\n\n' +
+      resultLines + '\n\n' +
+      'ちょっと今つながりにくいみたい🌙 なんでも話しかけてくれる？💜'
+    );
+    saveMemory();
   }
 }
 // ═══════════════════════════════════════════════════
@@ -808,7 +840,7 @@ async function send(){
     const r=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,memoryNote:memoryNote,messages:msgs})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,memoryNote:memoryNote,messages:sanitizeForApi(msgs)})
     });
     const data=await r.json();
     hideTyping();
