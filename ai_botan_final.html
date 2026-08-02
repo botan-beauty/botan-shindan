@@ -255,13 +255,15 @@ function markCarried(){
 }
 
 // 診断結果を、ぼたんに渡す下地メッセージを1本作る（画面には出さない）
-// ※どう気づきを渡すかは chat.js の人格に任せる。ここは結果を伝えるだけ。
+// ※どう紐解くかは chat.js の人格に任せる。ここは結果を伝える＋方針だけ。
 function buildShindanSeed(isRepeat){
   const lines = carriedShindan.map(s => '・' + s.label + '：' + s.value).join('\n');
   const head = isRepeat
     ? '（また夏祭りの診断を持ってきました。今回の結果です）'
     : '（夏祭りをぜんぶ回って、診断結果を持ってきました。わたしの結果です）';
-  return head + '\n' + lines;
+  // 4つはもう画面に一覧表示済み。だからここでは「総合を紐解く」ことに集中してもらう。
+  const guide = '\n\n（結果はもう相手に見せてあります。1つずつ並べ直さず、この4つを"通して見えること＝総合"をやさしく紐解いてください。肌と脳のつながりを1つ渡すこと。ただし「それ、ほんとなん？」の項目は"本人が選んだお題"であって思い込みと決めつけず、「これ、気になった？どう感じた？」と本人にそっと返すこと。長くなりすぎず、余白を残して）';
+  return head + '\n' + lines + guide;
 }
 
 // APIに送る前に messages を整える（先頭は必ず user・hidden等の余分キーを外す）
@@ -272,13 +274,18 @@ function sanitizeForApi(list){
   return clean;
 }
 
-// 起動時に、AIぼたん本人（chat.js）に結果を渡して、最初のひとことを喋ってもらう
+// 起動時：まず4つの結果を"見せて"、そのあとAIぼたんが総合を紐解く
 async function greetWithShindan(isRepeat){
-  const seedText = buildShindanSeed(isRepeat);
-  // 下地メッセージ（画面には出さない・保存もしない）
-  msgs.push({ role:'user', hidden:true, content: seedText });
+  // ① まず4つの結果カードを、確実に画面に出す（見せる部分は固定）
+  const resultLines = carriedShindan.map(s => '🔸 ' + s.label + '：<b>' + s.value + '</b>').join('<br>');
+  const opener = isRepeat
+    ? 'おかえり🌙 また回ってきてくれたんやね💜'
+    : 'よう来たね🌙 夏祭りぜんぶ回ってきてくれてありがとう💜';
+  addMsg('assistant', opener + '\n\nまずは、あなたの4つ👇\n\n' + resultLines);
 
-  const resultLines = carriedShindan.map(s => '🔸 ' + s.label + '：' + s.value).join('\n');
+  // ② そのあと、AIぼたん本人にこの4つの"総合"を紐解いてもらう
+  const seedText = buildShindanSeed(isRepeat);
+  msgs.push({ role:'user', hidden:true, content: seedText });
 
   showTyping();
   try{
@@ -292,28 +299,17 @@ async function greetWithShindan(isRepeat){
 
     const reply = data.content?.[0]?.text;
     if(reply){
-      // 成功：AIぼたん本人が結果を読んで気づきを返してくれた
       msgs.push({ role:'assistant', content: reply });
       addMsg('assistant', reply);
       saveMemory();
     }else{
-      // サーバーは返したが中身が空 or エラーJSON → 結果は必ず見せる＋やさしく促す
-      addMsg('assistant',
-        'よう来たね🌙 夏祭り回ってきてくれてありがとう💜\n\n' +
-        resultLines + '\n\n' +
-        'この肌と脳、ちゃんと繋がってるんよ🌸\n' +
-        'どこから話そっか？気になるとこ、教えてな🌙'
-      );
+      // サーバーが空返し → 結果は既に見せてあるので、そっと促すだけ
+      addMsg('assistant', 'この4つ、実はつながってるんよ🌸\n気になるとこから、話そっか？🌙');
       saveMemory();
     }
   }catch(e){
     hideTyping();
-    // 通信そのものが失敗 → 結果だけは必ず出す
-    addMsg('assistant',
-      'よう来たね🌙 夏祭り回ってきてくれてありがとう💜\n\n' +
-      resultLines + '\n\n' +
-      'ちょっと今つながりにくいみたい🌙 なんでも話しかけてくれる？💜'
-    );
+    addMsg('assistant', 'ちょっと今つながりにくいみたい🌙 なんでも話しかけてくれる？💜');
     saveMemory();
   }
 }
