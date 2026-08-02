@@ -249,16 +249,16 @@ function markCarried(){
   try{ localStorage.setItem(CARRIED_KEY, '1'); }catch(e){}
 }
 
-// 診断結果を、ぼたんに"こっそり"下地として教えておく（画面には出さない）
+// 診断結果を、ぼたんに"こっそり"下地として教えておく（画面には出さない・保存もしない）
 function seedShindanContext(){
   if(carriedShindan.length === 0) return;
   const lines = carriedShindan.map(s => '・' + s.label + '：' + s.value).join('\n');
   msgs.push({
-    role:'user',
+    role:'user', hidden:true,
     content:'（夏祭りの診断結果を持ってきました。以下がわたしの結果です。これを踏まえて話してください。長くなりすぎず、余白を残して）\n' + lines
   });
   msgs.push({
-    role:'assistant',
+    role:'assistant', hidden:true,
     content:'（診断結果を受け取りました。この人の肌タイプ・脳タイプを踏まえて、これ以降ずっと話します）'
   });
 }
@@ -603,9 +603,11 @@ function loadMemory(){
 
 function saveMemory(){
   try{
+    // 隠しメッセージ（診断の下地）は保存しない＝画面にも二度と出さない
+    const visible = msgs.filter(m => !m.hidden);
     // 直近だけ残す（写真は重いので、保存する時は外す）
-    const trimmed = msgs.slice(-KEEP_TURNS*2).map(m=>{
-      if(typeof m.content === 'string') return m;
+    const trimmed = visible.slice(-KEEP_TURNS*2).map(m=>{
+      if(typeof m.content === 'string') return { role:m.role, content:m.content };
       // 画像入りは、文字の部分だけ残す
       const texts = (m.content||[]).filter(c=>c.type==='text').map(c=>c.text).join(' ');
       return { role:m.role, content: texts || '（写真）' };
@@ -692,6 +694,7 @@ ${recent}
     note.textContent = 'つづきから🌙';
     area.appendChild(note);
     msgs.forEach(m=>{
+      if(m.hidden) return;   // 隠しメッセージ（診断の下地）は画面に出さない
       const text = typeof m.content === 'string'
         ? m.content
         : (m.content||[]).filter(c=>c.type==='text').map(c=>c.text).join(' ');
