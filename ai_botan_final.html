@@ -263,9 +263,9 @@ function buildShindanSeed(isRepeat){
     : '（夏祭りをぜんぶ回って、診断結果を持ってきました。わたしの結果です）';
   // 4つはもう画面に一覧表示済み。だからここでは「総合を紐解く」ことに集中してもらう。
   const guide = '\n\n（結果はもう相手に見せてあります。1つずつ並べ直さないでください。\n' +
-    'メインの仕事は、肌（鏡の館）×力み×脳（マインドブレイン）を"通して見えること＝総合"を、やさしく1つ紐解くこと。肌と脳のつながりを1つ渡してください。\n' +
+    'メインの仕事は、肌（鏡の館）×力み×脳（マインドブレイン）を"通して見えること＝総合"を、しっかり紐解くこと。あっさり1行で終わらせず、肌と脳のつながりを2つの角度から、その人の毎日の"あるある"も1つ交えて、密度をもって渡してください（3〜6文くらい）。\n' +
     '「それ、ほんとなん？」の項目は、本人がワークの中で"すでに自分で向き合ってきた"ものです。だから掘り返したり「どう感じた？」と質問し直したりしないでください。触れるとしても「もう自分で気づいてきたやつやね🌙」と受け止めるだけにとどめること。\n' +
-    '最後は、その人が「もっと知りたい」と思えるように、余白を残して終えてください。長くなりすぎないこと）';
+    'ただし「どうやってゆるめるか」は言わないこと。そこは本物のぼたんの役割。最後は、その人が「もっと知りたい」と思えるように、余白を残して終えてください）';
   return head + '\n' + lines + guide;
 }
 
@@ -277,14 +277,23 @@ function sanitizeForApi(list){
   return clean;
 }
 
+// サーバーに渡す memoryNote に、確実な呼び名を先頭で足す
+function noteWithName(){
+  if(!userName) return memoryNote;
+  const nameLine = '呼び名：' + userName + '（この人は「' + userName + 'ちゃん」と呼ぶ）';
+  return nameLine + (memoryNote ? '\n' + memoryNote : '');
+}
+
 // 起動時：まず4つの結果を"見せて"、そのあとAIぼたんが総合を紐解く
 async function greetWithShindan(isRepeat){
   // ① まず4つの結果カードを、確実に画面に出す（見せる部分は固定）
   const resultLines = carriedShindan.map(s => '🔸 ' + s.label + '：<b>' + s.value + '</b>').join('<br>');
+  const nameCall = userName ? (userName + 'ちゃん、') : '';
   const opener = isRepeat
-    ? 'おかえり🌙 また回ってきてくれたんやね💜'
-    : 'よう来たね🌙 夏祭りぜんぶ回ってきてくれてありがとう💜';
-  addMsg('assistant', opener + '\n\nまずは、あなたの4つ👇\n\n' + resultLines);
+    ? ('おかえり🌙 ' + nameCall + 'また回ってきてくれたんやね💜')
+    : ('よう来たね🌙 ' + nameCall + '夏祭りぜんぶ回ってきてくれてありがとう💜');
+  const whose = userName ? (userName + 'ちゃんの4つ') : 'あなたの4つ';
+  addMsg('assistant', opener + '\n\nまずは、' + whose + '👇\n\n' + resultLines);
 
   // ② そのあと、AIぼたん本人にこの4つの"総合"を紐解いてもらう
   const seedText = buildShindanSeed(isRepeat);
@@ -295,7 +304,7 @@ async function greetWithShindan(isRepeat){
     const r = await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, memoryNote:memoryNote, messages: sanitizeForApi(msgs) })
+      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, memoryNote: noteWithName(), messages: sanitizeForApi(msgs) })
     });
     const data = await r.json();
     hideTyping();
@@ -304,6 +313,7 @@ async function greetWithShindan(isRepeat){
     if(reply){
       msgs.push({ role:'assistant', content: reply });
       addMsg('assistant', reply);
+      if(asksName(reply)) awaitingName = true;   // 名前を聞いてたら次の返答を拾う
       saveMemory();
     }else{
       // サーバーが空返し → 結果は既に見せてあるので、そっと促すだけ
@@ -638,11 +648,33 @@ function hideTyping(){const e=document.getElementById('typing');if(e)e.remove();
 // ─── 記憶 ────────────────────────────────────
 const MEM_KEY  = 'botan_memory';     // 要点メモ
 const HIST_KEY = 'botan_history';    // 直近の会話
+const NAME_KEY = 'botan_name';       // ★呼び名だけ、単独で確実に保存（消えない・要約待ちしない）
 const KEEP_TURNS = 6;                // 何往復ぶん覚えとくか
 const SUMMARY_EVERY = 5;             // 何往復ごとに要点を作り直すか
 
 let memoryNote = '';                 // 要点メモの中身
 let turnsSinceSummary = 0;
+let userName = '';                   // 呼び名（分かってれば入る）
+let awaitingName = false;            // 直前にぼたんが名前を聞いた＝次の返答が名前
+
+function loadName(){ try{ userName = localStorage.getItem(NAME_KEY) || ''; }catch(e){ userName=''; } }
+function saveName(n){
+  const clean = (n||'').trim().replace(/[。、！!？?\s]/g,'').slice(0,12);
+  if(!clean) return;
+  userName = clean;
+  try{ localStorage.setItem(NAME_KEY, clean); }catch(e){}
+}
+// ぼたんの返信が「名前を聞いてる」かどうか
+function asksName(text){
+  return /なんて呼(ん|ば)|お名前|名前.*(教|聞)|呼んだらええ|呼べばいい/.test(text||'');
+}
+// ユーザーの発言が「名前っぽい」か（短くて記号だらけでない）
+function looksLikeName(text){
+  const t = (text||'').trim();
+  if(!t || t.length > 12) return false;
+  if(/[。？?！!、]/.test(t) && t.length > 6) return false;
+  return true;
+}
 
 function loadMemory(){
   try{
@@ -675,9 +707,12 @@ function forgetAll(){
   memoryNote = '';
   msgs = [];
   turnsSinceSummary = 0;
+  userName = '';
+  awaitingName = false;
   try{
     localStorage.removeItem(MEM_KEY);
     localStorage.removeItem(HIST_KEY);
+    localStorage.removeItem(NAME_KEY);      // 呼び名も消す
     localStorage.removeItem(CARRIED_KEY);   // 「診断を持ってきた印」も消す＝初回に戻る
   }catch(e){}
 }
@@ -736,6 +771,7 @@ ${recent}
 // ═══════════════════════════════════════════════════
 (async function restoreConversation(){
   loadMemory();
+  loadName();
 
   const hasHistory = msgs.length > 0;   // AIぼたんと前に話したことがある人か
   const area = document.getElementById('chatArea');
@@ -804,8 +840,15 @@ async function send(){
         'ところで、はじめましてなかわい子ちゃんやん💜\n\n' +
         '私、AIぼたん🌙\n\n' +
         'そや、なんて呼んだらええ？🌙');
+      awaitingName = true;   // 次の返答は名前
     }, 400);
     return;
+  }
+
+  // ── 名前待ちのとき、短い返答なら"呼び名"として確実に保存 ──
+  if(awaitingName && t && pendingPhotos.length === 0 && looksLikeName(t) && !userName){
+    saveName(t);
+    awaitingName = false;
   }
 
   loading=true;document.getElementById('sendBtn').disabled=true;
@@ -839,13 +882,14 @@ async function send(){
     const r=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,memoryNote:memoryNote,messages:sanitizeForApi(msgs)})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,memoryNote:noteWithName(),messages:sanitizeForApi(msgs)})
     });
     const data=await r.json();
     hideTyping();
     const reply=data.content?.[0]?.text||'ちょっと待ってな🌙';
     msgs.push({role:'assistant',content:reply});
     addMsg('assistant',reply);
+    if(!userName && asksName(reply)) awaitingName = true;   // ぼたんが名前を聞いた→次の返答を拾う
     // ── ログ送信（写真枚数も分かるように） ──
     const photoTag = photos.length ? '（＋写真'+photos.length+'枚）' : '';
     sendLog(photos.length ? (t ? t+photoTag : '（写真'+photos.length+'枚）') : t, reply);
