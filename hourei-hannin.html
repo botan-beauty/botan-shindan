@@ -1,0 +1,393 @@
+<!-- ほうれい線の犯人診断／© ぼたん / めぐる／無断複製・転載を禁じます。 -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ほうれい線の犯人診断🕵️‍♀️｜めぐる</title>
+<style>
+  :root{
+    --bg:#fdfaf6; --ink:#4a4038; --sub:#8a7d70;
+    --card:#ffffff; --line:#ece3d8;
+    --accent:#c9a86a; --accent2:#b08d55;
+    --soft:#f6efe6; --shadow:0 6px 24px rgba(120,100,70,.10);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.9;
+    padding:0 18px 80px; letter-spacing:.02em;
+  }
+  .wrap{max-width:520px; margin:0 auto;}
+  header{text-align:center; padding:44px 10px 20px;}
+  header .moon{font-size:34px;}
+  header h1{font-size:22px; margin:10px 0 6px; font-weight:700;}
+  header p{color:var(--sub); font-size:14.5px; margin:4px 0;}
+  .intro{
+    background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:22px 20px; box-shadow:var(--shadow); margin:18px 0 26px; font-size:15px;
+  }
+  .intro .q{color:var(--accent2); font-weight:700; font-size:16px;}
+  .progress-wrap{position:sticky; top:0; background:var(--bg); padding:12px 0 8px; z-index:5;}
+  .progress-bar{height:8px; background:var(--soft); border-radius:99px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .35s ease;}
+  .progress-text{text-align:center; font-size:12.5px; color:var(--sub); margin-top:6px;}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:20px;
+    padding:30px 22px; box-shadow:var(--shadow); min-height:210px;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .qnum{text-align:center; color:var(--accent2); font-size:13px; letter-spacing:.14em; margin-bottom:14px;}
+  .qtext{text-align:center; font-size:19px; font-weight:700; line-height:1.7; margin-bottom:30px; min-height:64px; display:flex; align-items:center; justify-content:center;}
+  .btns{display:flex; flex-direction:column; gap:13px;}
+  .btn{
+    border:none; border-radius:14px; padding:17px; font-size:16.5px; font-weight:700;
+    cursor:pointer; transition:transform .08s ease, box-shadow .2s ease; font-family:inherit;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-yes{background:linear-gradient(135deg,#d8b878,#c39a58); color:#fff; box-shadow:0 4px 14px rgba(180,140,80,.30);}
+  .btn-no{background:var(--soft); color:var(--sub);}
+  .back{margin-top:18px; text-align:center;}
+  .back button{background:none; border:none; color:var(--sub); font-size:13.5px; text-decoration:underline; cursor:pointer; font-family:inherit;}
+
+  /* 結果 */
+  #result{display:none;}
+  .r-hero{text-align:center; padding:30px 0 8px;}
+  .r-hero .case{color:var(--sub); font-size:13px; letter-spacing:.16em;}
+  .r-hero .emoji{font-size:60px; margin:10px 0;}
+  .r-hero .name{font-size:26px; font-weight:800; color:var(--accent2);}
+  .r-hero .lead{color:var(--sub); font-size:14px; margin-top:4px;}
+  .r-block{
+    background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:22px 20px; box-shadow:var(--shadow); margin:16px 0; font-size:15px;
+  }
+  .r-block h3{font-size:16px; margin:0 0 12px; color:var(--accent2); display:flex; align-items:center; gap:7px;}
+  .r-block p{margin:0 0 12px;}
+  .r-block p:last-child{margin-bottom:0;}
+  .checklist{list-style:none; padding:0; margin:0;}
+  .checklist li{padding:7px 0 7px 26px; position:relative; border-bottom:1px dashed var(--line); font-size:14.5px;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist li::before{content:"✓"; position:absolute; left:2px; color:var(--accent); font-weight:800;}
+  .team{display:flex; flex-direction:column; gap:12px;}
+  .team-row{display:flex; align-items:flex-start; gap:13px; padding:14px; border-radius:14px; background:var(--soft);}
+  .team-row .rank{font-size:12px; color:var(--sub); font-weight:700; min-width:48px; padding-top:3px;}
+  .team-row .who{font-size:16px; font-weight:800;}
+  .team-row .who small{display:block; font-weight:500; color:var(--sub); font-size:13px; margin-top:3px; line-height:1.6;}
+  .redpen{background:linear-gradient(180deg,#fdf6ec,#fbf0df); border:1px solid #eaddc4;}
+  .boss{background:linear-gradient(180deg,#f3eee9,#ece4da); border:1px solid #ddd0c0;}
+  .honto{text-align:center; background:none; border:none; box-shadow:none;}
+  .honto .big{font-size:20px; font-weight:800; color:var(--accent2); margin:6px 0;}
+  .cta{
+    display:block; text-align:center; background:linear-gradient(135deg,#c9a86a,#a87f45);
+    color:#fff; text-decoration:none; padding:20px; border-radius:16px; font-size:17px;
+    font-weight:800; box-shadow:0 8px 22px rgba(160,120,60,.32); margin:24px 0 10px;
+  }
+  .restart{text-align:center; margin:8px 0 0;}
+  .restart button{background:none; border:1px solid var(--line); border-radius:99px; padding:11px 26px; color:var(--sub); font-size:13.5px; cursor:pointer; font-family:inherit;}
+  .foot{text-align:center; color:var(--sub); font-size:11.5px; margin:34px 0 0; line-height:1.8;}
+  .fade{animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== 診断画面 ===== -->
+  <div id="quiz">
+    <header>
+      <div class="moon">🕵️‍♀️🌙</div>
+      <h1>ほうれい線の犯人診断</h1>
+      <p>あなたのほうれい線、犯人はだれ？</p>
+    </header>
+
+    <div class="intro">
+      あんな、ほうれい線ってな、<br>
+      "年齢やから"で片付けられがちやけど……<br><br>
+      <span class="q">それ、ほんとなん？😊</span><br><br>
+      犯人、人によって全然ちゃうんよ🕵️‍♀️<br>
+      深く考えんでええから、直感で答えてみて🌸
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+      <div class="progress-text" id="ptext">1 / 48</div>
+    </div>
+
+    <div class="card fade" id="card">
+      <div class="qnum" id="qnum">QUESTION 1</div>
+      <div class="qtext" id="qtext">—</div>
+      <div class="btns">
+        <button class="btn btn-yes" onclick="answer(true)">あるかも🌙</button>
+        <button class="btn btn-no" onclick="answer(false)">そうでもない</button>
+      </div>
+    </div>
+    <div class="back"><button onclick="goBack()">← ひとつ戻る</button></div>
+  </div>
+
+  <!-- ===== 結果画面 ===== -->
+  <div id="result"></div>
+
+</div>
+
+<script>
+/* ===== 48問（q=質問 / c=犯人コード） ===== */
+const QUESTIONS = [
+  {q:"朝起きると顎が疲れてる", c:"kui"},
+  {q:"甘いもんに手がのびる", c:"tou"},
+  {q:"顔色が悪いって言われる", c:"meg"},
+  {q:"若い頃よう日焼けした", c:"hik"},
+  {q:"洗顔のあとつっぱる", c:"kan"},
+  {q:"痩せると急に老けて見える", c:"kok"},
+  {q:"考え事が止まらへん", c:"nou"},
+  {q:"夕方ほうれい線が濃なる", c:"muk"},
+  {q:"集中すると奥歯かんでる", c:"kui"},
+  {q:"パン・麺の日が多い", c:"tou"},
+  {q:"手足が冷えやすい", c:"meg"},
+  {q:"シミも増えてきた", c:"hik"},
+  {q:"保湿してもすぐ乾く", c:"kan"},
+  {q:"「ちゃんとせな」が口ぐせ", c:"nou"},
+  {q:"昔からほうれい線あった", c:"kok"},
+  {q:"お酒や塩分で翌朝パンパン", c:"muk"},
+  {q:"エラ張り・食いしばり指摘される", c:"kui"},
+  {q:"運動不足・座りっぱなし", c:"meg"},
+  {q:"屋外にいる時間が長い", c:"hik"},
+  {q:"頬がこけやすい・脂肪少なめ", c:"kok"},
+  {q:"寝ても疲れとれへん", c:"nou"},
+  {q:"肩と首がいつもガチガチ", c:"kui"},
+  {q:"揚げ物・炭水化物が多め", c:"tou"},
+  {q:"肌が黄色っぽく感じる", c:"tou"},
+  {q:"小ジワが増えた", c:"kan"},
+  {q:"気づくと体に力入ってる", c:"kui"},
+  {q:"目もむくみやすい", c:"muk"},
+  {q:"紫外線対策は最近始めた", c:"hik"},
+  {q:"マッサージすると顔色変わる", c:"meg"},
+  {q:"顔が重たい感じ", c:"muk"},
+  {q:"人に気を遣いすぎる", c:"nou"},
+  {q:"日焼け止めを塗らへん日がある", c:"hik"},
+  {q:"真面目・責任感強いと言われる", c:"kui"},
+  {q:"頬の脂肪が少ない", c:"kok"},
+  {q:"疲れるとくすむ", c:"meg"},
+  {q:"家族もほうれい線が深い", c:"hik"},
+  {q:"深呼吸を忘れてる", c:"meg"},
+  {q:"ファンデが割れやすい", c:"kan"},
+  {q:"全体的にたるみが気になる", c:"kok"},
+  {q:"夜遅く食べることが多い", c:"tou"},
+  {q:"肌のハリが減った", c:"kok"},
+  {q:"水分あんまり飲まへん", c:"muk"},
+  {q:"「頑張らな」が口ぐせ", c:"nou"},
+  {q:"左右差が昔からある", c:"tou"},
+  {q:"化粧ノリが悪い", c:"kan"},
+  {q:"熱いお湯で洗顔する", c:"kan"},
+  {q:"何しててもスッキリせん", c:"nou"},
+  {q:"顔がパンパンになりやすい", c:"muk"}
+];
+
+/* ===== 犯人データ ===== */
+const HANNIN = {
+  kui:{emoji:"😬", name:"食いしばり犯", short:"首肩まで固まって、巡りごとキュッと止めてまう"},
+  muk:{emoji:"💧", name:"むくみ犯",   short:"余った水分の重みで、頬を毎日下へ引っぱる"},
+  meg:{emoji:"🌸", name:"巡り犯",     short:"栄養も酸素も届かず、ハリごとしぼんでいく"},
+  hik:{emoji:"☀️", name:"光老化犯",   short:"奥のコラーゲンを崩して、土台からゆるめる"},
+  kan:{emoji:"🌿", name:"乾燥犯",     short:"バリアが弱って、小ジワからほうれい線へ"},
+  tou:{emoji:"🍰", name:"糖化犯",     short:"肌のコゲでコラーゲンを硬くして弾力を奪う"},
+  kok:{emoji:"🦴", name:"骨格犯",     short:""},  // 骨格は共犯位で土台表示にするので空
+  nou:{emoji:"🧠", name:"脳疲労犯",   short:""}   // 黒幕固定
+};
+
+/* ===== 主犯・本文（8種） ===== */
+const RESULT = {
+  kui:{
+    why:"食いしばると、頬の横の咬筋（こうきん）がずっと緊張してパンパンに。硬くなった筋肉の下は血液もリンパも流れにくうなって、首や肩まで巻き込んでガチガチに。支えを失った頬が下がって、その境目にほうれい線がくっきり出てくるんよ🌙",
+    signs:["朝起きると顎が疲れてる","歯ぎしり・食いしばりを指摘される","エラが張りやすい","集中すると奥歯を噛んでる","肩や首がいつもガチガチ","力を抜くのが苦手"],
+    redpen:"⭕️エラボトックスは効く！ でもな😊 たるみ世代や皮膚がやわらかいタイプは要注意。筋肉が小さくなるぶん皮膚が下がって「濃くなった…」て感じる人も、実際に見てきました。それにボトックスは筋肉をゆるめるだけ。「食いしばるクセ」までは治してくれへん。脳が「頑張らなきゃ」を覚えたままやと、また違う筋肉に力が入るんよ。だから私は、なんで食いしばるようになったんやろ？ そこを一緒に考えます🌙",
+    brain:"食いしばりが出やすい人はな、「頑張らなきゃ」「ちゃんとせな」が無意識のクセになってることが多い。その「心の力み」が、そのまま「顎の力み」になって出てくるんよ🌸"
+  },
+  muk:{
+    why:"顔に余分な水分がたまると、頬は毎日ちょっとずつ重たくなる。その重みで頬を支える靭帯や皮膚にじわじわ負担がかかるんよ。朝はマシでも夕方になると濃なる…そんな人は、この犯人が隠れてるかも🌙",
+    signs:["朝より夕方の方が老けて見える","顔がパンパンになりやすい","お酒や味の濃いものが好き","あまり水を飲まない","肩や首がガチガチ","呼吸が浅い"],
+    redpen:"❌ちょっと待って😊 むくみだけなら、高い施術がいらん人も多いんよ。余分な水分がたまってるだけなのに、いきなりハイフで焼くのはもったいないことも。原因は呼吸の浅さ・冷え・巡り不足やったりする。まず巡りを戻すだけで、翌朝「顔ちっちゃ！」ってなる人、何人も見てきました🌸",
+    brain:"むくみやすい人って、意外と頑張り屋さんが多い。緊張すると呼吸が浅なって、肩に力が入って、巡りまで止まる。だからむくみを見る時も、肩や呼吸、脳の疲れまで一緒に見てるんよ🌸"
+  },
+  meg:{
+    why:"血液やリンパの巡りが悪なると、肌に必要な酸素も栄養も届きにくうなる。すると肌を支えるコラーゲンも元気をなくして、ハリも弾力も低下。老廃物も溜まって、顔全体がどんより疲れて見えるんよ。ほうれい線は「巡りがお休み中」のサインかも🌙",
+    signs:["顔色が悪いと言われる","くすみ・クマができやすい","手足が冷えやすい","運動不足・座りっぱなし","肩こり・首こりがある","疲れると一気に老けて見える"],
+    redpen:"⭕️施術もいい😊 でもな、生活の巡りを無視したままやと、もったいないことも。どれだけ高い肌育治療を受けても、寝不足・冷え・浅い呼吸の毎日やと、肌へ届く栄養も少なくなる。私は施術の前に、まず「巡れる身体」を作る方が結果も長持ちすると感じてます🌸",
+    brain:"巡りが悪い人って、身体だけやなく頭の中も忙しい人が多い。考え事、心配事、気づけばずっと頑張ってる。すると自律神経も休めなくて、血流までゆっくりに。だから巡りを見る時は、脳の休み方も一緒に見てるんよ🌸"
+  },
+  hik:{
+    why:"「紫外線＝シミ」と思われがちやけど、実は紫外線はほうれい線の大きな犯人でもある。肌の奥（真皮）まで届いてコラーゲンやエラスチンを壊していくから、支える土台が弱なって頬が下がる。「年齢のせい」と思ってた変化が、長年の紫外線ダメージの積み重ねやったりするんよ🌙",
+    signs:["外にいる時間が長い","日焼け止めを塗らない日がある","車の運転をよくする","シミ・そばかすも増えた","若い頃よく日焼けした","「昔は平気やった」が口ぐせ"],
+    redpen:"❌ちょっと待って😊 施術の前に、まず止めたいのが紫外線と摩擦。火事が起きてる家に高級リフォームしても、火を消さな また燃えるよね。肌育もIPLもええ施術。でも紫外線を浴び続けたりゴシゴシ洗顔してたら効果も半減。私はまず「傷つける原因を止めること」から始めます🌸",
+    brain:"「ちゃんとケアしてるのに…」って人ほど、新しい美容ばっかり足して、肌を休ませるのを忘れてることがある。もっと美容液、もっと施術、の前に、肌を傷つけてる原因を引き算してみる。それも立派な美容なんよ🌸"
+  },
+  kan:{
+    why:"肌が乾燥すると、一番外側のバリア機能が弱なる。水分が逃げやすうなって、肌はふっくら感を失い、ハリも弾力も低下。小じわが深なって、ほうれい線まで目立ちやすうなるんよ。乾燥は「老けて見えるスイッチ」を押してまう犯人なんよ🌙",
+    signs:["洗顔後すぐつっぱる","粉をふくことがある","小じわが気になる","エアコンの部屋が長い","熱いお湯で洗顔する","保湿してもすぐ乾く"],
+    redpen:"❌ちょっと待って😊 その前に、自分でバリア壊してへん？ クレンジングでゴシゴシ、熱いお湯、洗いすぎ、スクラブ。そんな毎日で高い施術を受けても、穴の空いたバケツに水を入れてるようなもん。乾燥だけなら、洗顔を見直しただけで見違える人、ほんまにたくさん見てきました🌸",
+    brain:"乾燥する人ほど「ちゃんとケアしなきゃ」で頑張りすぎてまうことがある。あれも足す、これも足す、もっと保湿。でも肌は、休ませてもらうことで元気になる日もあるんよ。だから足す美容だけやなく、引き算美容も大切にしてます🌸"
+  },
+  tou:{
+    why:"体の中で余った糖とたんぱく質がくっつくと、AGEs（終末糖化産物）っていう「肌のコゲ」ができる。このコゲが増えるとコラーゲンが硬くなって、ゴムみたいな弾力を失う。頬を支える力も弱なって、ほうれい線やたるみが目立ちやすうなるんよ🌙",
+    signs:["甘いものが大好き","パン・麺・ご飯をよく食べる","食後すぐ眠くなる","肌が黄色っぽく見える","昔より肌が硬くなった気がする","夜遅く食べることが多い"],
+    redpen:"⭕️施術も悪くない😊 でも本丸は毎日の食事と睡眠。ピーリングや美容点滴をしても、糖をたくさん摂って夜更かししてたら、また新しい「焦げ」を作ってまう。だから施術の前に、まず毎日の生活を少しだけ見直してほしい。夜の甘いものを一つ減らす、それだけでも未来のお肌は変わり始めるよ🌸",
+    brain:"疲れた時ほど甘いものが食べたくなる、そんな経験ない？ 実はそれ、心が疲れてるサインかも。脳が疲れる→甘いものを欲しがる→糖化が進む→肌にも出る。だから食事だけやなく、脳の疲れも一緒に見てるんよ🌸"
+  },
+  kok:{
+    why:"「骨格やから仕方ない」て思われがちやけど、年齢とともに骨も少しずつ変化する。頬骨や上あごの骨のボリュームが減ると、その上に乗ってる脂肪や皮膚を支えきれんくなって頬が下がる。だからほうれい線が目立ちやすうなるんよ🌙",
+    signs:["昔から面長と言われる","頬がこけやすい","痩せると一気に老けて見える","頬にボリュームが少ない","若い頃からほうれい線が気になってた","肌はそこまで悪くないのに老けて見える"],
+    redpen:"❌ちょっと待った😊 ヒアルロン酸は、入れれば入れるほど若返る…そんな魔法の注射やないんよ。脂肪が多いタイプや厚肌タイプは、逆に顔が重なってたるみが目立つことも。骨が痩せたタイプなら、深い層へ入れると自然に若々しく見える。同じヒアルでも、誰に・どこへ・どう入れるかで結果は全然ちがう。だから私は「どの犯人が主犯か」を先に見極めます🌸",
+    // 骨格は締めを希望寄りに（ちゃぴ案採用）
+    brain:"骨格は、唯一、生まれ持った個性も関係する。でもな、私は15年間、骨格「だけ」が原因やった人を見たことがありません。その上に乾燥・巡り・むくみ・食いしばりが重なることで、ほうれい線は何倍も目立ってまう。だから骨格を責める必要なんてないんよ😊 変えるんは骨やのうて、上に乗った犯人たち。そこをゆるめたら、印象はちゃんと変わる🌸"
+  },
+  nou:{ // 脳疲労が主犯（＝黒幕がそのまま前に出たレアケース）
+    why:"脳がずっと緊張してると、身体は無意識に「戦闘モード」に。呼吸は浅く、肩や首は硬く、食いしばりも増える。血流もリンパもゆっくりになって、肌へ酸素も栄養も届きにくうなる。今まで出てきた犯人たちは、みんなこの脳疲労の影響を受けてることが多いんよ🌙",
+    signs:["考え事が止まらない","寝ても疲れが取れない","頑張るのが当たり前","「ちゃんとしなきゃ」が口ぐせ","肩こり・首こりがひどい","何をしてもスッキリしない"],
+    redpen:"❌肌だけ治療しても満足できへん人がおる。それがこの犯人😊 いつも頭はフル回転、「もっと頑張らな」の毎日やと、身体は休んでるつもりでも脳は一度も休憩できてへん。どれだけ高い施術を受けても「なんか違う…」て美容難民になりやすい。だから私は、肌だけやなく脳の力みまで一緒に見てます🌸",
+    brain:"これが、私がずっと伝えたかったこと。肌だけ見ても全部は分からへん。脳だけ見ても分からへん。でも肌と脳を一緒に見ると、「なんで今まで変わらんかったんやろ？」が少しずつつながる。だから私は、肌と脳は双子、そう伝えてるんよ🌸"
+  }
+};
+
+/* ===== 黒幕（固定・脳疲労）＝主犯が脳疲労以外の時、最後に必ず出す ===== */
+const BOSS = {
+  emoji:"🧠",
+  name:"脳疲労犯",
+  text:"犯人は違っても、私が15年間見てきて共通してたことがあるんよ。<br><br>どの犯人も、最後は<b>「脳の疲れ」</b>に影響されてることが多かった。<br><br>だから私は、この犯人を<b>黒幕</b>って呼んでる🌙"
+};
+
+/* ===== AIぼたんURL（※本番のURLに差し替えてな） ===== */
+const AI_BOTAN_URL = "https://botan-shindan.pages.dev/ai_botan_final.html";
+
+/* ================= ロジック ================= */
+let cur = 0;
+const answers = new Array(QUESTIONS.length).fill(null);
+
+function render(){
+  const item = QUESTIONS[cur];
+  const card = document.getElementById('card');
+  card.classList.remove('fade'); void card.offsetWidth; card.classList.add('fade');
+  document.getElementById('qnum').textContent = "QUESTION " + (cur+1);
+  document.getElementById('qtext').textContent = item.q;
+  document.getElementById('fill').style.width = ((cur)/QUESTIONS.length*100) + "%";
+  document.getElementById('ptext').textContent = (cur+1) + " / " + QUESTIONS.length;
+}
+function answer(yes){
+  answers[cur] = yes;
+  if(cur < QUESTIONS.length-1){ cur++; render(); }
+  else { showResult(); }
+}
+function goBack(){
+  if(cur>0){ cur--; render(); }
+}
+
+function tally(){
+  const score = {kui:0,muk:0,meg:0,hik:0,kan:0,tou:0,kok:0,nou:0};
+  QUESTIONS.forEach((item,i)=>{ if(answers[i]) score[item.c]++; });
+  return score;
+}
+
+function decide(score){
+  // 主犯・共犯を決める。脳疲労は原則 黒幕へ温存（他に得点がある限り主犯/共犯にしない）
+  const entries = Object.entries(score); // [code,点]
+  // 脳疲労を除いた順位
+  const noBoss = entries.filter(e=>e[0]!=="nou").sort((a,b)=>b[1]-a[1]);
+  const bossScore = score.nou;
+  const nonBossTotal = noBoss.reduce((s,e)=>s+e[1],0);
+
+  let mainCode, subCode=null;
+
+  if(nonBossTotal===0){
+    // 脳疲労しか点がない（or 全部0）→ 脳疲労が主犯として前に出るレアケース
+    mainCode = "nou";
+  } else {
+    mainCode = noBoss[0][0];
+    // 共犯＝2位（点が1以上のものだけ）
+    if(noBoss[1] && noBoss[1][1] > 0) subCode = noBoss[1][0];
+  }
+  return {mainCode, subCode, bossScore, score};
+}
+
+function showResult(){
+  document.getElementById('fill').style.width = "100%";
+  const {mainCode, subCode} = decide(tally());
+  const main = HANNIN[mainCode];
+  const r = RESULT[mainCode];
+
+  let html = '<div class="fade">';
+
+  // HERO
+  html += '<div class="r-hero">';
+  html += '<div class="case">CASE FILE</div>';
+  html += '<div class="emoji">'+main.emoji+'</div>';
+  html += '<div class="name">'+main.name+'</div>';
+  html += '<div class="lead">あなたの主犯は、この子やった🕵️‍♀️</div>';
+  html += '</div>';
+
+  // なぜ
+  html += '<div class="r-block"><h3>🔍 なんでほうれい線になるん？</h3><p>'+r.why+'</p></div>';
+
+  // あるある
+  html += '<div class="r-block"><h3>✅ あなたによくある特徴</h3><ul class="checklist">';
+  r.signs.forEach(s=> html += '<li>'+s+'</li>');
+  html += '</ul></div>';
+
+  // 赤ペン
+  html += '<div class="r-block redpen"><h3>👩‍⚕️ ぼたんの赤ペン先生✍️</h3><p>'+r.redpen+'</p><p style="color:var(--sub);font-size:13px;">🌿この施術が合うかは、犯人が誰かで変わるんよ😊</p></div>';
+
+  // チーム（主犯＋共犯）
+  html += '<div class="r-block"><h3>🌙 実は、共犯もおる</h3><div class="team">';
+  html += '<div class="team-row"><div class="rank">🥇 主犯</div><div class="who">'+main.emoji+' '+main.name+'</div></div>';
+  if(subCode){
+    const sub = HANNIN[subCode];
+    if(subCode==="kok"){
+      // 骨格が共犯位＝"土台"として表示（悪役にしない・希望寄り）
+      html += '<div class="team-row" style="background:linear-gradient(180deg,#f3eee9,#ece4da);"><div class="rank">🦴 土台</div><div class="who">'+sub.emoji+' 骨格<small>生まれ持った形やから、責めんでええよ😊 その上に乗った主犯をゆるめるだけで、印象は変わる🌸</small></div></div>';
+    } else {
+      html += '<div class="team-row"><div class="rank">🥈 共犯</div><div class="who">'+sub.emoji+' '+sub.name+'<small>'+sub.short+'</small></div></div>';
+    }
+  }
+  html += '</div></div>';
+
+  // 黒幕（主犯が脳疲労でない時だけ・固定）
+  if(mainCode!=="nou"){
+    html += '<div class="r-block boss"><h3>👑 そして、黒幕は…</h3><p style="text-align:center;font-size:34px;margin:6px 0;">'+BOSS.emoji+'</p><p style="text-align:center;font-size:18px;font-weight:800;color:var(--accent2);margin-bottom:12px;">'+BOSS.name+'</p><p>'+BOSS.text+'</p></div>';
+  }
+
+  // 肌と脳は双子
+  html += '<div class="r-block"><h3>🧠 肌と脳は双子</h3><p>'+r.brain+'</p></div>';
+
+  // それ、ほんとなん？
+  html += '<div class="r-block honto"><p>あなたは「ほうれい線は年齢やから仕方ない」って思ってたかもしれへん。</p><p class="big">……それ、ほんとなん？😊</p><p>年齢だけでは説明できひんことを、美容ナースとして15年、ほんまにたくさん見てきました🌙</p></div>';
+
+  // ぼたんから一言
+  html += '<div class="r-block"><h3>💜 ぼたんから一言</h3><p>犯人探しがしたかったんやない。責めたかったんでもない。ほんまに伝えたかったのは──あなたは壊れてない。ただ、少し巡りが止まってただけ🌸</p><p>力を抜くたびに、肌も人生も、また巡り始める。<br><b>元々、最高やったやん🤣💜</b></p></div>';
+
+  // CTA → AIぼたん
+  html += '<a class="cta" href="'+AI_BOTAN_URL+'">🌙 この結果を持って、AIぼたんに会いにいく</a>';
+  html += '<p style="text-align:center;color:var(--sub);font-size:13px;margin-top:-2px;">あなたの犯人チームの全貌は、AIぼたんが教えてくれるよ💜</p>';
+
+  html += '<div class="restart"><button onclick="restart()">もう一回やってみる</button></div>';
+  html += '<div class="foot">© ぼたん / めぐる<br>無断複製・転載を禁じます。</div>';
+  html += '</div>';
+
+  document.getElementById('quiz').style.display = "none";
+  const res = document.getElementById('result');
+  res.innerHTML = html;
+  res.style.display = "block";
+  window.scrollTo(0,0);
+}
+
+function restart(){
+  cur = 0;
+  for(let i=0;i<answers.length;i++) answers[i]=null;
+  document.getElementById('result').style.display="none";
+  document.getElementById('result').innerHTML="";
+  document.getElementById('quiz').style.display="block";
+  render();
+  window.scrollTo(0,0);
+}
+
+render();
+</script>
+</body>
+</html>
