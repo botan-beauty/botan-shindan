@@ -287,14 +287,18 @@ function ShareCard({ typeKey }){
       <div className="serif" style={{textAlign:"center",fontSize:10,letterSpacing:".3em",
         color:C.gold,padding:"14px 0 4px"}}>真実の鏡 〜True Mirror〜</div>
 
-      {/* 動物写真ドン（がっつり大きく） */}
-      <div style={{margin:"6px 16px 0", borderRadius:16, overflow:"hidden",
-        border:`1px solid ${C.line}`, background:"radial-gradient(circle at 50% 40%, #FFFFFF, #F4E9F2)",
-        aspectRatio:"1 / 1", display:"flex", alignItems:"center", justifyContent:"center"}}>
-        {imgOk && src
-          ? <img src={src} onError={()=>setImgOk(false)}
-              style={{width:"100%", height:"100%", objectFit:"cover", display:"block"}}/>
-          : <div style={{fontSize:120}}>{r.animal}</div>}
+      {/* 動物写真ドン（背景敷き込み方式＝画像化しても縦伸びせず正方形を保つ） */}
+      <div style={{margin:"6px 16px 0"}}>
+        <div style={{position:"relative", width:"100%", paddingBottom:"100%", borderRadius:16, overflow:"hidden",
+          border:`1px solid ${C.line}`, backgroundColor:"#F4E9F2",
+          backgroundImage:(imgOk && src)?`url("${src}")`:"none",
+          backgroundSize:"cover", backgroundPosition:"center"}}>
+          {/* 読み込みエラー検知用（表示はしない） */}
+          {src && <img src={src} onError={()=>setImgOk(false)} alt="" style={{display:"none"}}/>}
+          {/* 画像が無いときだけ絵文字 */}
+          {!(imgOk && src) && <div style={{position:"absolute", inset:0, display:"flex",
+            alignItems:"center", justifyContent:"center", fontSize:120}}>{r.animal}</div>}
+        </div>
       </div>
 
       {/* 動物名＋褒め言葉（主役はここ／シミの名前は出さへん） */}
