@@ -480,11 +480,12 @@ function App(){
     }else{ setScore(ns); setI(i+1); }
   };
 
-  // 📥 カードを画像（PNG）にして保存（時計やURLバーは写らへん）
+  // 📥 カードを画像（PNG）にして保存
+  // iPhoneはまず共有シートを開く→「画像を保存」でカメラロールに入る。
+  // 共有が使えん端末は、従来のダウンロードにフォールバック。
   const saveImage=()=>{
     const el=document.getElementById("share-card");
-    if(!el || !window.html2canvas){ 
-      // ライブラリが無い時はスクショ案内にフォールバック
+    if(!el || !window.html2canvas){
       alert("画像の保存がうまくいかんかったら、スクショでもOKやよ🌙");
       return;
     }
@@ -494,6 +495,17 @@ function App(){
         if(!blob){ setSaving(false); return; }
         const r=R[winner];
         const fname=`鏡のカード_${r.creature}.png`;
+        const file=new File([blob],fname,{type:"image/png"});
+
+        // ① 画像を共有シートで渡せる端末（iPhone Safari等）→ カメラロールに保存できる
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          navigator.share({files:[file], title:"鏡のカード"})
+            .then(()=>setSaving(false))
+            .catch(()=>setSaving(false)); // ユーザーがキャンセルしても静かに戻す
+          return;
+        }
+
+        // ② フォールバック：ダウンロード（ファイルアプリ行き）
         const url=URL.createObjectURL(blob);
         const a=document.createElement("a");
         a.href=url; a.download=fname;
@@ -674,8 +686,9 @@ function App(){
         {saving ? "画像を作ってるよ…🌙" : "📥 この鏡のカードを画像で保存"}
       </button>
       <p className="serif" style={{fontSize:12,lineHeight:1.9,color:C.inkSoft,margin:"0 0 20px"}}>
-        保存した<b style={{color:C.lav}}>カード</b>を、Instagram・Facebookに貼って教えてね🌸<br/>
-        <span style={{opacity:.8}}>（保存できひんかったら、スクショでもOKやよ）</span>
+        ボタンを押したら、出てくるメニューから<b style={{color:C.lav}}>「画像を保存」</b>を選んでね🌙<br/>
+        保存した<b style={{color:C.lav}}>カード</b>を、Instagram・Facebookに貼って教えて🌸<br/>
+        <span style={{opacity:.8}}>（うまくいかへんときは、スクショでもOKやよ）</span>
       </p>
 
       {/* 動物＝豪華な鏡に、作品まるごと */}
