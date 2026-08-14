@@ -77,21 +77,29 @@ const Q = [
 ];
 
 const R = {
-  A:{ animal:"🦒", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。",
+  A:{ animal:"🦒", creature:"キリン", name:"肝斑タイプ", word:"静かに広がる影を、光で包み込む。",
+      share:"優雅なモザイクを纏う人",
       why:`両頬に、左右対称に。\nじわっと広く、網目のようにつながって——\nその広がり方は、\nキリンの優雅なモザイク柄そのもの。` },
-  B:{ animal:"🐶", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。",
+  B:{ animal:"🐶", creature:"ダルメシアン", name:"紫外線シミタイプ", word:"強い日差しさえ、美しさの糧に。",
+      share:"白地にくっきり、元気なドットの人",
       why:`輪郭のはっきりした、丸い点。\nポツポツと、独立して散らばって——\n白地にクッキリ映える\nダルメシアンのドット柄そのもの。` },
-  C:{ animal:"🦌", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。",
+  C:{ animal:"🦌", creature:"バンビ", name:"炎症ぐすみタイプ", word:"やさしい心で、透明感あふれる肌へ。",
+      share:"繊細で、守ってあげたくなる人",
       why:`ニキビ跡、摩擦、赤み、ムラ。\n守ってあげたくなるような、\n繊細で儚げな白いドット。\nそっと鎮めてあげて、という合図。` },
-  D:{ animal:"🦓", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。",
+  D:{ animal:"🦓", creature:"シマウマ", name:"お疲れ肌タイプ", word:"休息と再生で、凛とした美しさへ。",
+      share:"都会的なモノトーンを纏う、頑張り屋さん",
       why:`乾きと疲れで、キメが乱れて、\n細かな影がどんよりと落ちる。\nでもそれは、都会的でスタイリッシュな\n光と影のモノトーン・ストライプ。` },
-  E:{ animal:"🦚", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。",
+  E:{ animal:"🦚", creature:"クジャク", name:"ADMタイプ", word:"深いところに眠る輝きを、解き放つ。",
+      share:"深いところに宝石を隠してる人",
       why:`肌の奥——真皮に眠る、青とグレー。\n神秘的で、奥行きがあって、\n宝石を敷きつめたような羽の模様。\n深いからこそ、美しい。` },
-  F:{ animal:"🐿️", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。",
+  F:{ animal:"🐿️", creature:"シマリス", name:"ターンオーバー低下タイプ", word:"生まれ変わるたび、輝きは増していく。",
+      share:"これから生まれ変わっていく人",
       why:`古い殻を脱ぎ捨てて、\nキメがひとマスずつ、整っていく。\n繊細な宝石が規則正しく並ぶような、\n生まれ変わりのライン。` },
-  G:{ animal:"🐅", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。",
+  G:{ animal:"🐅", creature:"トラ", name:"血管系くすみタイプ", word:"巡り出す力で、生命感あふれる肌へ。",
+      share:"内側に生命力の縦じまを持つ人",
       why:`薄い肌から透ける、赤みと青み。\n内側をめぐる生命力が、\nトラの力強い縦じまとなって、\nあなたの肌に現れている。` },
-  H:{ animal:"🐆", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。",
+  H:{ animal:"🐆", creature:"ユキヒョウ", name:"老人性色素斑タイプ", word:"重ねた歳月さえ、美しさに変える。",
+      share:"最高級のファーを纏う、成熟した人",
       why:`年を重ねて現れる、厚みと深み。\nそれは、ホワイトとグレーを纏った\n最高級のファーのような——\n成熟した大人だけが持つ紋様。` },
 };
 
@@ -190,13 +198,16 @@ const IMG = {
   H: GH+"IMG_9492.jpeg",   // 🐆 ユキヒョウ・老人性
 };
 
+// 🟩 LINE公式QR（シェアカード用）※このファイルを同じフォルダに置く
+const LINE_QR = GH+"IMG_6266.png";
+
 // 表紙／人物
 const HALL  = GH+"C10ADBE6-8706-44FA-984D-265C4122951F.png"; // ✨ ホール（物語のはじまり）
 const DOOR  = GH+"5D5B628F-0EAF-4A09-9106-190646A4E590.png"; // 🚪 開いた扉
 const BOTAN_ROUND = GH+"IMG_8528.jpeg";                      // 👤 ぼたん（丸枠・アドバイス用）
 const BOTAN_BIG   = GH+"2EF32432-744F-4CCD-BCC8-87B1517734A8.png"; // 👤 ぼたん（最後の締め・大きく）
 const FAIRY_IMG  = GH+"IMG_9457.png";                              // 🧚 AIぼたん妖精（最初と最後）※据え置き
-const FAIRY_ROOM = GH+"F925DB98-A1FA-4679-8914-15B316DDF515.png";  // 🧚（旧・部屋案内／後方互換）
+const FAIRY_ROOM = GH+"F925DB98-A1FA-4879-8914-15B316DDF515.png";  // 🧚（旧・部屋案内／後方互換）
 // ── 鏡の部屋用の妖精3種 ───────────────
 const FAIRY_FLY  = GH+"fairy.png";       // 飛ぶ（AIぼたん）
 const FAIRY_PRAY = GH+"fairy-pray.png";  // 祈り：ゆらゆら
@@ -253,6 +264,73 @@ function OrnateMirror({ typeKey, w, delayed }) {
       </div>
       <div style={{position:"absolute", bottom:-13, left:"50%", transform:"translateX(-50%)",
         fontSize:20, zIndex:5, filter:"drop-shadow(0 2px 3px rgba(184,146,88,.5))"}}>💎</div>
+    </div>
+  );
+}
+
+// 🪞 シェアカード（スクショして配る用の1枚）
+// 載せるのは【動物・褒め言葉・LINEのQR】だけ。
+// シミのタイプ名・ケア・夏祭りURLは載せへん＝続きはLINEでしか分からへん設計。
+function ShareCard({ typeKey }){
+  const [imgOk, setImgOk] = useState(true);
+  const [qrOk, setQrOk] = useState(true);
+  const r = R[typeKey];
+  const src = IMG[typeKey];
+  return (
+    <div style={{position:"relative", borderRadius:22, overflow:"hidden", marginBottom:12,
+      border:`2px solid ${C.goldSoft}`,
+      background:"linear-gradient(135deg,#FBF3E4,#F8ECF1 55%,#FBF0EC)",
+      boxShadow:"0 12px 34px rgba(184,127,192,.18)"}}>
+
+      {/* 上：うっすらブランドの一言（世界観の額縁） */}
+      <div className="serif" style={{textAlign:"center",fontSize:10,letterSpacing:".3em",
+        color:C.gold,padding:"14px 0 4px"}}>真実の鏡 〜True Mirror〜</div>
+
+      {/* 動物写真ドン（がっつり大きく） */}
+      <div style={{margin:"6px 16px 0", borderRadius:16, overflow:"hidden",
+        border:`1px solid ${C.line}`, background:"radial-gradient(circle at 50% 40%, #FFFFFF, #F4E9F2)",
+        aspectRatio:"1 / 1", display:"flex", alignItems:"center", justifyContent:"center"}}>
+        {imgOk && src
+          ? <img src={src} onError={()=>setImgOk(false)}
+              style={{width:"100%", height:"100%", objectFit:"cover", display:"block"}}/>
+          : <div style={{fontSize:120}}>{r.animal}</div>}
+      </div>
+
+      {/* 動物名＋褒め言葉（主役はここ／シミの名前は出さへん） */}
+      <div style={{textAlign:"center", padding:"16px 20px 4px"}}>
+        <div className="serif" style={{fontSize:12, letterSpacing:".2em", color:C.inkSoft, marginBottom:6}}>
+          鏡に映った、わたしは——
+        </div>
+        <div className="serif" style={{fontSize:27, fontWeight:600, color:C.ink, letterSpacing:".04em", lineHeight:1.3}}>
+          {r.animal} {r.creature}
+        </div>
+        <div className="serif" style={{fontSize:15, color:C.lav, marginTop:8, lineHeight:1.8}}>
+          {r.share}
+        </div>
+      </div>
+
+      {/* 仕切り */}
+      <div style={{width:44, height:1, background:C.goldSoft, margin:"14px auto 0"}}/>
+
+      {/* 下：LINE QR だけ（続きの行き先はLINE一本） */}
+      <div style={{display:"flex", alignItems:"center", gap:14, padding:"16px 22px 20px", justifyContent:"center"}}>
+        <div style={{width:96, height:96, borderRadius:12, background:"#fff", padding:6, flexShrink:0,
+          border:`1px solid ${C.line}`, boxShadow:"0 4px 12px rgba(184,127,192,.14)"}}>
+          {qrOk
+            ? <img src={LINE_QR} onError={()=>setQrOk(false)}
+                style={{width:"100%",height:"100%",objectFit:"contain",display:"block"}}/>
+            : <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",
+                justifyContent:"center",fontSize:11,color:C.inkSoft,textAlign:"center",lineHeight:1.5}}>LINE<br/>QR</div>}
+        </div>
+        <div style={{textAlign:"left"}}>
+          <div className="serif" style={{fontSize:14, color:C.ink, lineHeight:1.85}}>
+            あなたの鏡には、<br/>どの子が映るやろ？🌙
+          </div>
+          <div className="serif" style={{fontSize:13, color:"#06C755", fontWeight:700, marginTop:6}}>
+            💚 続きは、ぼたんのLINEで
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -362,7 +440,7 @@ function ScreenshotGuide(){
           <p className="serif" style={{margin:0,fontSize:13.5,lineHeight:2,color:C.ink}}>
             <b>iPhone</b>：サイドボタン ＋ 音量アップ を同時押し📸<br/>
             <b>Android</b>：電源ボタン ＋ 音量ダウン を同時押し📸<br/><br/>
-            撮った鏡を、Instagram・Facebookに貼って教えてね🌸<br/>
+            撮った<b style={{color:C.lav}}>鏡のカード</b>を、Instagram・Facebookに貼って教えてね🌸<br/>
             <b style={{color:C.lav}}>あなたの鏡</b>、見てみたいの🌙
           </p>
           <button onClick={()=>setO(false)} style={{background:"none",border:"none",color:C.inkSoft,
@@ -400,10 +478,10 @@ function App(){
     }else{ setScore(ns); setI(i+1); }
   };
 
-  // 🔗 シェア（＝簡易版のURLを配る）
+  // 🔗 シェア（続きの行き先はLINE一本。夏祭りURL・シミ詳細は載せへん）
   const share=()=>{
     const r=R[winner];
-    const text=`🪞 鏡が映した、わたしの肌は【${r.name}】${r.animal}\n「${r.word}」\n\nあなたはどの鏡に映る？\nまずは、はじめの鏡から✨\n👇\n${LITE_URL}\n\nくわしい特徴・ケア・"肌と脳は双子"の話は、ぼたんのLINEで💚\n${LINE_URL}`;
+    const text=`🪞 鏡に映った、わたしは【${r.creature}】${r.animal}\n「${r.share}」\n\nあなたの鏡には、どの子が映るやろ？🌙\n続きは、ぼたんのLINEで💚\n${LINE_URL}`;
     if(navigator.share){
       navigator.share({title:"鏡をひらく物語｜シミ診断", text:text}).catch(()=>{});
     }else{
@@ -554,6 +632,13 @@ function App(){
   const r=R[winner];
   return (<div style={bg}><Ambient/>
     <div style={{position:"relative",zIndex:1,maxWidth:470,margin:"0 auto",textAlign:"center"}} className="fu">
+
+      {/* 🪞 シェアカード（スクショして配る用の1枚・トップに配置） */}
+      <ShareCard typeKey={winner}/>
+      <p className="serif" style={{fontSize:12.5,lineHeight:1.9,color:C.inkSoft,margin:"0 0 20px"}}>
+        ☝️ この<b style={{color:C.lav}}>鏡のカード</b>をスクショして、シェアしてね🌙
+      </p>
+
       {/* 動物＝豪華な鏡に、作品まるごと */}
       <div style={{marginTop:6, marginBottom:22}}>
         <OrnateMirror typeKey={winner} w={230}/>
@@ -639,18 +724,12 @@ function App(){
       {/* 📸 スクショの撮り方 */}
       <ScreenshotGuide/>
 
-      {/* 🔗 シェア（＝簡易版のURLを配る） */}
+      {/* 🔗 シェア（続きの行き先はLINE一本） */}
       <button onClick={share} className="serif" style={{width:"100%",padding:"14px 0",borderRadius:999,border:"none",
         background:"linear-gradient(135deg,#D8BE86,#E0C9E4)",color:"#4A3D53",fontSize:14.5,letterSpacing:".08em",
         cursor:"pointer",marginBottom:10,boxShadow:"0 8px 22px rgba(184,127,192,.26)"}}>
         {copied ? "コピーしたよ ♡ 貼り付けてね" : "🔗 結果をシェアする"}
       </button>
-
-      {/* 友だちに配る用の一言 */}
-      <p className="serif" style={{fontSize:11.5,lineHeight:1.9,color:C.inkSoft,margin:"0 0 14px"}}>
-        シェアすると、お友だちには<b style={{color:C.gold}}>はじめの鏡</b>が届くよ🌙<br/>
-        <span style={{opacity:.8}}>{LITE_URL.replace("https://","")}</span>
-      </p>
 
       <button onClick={begin} className="serif" style={{width:"100%",padding:"13px 0",borderRadius:999,
         border:`1px solid ${C.line}`,background:"transparent",color:C.gold,fontSize:13,letterSpacing:".12em",cursor:"pointer"}}>
